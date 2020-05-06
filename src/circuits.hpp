@@ -7,7 +7,7 @@ private:
     std::string name;
     float voltage;
     
-    std::vector<Component *> comps;
+    std::vector<Component::Capacitor *> comps;
 };
 
 class Component {
@@ -18,11 +18,11 @@ private:
     
 };
 
-class Component::Circuit {
+class Circuit {
     
     std::map<std::string,Node *> nodes;
     
-    std::map<std::string, Component *> comps;
+    std::map<std::string, Component::Capacitor *> comps;
 
     
 
