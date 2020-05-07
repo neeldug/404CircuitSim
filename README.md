@@ -24,5 +24,7 @@ I often write smaller classes or files to test technologies or ideas, and keep t
 
 src: 
 The application and only the application’s source files.
-    test: All test code files. You do write tests, no?
+
+test: 
+All test code files.
 
