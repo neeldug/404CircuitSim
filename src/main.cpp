@@ -1,7 +1,8 @@
 #include <iostream>
-
+#include <circuits.hpp>
 int main()
 {
-    std::cout << "Hello World\n";
+    Circuit::Schematic s;
+    s.out();
     return 0;
 }

@@ -7,4 +7,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 project(Circuit_Simulator)
 
 # add the executable
+add_library(
+    circuit
+    src/components/circuits.cpp
+    src/components/linearDevices.cpp
+)
+target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/.")
 add_executable(simulator src/main.cpp)
+target_link_libraries(simulator PRIVATE circuit)
