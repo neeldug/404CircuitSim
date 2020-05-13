@@ -1,4 +1,4 @@
-#include "circuits.hpp"
+#include "circuitStructure.hpp"
 #include "linearDevices.hpp"
 
 

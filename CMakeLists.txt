@@ -9,7 +9,7 @@ project(Circuit_Simulator)
 # add the executable
 add_library(
     circuit
-    src/components/circuits.cpp
+    src/components/circuitStructure.cpp
     src/components/linearDevices.cpp
 )
 

@@ -1,10 +1,9 @@
-#ifndef GUARD_CIRCUITS_HPP
-#define GUARD_CIRCUITS_HPP
+#ifndef GUARD_CIRCUIT_STRUCTURE_HPP
+#define GUARD_CIRCUIT_STRUCTURE_HPP
 
 #include <vector>
 #include <map>
 #include <string>
-
 namespace Circuit
 {
     class Component;
@@ -46,7 +45,9 @@ protected:
     // making constructor virutal makes
     // it obvious this is an abstract
     // base class
-    Component(std::string name, float value);
+    
+    //maybe value 
+    Component( std::string name, float value );
 
 public:
     //either two or three connecting nodes in here
