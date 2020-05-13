@@ -1,6 +1,8 @@
 #include <iostream>
+#include <string>
 #include "circuits.hpp"
 
-void Circuit::Schematic::out(){
-    std::cout<<"hello world"<<std::endl;
+Circuit::Component::Component( std::string name, float value ){
+    this->name = name;
+    this->value = value;
 }

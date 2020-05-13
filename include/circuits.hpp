@@ -18,10 +18,10 @@ namespace Circuit{
 }
 
 class Circuit::Schematic {
-    std::map< std::string, Node *> nodes;
-    std::map< std::string, Component *> comps;
 
 public:
+    std::map< std::string, Node *> nodes;
+    std::map< std::string, Component *> comps;
     void out();
     // TODO 
     // Future development could be to serialise the
@@ -31,11 +31,12 @@ public:
 
 };
 class Circuit::Node{
-private:
+public:
     std::string name;
     float voltage;
     std::vector< Component * > comps;
 
+    //REVIEW kjlkjfadlkjflksdjflk dsalkjlkdsa jflkjda lkasd sadk jf    void generateEquation();
 };
 
 class Circuit::Component {
@@ -43,13 +44,13 @@ protected:
     // making constructor virutal makes
     // it obvious this is an abstract
     // base class
-    Component();
+    Component( std::string name, float value );
 
+public:
     //either two or three connecting nodes in here
     std::vector< Node * > nodes;
     std::string name;
-
-public:
+    float value;
     virtual ~Component();
 };
 

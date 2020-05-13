@@ -1,6 +1,4 @@
-#include "../../include/circuits.hpp"
-//TODO fix relative path
+#include "circuits.hpp"
+#include "linearDevices.hpp"
 
-class Capcitor{
-    
-};
+
