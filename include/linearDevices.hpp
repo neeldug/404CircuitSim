@@ -5,17 +5,17 @@
 
 class Circuit::Capacitor : public Component{
 public:
-    Capacitor( std::string name, float value ) : Component( name, value );
+    Capacitor( std::string name, float value ) : Component( name, value ) {};
 };
 
 class Circuit::Inductor : public Component{
 public:
-    Inductor( std::string name, float value ) : Component( name, value );
+    Inductor( std::string name, float value ) : Component( name, value ) {};
 };
 
 class Circuit::Resistor : public Component{
 public:
-    Resistor( std::string name, float value ) : Component( name, value );
+    Resistor( std::string name, float value ) : Component( name, value ){};
 };
 
 
