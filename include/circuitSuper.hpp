@@ -3,4 +3,5 @@
 
 #include "linearDevices.hpp"
 #include "circuitStructure.hpp"
+
 #endif

@@ -13,8 +13,8 @@ add_library(
     src/components/linearDevices.cpp
 )
 
+target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
+target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/math")
 
-target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/.")
-target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/maths")
 add_executable(simulator src/main.cpp)
 target_link_libraries(simulator PRIVATE circuit)
