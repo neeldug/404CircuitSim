@@ -1,20 +1,22 @@
 cmake_minimum_required(VERSION 3.16)
+project(Circuit_Simulator VERSION 1.0.0)
+enable_testing()
 
-#set bin director
+# Set bin as output directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-# set the project name
-project(Circuit_Simulator)
+# Add Symbolic Library
+add_library(symbolic INTERFACE)
+target_include_directories(symbolic INTERFACE lib/symbolic)
 
-# add the executable
-add_library(
-    circuit
-    src/components/circuitStructure.cpp
-    src/components/linearDevices.cpp
-)
+# Add Include Library
+include_directories(include)
 
-
-target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/.")
-target_include_directories(circuit PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/maths")
+# Main Executable - Simulator
 add_executable(simulator src/main.cpp)
-target_link_libraries(simulator PRIVATE circuit)
+target_link_libraries(simulator symbolic)
+
+# Test Executables
+add_executable(test_math test/test_math.cpp)
+target_link_libraries(test_math symbolic)
+add_test(NAME TEST_MATH COMMAND test_math WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
