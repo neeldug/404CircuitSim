@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include <functional>
 
 // namespace Circut
 namespace Circuit
@@ -28,7 +29,7 @@ class Circuit::Schematic
 public:
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
-    std::map<std::string, CurrentSource *> sources;
+    std::vector<CurrentSource *> sources;
     void out();
     // TODO
     // Future development could be to serialise the
@@ -40,7 +41,15 @@ public:
 class Circuit::Node
 {
 public:
-    Node(const std::string &name, float voltage) : name(name), voltage(voltage) {}
+    static std::function<int()> createIncrementer(int &start)
+    {
+        return [&]() {
+            return start++;
+        };
+    }
+
+    int id;
+    Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
     std::string name;
     float voltage;
     std::vector<Component *> comps;
