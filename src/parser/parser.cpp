@@ -8,7 +8,7 @@ Circuit::Schematic Circuit::parse(){
     for(const auto& line: v) {
         for (const auto& char: line){
             if(char == "I" || char == "R" || char == "L" || char == "C"){
-                
+                Circuit::Component::Component
             }
         }
     }
