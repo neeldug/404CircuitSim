@@ -1,14 +1,21 @@
 #include <iostream>
-#include <circuitSuper.hpp>
-#include <math/symbolicc++.h>
+#include <circuit.hpp>
 
-void example(){
+void example()
+{
     Symbolic x("x");
-    std::cout << integrate(x+1, x) << std::endl;     // => 1/2*x^(2)+x
+    std::cout << integrate(x + 1, x) << std::endl; // => 1/2*x^(2)+x
     Symbolic y("y");
     std::cout << df(y, x) << std::endl;              // => 0
     std::cout << df(y[x], x) << std::endl;           // => df(y[x],x)
     std::cout << df(exp(cos(y[x])), x) << std::endl; // => -sin(y[x])*df(y[x],x)*e^cos(y[x])
+}
+
+void generateMatrices(const Circuit::Schematic &circuit){
+    const int NUM_NODES = circuit.nodes.size();
+    Symbolic currentVector("currentVector", NUM_NODES);
+    Symbolic voltageVector("voltageVector", NUM_NODES);
+    Symbolic conductanceMatrix("conductanceMatrix", NUM_NODES, NUM_NODES);
 }
 
 int main()
@@ -32,7 +39,6 @@ int main()
     Circuit::Resistor *r4 = new Circuit::Resistor("r4", 5);
     Circuit::Resistor *r5 = new Circuit::Resistor("r5", 8);
     Circuit::Resistor *r6 = new Circuit::Resistor("r6", 6);
-
 
     node1->comps.push_back(r1);
     node1->comps.push_back(r2);
@@ -69,6 +75,8 @@ int main()
     circuit.comps["r4"] = r4;
     circuit.comps["r5"] = r5;
     circuit.comps["r6"] = r6;
+
+    generateMatrices(circuit);
 
     return 0;
 }

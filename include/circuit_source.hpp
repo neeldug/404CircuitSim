@@ -1,7 +1,7 @@
 #ifndef GUARD_CURRENT_SOURCE_HPP
 #define GUARD_CURRENT_SOURCE_HPP
 #include <string>
-#include "circuitStructure.hpp"
+#include "circuit_structure.hpp"
 
 class Circuit::CurrentSource : public Circuit::Component {
 public:
