@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include "circuits.hpp"
 
 Circuit::Schematic Circuit::parse(){
@@ -29,3 +30,15 @@ std::vector<std::string> getLines(std::string filename){
     }
     return v;
 }
+//Takes each line and processes it into substrings
+std::vector<std::string> generateComponent(std::string line) {
+    auto iss = std::istringstream{line};
+    auto str = std::string{};
+    std::vector<std::string> v;
+    while (iss >> str) {
+        v.push_back(str);
+    }
+    return v;
+}
+
+Circuit::Component
