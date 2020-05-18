@@ -1,6 +1,7 @@
 #include <iostream>
 #include <circuitSuper.hpp>
-#include <maths/symbolic/symbolicc++.h>
+#include <math/symbolic/symbolicc++.h>
+
 int main()
 {
     Symbolic x("x");
