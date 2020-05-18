@@ -1,5 +1,6 @@
 #include <iostream>
 #include <circuit.hpp>
+#include <circuit_math.hpp>
 
 void example()
 {
@@ -11,16 +12,9 @@ void example()
     std::cout << df(exp(cos(y[x])), x) << std::endl; // => -sin(y[x])*df(y[x],x)*e^cos(y[x])
 }
 
-void generateMatrices(const Circuit::Schematic &circuit){
-    const int NUM_NODES = circuit.nodes.size();
-    Symbolic currentVector("currentVector", NUM_NODES);
-    Symbolic voltageVector("voltageVector", NUM_NODES);
-    Symbolic conductanceMatrix("conductanceMatrix", NUM_NODES, NUM_NODES);
-}
-
 int main()
 {
-    // example();
+    example();
 
     Circuit::Schematic circuit;
 

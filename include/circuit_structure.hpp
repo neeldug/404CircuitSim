@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+// namespace Circut
 namespace Circuit
 {
     class Component;

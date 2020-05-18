@@ -1,7 +1,8 @@
-#ifndef GUARD_LINEAR_COMPS_HPP
-#define GUARD_LINEAR_COMPS_HPP
+#ifndef GUARD_CIRCUIT_LINEAR_HPP
+#define GUARD_CIRCUIT_LINEAR_HPP
 
 #include <string>
+
 #include "circuit_structure.hpp"
 
 class Circuit::Capacitor : public Component{

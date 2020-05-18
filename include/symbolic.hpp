@@ -1,6 +1,6 @@
-#ifndef SYMBOLIC_LIBRARY_INCLUDE_GUARD
-#define SYMBOLIC_LIBRARY_INCLUDE_GUARD
+#ifndef GUARD_SYMBOLIC_HPP
+#define GUARD_SYMBOLIC_HPP
 
-#include "../lib/sym/symbolicc++.h"
+#include "../lib/symbolic/symbolicc++.h"
 
 #endif
