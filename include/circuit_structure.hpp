@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <cassert>
 
 // namespace Circut
 namespace Circuit
@@ -36,7 +37,8 @@ public:
     // as simulation setup parameters.
 };
 
-class Circuit::Node{
+class Circuit::Node
+{
 public:
     Node(const std::string &name, float voltage) : name(name), voltage(voltage) {}
     std::string name;
@@ -50,18 +52,22 @@ protected:
     // making constructor virutal makes
     // it obvious this is an abstract
     // base class
-    
-    //maybe value 
-    Component( std::string name, float value );
+
+    //maybe value
+    Component(std::string name, float value)
+    {
+        this->name = name;
+        this->value = value;
+
+        assert(value >= 0 && "Value of component can not be negative");
+    }
 
 public:
     //either two or three connecting nodes in here
     std::vector<Node *> nodes;
     std::string name;
     float value;
-    virtual ~Component();
+    virtual ~Component() {}
 };
-
-
 
 #endif

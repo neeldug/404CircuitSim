@@ -1,6 +1,6 @@
 #include <iostream>
+
 #include <circuit.hpp>
-#include <circuit_math.hpp>
 
 void example()
 {

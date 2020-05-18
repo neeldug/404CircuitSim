@@ -4,5 +4,7 @@
 #include "circuit_linear.hpp"
 #include "circuit_structure.hpp"
 #include "circuit_source.hpp"
+#include "circuit_math.hpp"
+#include "circuit_parser.hpp"
 
 #endif
