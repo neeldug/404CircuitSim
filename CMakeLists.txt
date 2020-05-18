@@ -8,7 +8,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_library(symbolic INTERFACE)
 target_include_directories(symbolic INTERFACE lib/symbolic)
 
+# Add Include Library
+include_directories(include)
+
 # Main Executable - Simulator
 add_executable(simulator src/main.cpp)
-target_include_directories(simulator PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 target_link_libraries(simulator symbolic)
+
+# Test Executables
+add_executable(test_math test/test_math.cpp)
+target_link_libraries(test_math symbolic)

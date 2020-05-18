@@ -1,5 +1,9 @@
 #include <circuit.hpp>
 
+void test_math(){
+    return;
+}
+
 int main()
 {
     Circuit::Schematic circuit;
