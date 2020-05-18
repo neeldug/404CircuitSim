@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+
 namespace Circuit
 {
     class Component;
@@ -15,6 +16,7 @@ namespace Circuit
     class Diode;
     class Schematic;
     class Node;
+    class CurrentSource;
     Schematic parse();
 } // namespace Circuit
 
@@ -24,6 +26,7 @@ class Circuit::Schematic
 public:
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
+    std::map<std::string, CurrentSource *> sources;
     void out();
     // TODO
     // Future development could be to serialise the
@@ -34,6 +37,7 @@ public:
 
 class Circuit::Node{
 public:
+    Node(const std::string &name, float voltage) : name(name), voltage(voltage) {}
     std::string name;
     float voltage;
     std::vector<Component *> comps;
@@ -56,5 +60,7 @@ public:
     float value;
     virtual ~Component();
 };
+
+
 
 #endif

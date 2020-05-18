@@ -3,5 +3,6 @@
 
 #include "linearDevices.hpp"
 #include "circuitStructure.hpp"
+#include "currentSource.hpp"
 
 #endif
