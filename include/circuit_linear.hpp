@@ -21,6 +21,9 @@ class Circuit::Resistor : public Component
 {
 public:
     Resistor(std::string name, float value) : Component(name, value){};
+    float conductance() const override{
+        return 1/value;
+    }
 };
 
 #endif

@@ -7,7 +7,6 @@
 #include <cassert>
 #include <functional>
 
-// namespace Circut
 namespace Circuit
 {
     class Component;
@@ -25,12 +24,21 @@ namespace Circuit
 
 class Circuit::Schematic
 {
+private:
+    std::function<int()> createIDGenerator(int start) const
+    {
+        return [&]() {
+            return start++;
+        };
+    }
 
 public:
+    Schematic() : id(createIDGenerator(-1)) {}
+    std::function<int()> id const;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<CurrentSource *> sources;
-    void out();
+    // void out();
     // TODO
     // Future development could be to serialise the
     // Schematic class to provide load/save functionality
@@ -40,17 +48,13 @@ public:
 
 class Circuit::Node
 {
-public:
-    static std::function<int()> createIncrementer(int &start)
-    {
-        return [&]() {
-            return start++;
-        };
-    }
-
-    int id;
-    Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
+private:
     std::string name;
+
+public:
+    Node(const std::string &name, float voltage, int id)
+        : id(id), name(name), voltage(voltage) {}
+    int id;
     float voltage;
     std::vector<Component *> comps;
 };
@@ -58,11 +62,6 @@ public:
 class Circuit::Component
 {
 protected:
-    // making constructor virutal makes
-    // it obvious this is an abstract
-    // base class
-
-    //maybe value
     Component(std::string name, float value)
     {
         this->name = name;
@@ -70,12 +69,13 @@ protected:
 
         assert(value >= 0 && "Value of component can not be negative");
     }
+    std::string name;
+    float value;
 
 public:
     //either two or three connecting nodes in here
     std::vector<Node *> nodes;
-    std::string name;
-    float value;
+    virtual float conductance() const = 0;
     virtual ~Component() {}
 };
 
