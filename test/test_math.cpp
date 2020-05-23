@@ -2,14 +2,12 @@
 int main()
 {
     Circuit::Schematic circuit;
-    int start = 0;
-    auto id = Circuit::Node::createIncrementer(start);
 
     //should make ground node a special node included in parsing
     Circuit::Node *ground = new Circuit::Node("ground", 0.0, -1);
-    Circuit::Node *node1 = new Circuit::Node("node1", 0.0, id());
-    Circuit::Node *node2 = new Circuit::Node("node2", 0.0, id());
-    Circuit::Node *node3 = new Circuit::Node("node3", 0.0, id());
+    Circuit::Node *node1 = new Circuit::Node("node1", 0.0, circuit.id());
+    Circuit::Node *node2 = new Circuit::Node("node2", 0.0, circuit.id());
+    Circuit::Node *node3 = new Circuit::Node("node3", 0.0, circuit.id());
 
     Circuit::Resistor *r1 = new Circuit::Resistor("r1", 4);
     Circuit::Resistor *r2 = new Circuit::Resistor("r2", 3);
@@ -18,8 +16,8 @@ int main()
     Circuit::Resistor *r5 = new Circuit::Resistor("r5", 8);
     Circuit::Resistor *r6 = new Circuit::Resistor("r6", 6);
 
-    Circuit::CurrentSource *cs1 = new Circuit::CurrentSource("cs1", 6, node1, ground);
-    Circuit::CurrentSource *cs2 = new Circuit::CurrentSource("cs2", 4, node3, node1);
+    Circuit::Source *cs1 = new Circuit::Source("cs1", Circuit::Source::CURRENT_SOURCE, 6, node1, ground);
+    Circuit::Source *cs2 = new Circuit::Source("cs2", Circuit::Source::VOLTAGE_SOURCE, 4, node3, node1);
 
     node1->comps.push_back(r1);
     node1->comps.push_back(r2);
@@ -56,5 +54,9 @@ int main()
 
     generateMatrices(circuit);
 
+    for (const auto node : circuit.nodes)
+    {
+        node.second->print();
+    }
     return 0;
 }

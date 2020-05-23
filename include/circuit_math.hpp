@@ -3,12 +3,11 @@
 
 #include <iostream>
 #include <algorithm>
-#include <vector>
 
 #include "circuit_structure.hpp"
 #include "symbolic.hpp"
 
-void getCurrent(const Circuit::Schematic &circuit, vector<float> &current)
+void getCurrent(const Circuit::Schematic &circuit, Vector<float> &current)
 {
     std::cout << "Current Vector: " << std::endl;
     std::for_each(circuit.sources.begin(), circuit.sources.end(), [&](const auto source){
@@ -18,14 +17,13 @@ void getCurrent(const Circuit::Schematic &circuit, vector<float> &current)
     std::cout << current << std::endl;
 }
 
-void getConductance(const Circuit::Schematic &circuit, vector<vector<float> &conductance){
+void getConductance(const Circuit::Schematic &circuit, Matrix<float> &conductance){
     std::cout << "Conductance Matrix: " << std::endl;
     std::for_each(circuit.comps.begin(), circuit.comps.end(), [&](const auto comp){
         std::for_each(comp.second->nodes.begin(), comp.second->nodes.end(), [&](const auto node){
             if (node->id != -1) conductance[node->id][node->id] +=comp.second->conductance();
         });
-        if(comp.second->nodes.size() == 2){#include "vector.h"
-#include "matrix.h"
+        if(comp.second->nodes.size() == 2){
             if(comp.second->nodes[0]->id != -1 && comp.second->nodes[1]->id != -1){
                 conductance[comp.second->nodes[0]->id][comp.second->nodes[1]->id] -= comp.second->conductance();
                 conductance[comp.second->nodes[1]->id][comp.second->nodes[0]->id] -= comp.second->conductance();
@@ -41,15 +39,19 @@ void getConductance(const Circuit::Schematic &circuit, vector<vector<float> &con
 void generateMatrices(const Circuit::Schematic &circuit)
 {
     const int NUM_NODES = circuit.nodes.size();
-    Symbolic voltage(NUM_NODES, 1);
     Vector<float> current(NUM_NODES, 0.0);
     Matrix<float> conductance(NUM_NODES, NUM_NODES, 0.0);
     getCurrent(circuit, current);
     getConductance(circuit, conductance);
 
-
-    // Equation eq(conductance voltage = current);
-    std::cout << eq << std :: endl;
+    Vector<float> voltage = conductance.inverse() * current;
+    std::cout << "Voltage Vector: " << std::endl;
+    std::cout << voltage  << std::endl;
+    int i=0;
+    for(auto node : circuit.nodes){
+        node.second->voltage = voltage[i];
+        i++;
+    }
 }
 
 #endif

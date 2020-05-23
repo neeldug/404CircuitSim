@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include <iostream>
 #include <functional>
 
 namespace Circuit
@@ -18,26 +19,27 @@ namespace Circuit
     class Diode;
     class Schematic;
     class Node;
-    class CurrentSource;
+    class Source;
     Schematic parse();
 } // namespace Circuit
 
 class Circuit::Schematic
 {
 private:
-    std::function<int()> createIDGenerator(int start) const
+    std::function<int()> createIDGenerator(int &start) const
     {
         return [&]() {
             return start++;
         };
     }
+    int start = 0;
 
 public:
-    Schematic() : id(createIDGenerator(-1)) {}
-    std::function<int()> id const;
+    Schematic() : id(createIDGenerator(start)) {}
+    std::function<int()> id;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
-    std::vector<CurrentSource *> sources;
+    std::vector<Source *> sources;
     // void out();
     // TODO
     // Future development could be to serialise the
@@ -57,6 +59,9 @@ public:
     int id;
     float voltage;
     std::vector<Component *> comps;
+    void print(){
+        std::cout << name << ":\t" << voltage << std::endl;
+    }
 };
 
 class Circuit::Component
