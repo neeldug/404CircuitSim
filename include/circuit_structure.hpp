@@ -7,20 +7,23 @@
 #include <cassert>
 #include <iostream>
 #include <functional>
+#include <algorithm>
 
 namespace Circuit
 {
-    class Component;
-    class Capacitor;
-    class Inductor;
-    class Resistor;
-    class Transistor;
-    class Mosfet;
-    class Diode;
+    // Base Classes
     class Schematic;
     class Node;
+    class Component;
     class Source;
-    Schematic parse();
+
+    // Components
+    class Resistor;
+
+    // Sources
+    class Current;
+    class Voltage;
+
 } // namespace Circuit
 
 class Circuit::Schematic
@@ -40,48 +43,74 @@ public:
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<Source *> sources;
-    // void out();
-    // TODO
-    // Future development could be to serialise the
-    // Schematic class to provide load/save functionality
-    // with associated plots graphs and simulations, as well
-    // as simulation setup parameters.
+    void out()
+    {
+        for_each(nodes.begin(), nodes.end(), [](const auto node) {
+            node.second->print();
+        });
+        for_each(comps.begin(), comps.end(), [](const auto comp) {
+            comp.second->print();
+        });
+    }
 };
 
 class Circuit::Node
 {
+
 private:
     std::string name;
 
 public:
+    static Node *ground;
     Node(const std::string &name, float voltage, int id)
         : id(id), name(name), voltage(voltage) {}
     int id;
     float voltage;
     std::vector<Component *> comps;
-    void print(){
-        std::cout << name << ":\t" << voltage << std::endl;
+    void print()
+    {
+        std::cout << name << ":\t" << voltage << "V" << std::endl;
     }
 };
 
+Circuit::Node *Circuit::Node::ground = new Node("ground", 0.0, -1);
 class Circuit::Component
 {
 protected:
-    Component(std::string name, float value)
-    {
-        this->name = name;
-        this->value = value;
-
-        assert(value >= 0 && "Value of component can not be negative");
-    }
+    Component(std::string name, float value) : name(name), value(value) {}
     std::string name;
     float value;
 
 public:
-    //either two or three connecting nodes in here
     std::vector<Node *> nodes;
     virtual float conductance() const = 0;
+    float current()
+    {
+        // hardcoding for two nodes
+        return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
+    }
+    void print()
+    {
+        std::cout << name << ":\t" << current() << "A" <<  std::endl;
+    }
     virtual ~Component() {}
+};
+
+// Value should be some type of time varying function
+class Circuit::Source
+{
+protected:
+    const std::string name;
+    Source(const std::string &name, float value)
+        : name(name), value(value), pos(nullptr), neg(nullptr) {}
+    Source(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
+        : name(name), value(value), pos(pos), neg(neg) {}
+
+public:
+    float value;
+    const Circuit::Node *pos;
+    const Circuit::Node *neg;
+    virtual bool isCurrent() const = 0;
 };
 
 #endif

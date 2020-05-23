@@ -5,29 +5,30 @@
 
 #include "circuit_structure.hpp"
 
-class Circuit::Source
+// NOTE - Value could be a function
+
+class Circuit::Current : public Circuit::Source
 {
-
-    const std::string name;
-    const std::string type;
-
 public:
-    static std::string CURRENT_SOURCE;
-    static std::string VOLTAGE_SOURCE;
-    float value;
-    const Circuit::Node *pos;
-    const Circuit::Node *neg;
-    bool isCurrent()
+    Current(const std::string &name, float value) : Source(name, value) {}
+    Current(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
+        : Source(name, value, pos, neg) {}
+    bool isCurrent() const override
     {
-        return type == CURRENT_SOURCE;
+        return true;
     }
-    bool isVoltage()
-    {
-        return type == VOLTAGE_SOURCE;
-    }
-    Source(const std::string &name, const std::string &type, float value) : name(name), value(value), type(type), pos(nullptr), neg(nullptr) {}
-    Source(const std::string &name, const std::string &type, float value, const Circuit::Node *pos, const Circuit::Node *neg) : name(name), type(type), value(value), pos(pos), neg(neg) {}
 };
-std::string Circuit::Source::CURRENT_SOURCE = "current source";
-std::string Circuit::Source::VOLTAGE_SOURCE = "voltage source";
+
+class Circuit::Voltage : public Circuit::Source
+{
+public:
+    Voltage(const std::string &name, float value) : Source(name, value) {}
+    Voltage(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
+        : Source(name, value, pos, neg) {}
+    bool isCurrent() const override
+    {
+        return false;
+    }
+};
+
 #endif
