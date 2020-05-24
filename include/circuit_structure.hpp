@@ -51,12 +51,13 @@ public:
         for_each(comps.begin(), comps.end(), [](const auto comp) {
             comp.second->print();
         });
+        std::cout << std::endl;
+        std::cout << std::endl;
     }
 };
 
 class Circuit::Node
 {
-
 private:
     std::string name;
 
@@ -91,7 +92,7 @@ public:
     }
     void print()
     {
-        std::cout << name << ":\t" << current() << "A" <<  std::endl;
+        std::cout << name << ":\t" << current() << "A" << std::endl;
     }
     virtual ~Component() {}
 };
