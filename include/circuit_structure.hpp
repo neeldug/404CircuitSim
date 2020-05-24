@@ -25,8 +25,12 @@ namespace Circuit
 	Schematic parse();
 } // namespace Circuit
 
+
 class Circuit::Schematic
 {
+private:
+	class Simulation;
+	std::vector<Simulation *> sims;
 
 public:
 	std::string title;
@@ -93,7 +97,31 @@ public:
 	std::vector<Node *> nodes;
 	std::string name;
 	float value;
+
 	virtual ~Component() {}
 };
+
+class Circuit::Schematic::Simulation{
+private:
+	struct ParamTable{
+		std::map<std::string, float> lookup;
+	};
+	std::vector<ParamTable*> tables;
+
+public:
+	~Simulation(){
+		std::for_each(tables.begin(), tables.end(), 
+			[](ParamTable* &t){
+				delete t;
+			}
+		);
+	}
+	
+	float getValue( int tableNum, std::string param ){
+		assert( tables.size() > tableNum && "Attempted value retrieved from non-existant table.");
+		return (tables[tableNum])->lookup[param];
+	}
+};
+
 
 #endif
