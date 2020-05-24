@@ -8,22 +8,24 @@
 #include <iostream>
 #include <functional>
 #include <algorithm>
+#include <typeinfo>
+#include <iostream>
 
 namespace Circuit
 {
-    // Base Classes
+    class Component;
+    class Capacitor;
+    class Inductor;
+    class Resistor;
+    class Transistor;
+    class Mosfet;
+    class Diode;
     class Schematic;
     class Node;
-    class Component;
     class Source;
-
-    // Components
-    class Resistor;
-
-    // Sources
     class Current;
     class Voltage;
-
+    Schematic parse();
 } // namespace Circuit
 
 class Circuit::Schematic
@@ -40,6 +42,7 @@ private:
 public:
     Schematic() : id(createIDGenerator(start)) {}
     std::function<int()> id;
+    std::string title;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<Source *> sources;
@@ -54,6 +57,8 @@ public:
         std::cout << std::endl;
         std::cout << std::endl;
     }
+    class Simulation;
+    std::vector<Simulation *> sims;
 };
 
 class Circuit::Node
@@ -63,26 +68,28 @@ private:
 
 public:
     static Node *ground;
-    Node(const std::string &name, float voltage, int id)
-        : id(id), name(name), voltage(voltage) {}
+    Node(const std::string& name) : name(name) {}
+	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
+
     int id;
     float voltage;
     std::vector<Component *> comps;
     void print()
     {
-        std::cout << name << ":\t" << voltage << "V" << std::endl;
+        std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
     }
 };
 
 Circuit::Node *Circuit::Node::ground = new Node("ground", 0.0, -1);
+
 class Circuit::Component
 {
 protected:
     Component(std::string name, float value) : name(name), value(value) {}
-    std::string name;
     float value;
 
 public:
+    std::string name;
     std::vector<Node *> nodes;
     virtual float conductance() const = 0;
     float current()
@@ -92,9 +99,13 @@ public:
     }
     void print()
     {
-        std::cout << name << ":\t" << current() << "A" << std::endl;
+        std::cout << typeid(*this).name() << name << ":\t" << current() << "A" << std::endl;
     }
-    virtual ~Component() {}
+    virtual ~Component()
+    {
+        //deleteFromSchematicMap();
+        //deleteFromAdjacentNodes();
+    }
 };
 
 // Value should be some type of time varying function
@@ -112,6 +123,31 @@ public:
     const Circuit::Node *pos;
     const Circuit::Node *neg;
     virtual bool isCurrent() const = 0;
+};
+
+class Circuit::Schematic::Simulation
+{
+private:
+    struct ParamTable
+    {
+        std::map<std::string, float> lookup;
+    };
+    std::vector<ParamTable *> tables;
+
+public:
+    ~Simulation()
+    {
+        std::for_each(tables.begin(), tables.end(),
+                      [](ParamTable *&t) {
+                          delete t;
+                      });
+    }
+
+    float getValue(int tableNum, std::string param)
+    {
+        assert(tables.size() > tableNum && "Attempted value retrieved from non-existant table.");
+        return (tables[tableNum])->lookup[param];
+    }
 };
 
 #endif

@@ -232,11 +232,6 @@ void mult_current_voltage()
     // NOTE - use double, float not accurate enough, got wrong answers using float
 }
 
-void connected_voltage_sources()
-{
-    
-}
-
 int main()
 {
     // current_sources();
