@@ -25,6 +25,7 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+
 #include "cloning.h"
 #include "identity.h"
 

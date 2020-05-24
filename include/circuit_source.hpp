@@ -16,12 +16,12 @@ class Circuit::CurrentSource
 // NOTE - Made Everything public for now to avoid having to write getters and setters
 
 public:
-    const std::string name;
-    float value;
-    const Circuit::Node *pos;
-    const Circuit::Node *neg;
-    CurrentSource(const std::string &name, float value) : name(name), value(value), pos(nullptr), neg(nullptr) {}
-    CurrentSource(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg) : name(name), value(value), pos(pos), neg(neg) {}
+	const std::string name;
+	float value;
+	const Circuit::Node *pos;
+	const Circuit::Node *neg;
+	CurrentSource(const std::string &name, float value) : name(name), value(value), pos(nullptr), neg(nullptr) {}
+	CurrentSource(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg) : name(name), value(value), pos(pos), neg(neg) {}
 };
 
 #endif
