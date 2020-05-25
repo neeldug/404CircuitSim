@@ -3,5 +3,5 @@
 
 int main(){
 	Circuit::Schematic schem = Parser::parse( std::cin );
-	schem.dumpContents();
+	schem.out();
 }

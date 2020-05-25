@@ -25,6 +25,8 @@ void generateLinear(Circuit::Component *linear, float value, std::string nodeA, 
     a->comps.push_back(linear);
     b->comps.push_back(linear);
     schem.comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
+    linear->nodes.push_back(a);
+    linear->nodes.push_back(b);
 }
 class Circuit::Capacitor : public Component
 {

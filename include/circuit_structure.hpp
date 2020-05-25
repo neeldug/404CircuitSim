@@ -57,15 +57,7 @@ public:
         std::cout << std::endl;
         std::cout << std::endl;
     }
-	void dumpContents(){
-		std::cout<<nodes.size()<<std::endl<<comps.size()<<std::endl;
-		for( auto x : nodes ){
-			std::cout<<typeid(x.second).name()<<" "<<x.first<<std::endl;
-		}
-		for( auto x : comps ){
-			std::cout<<typeid(x.second).name()<<" "<<x.first<<std::endl;
-		}
-	}
+
     class Simulation;
     std::vector<Simulation *> sims;
 };
@@ -103,10 +95,7 @@ public:
     virtual float conductance() const = 0;
     float current()
     {
-		if(nodes.size() != 0){
-			return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
-		}
-		return 0;
+		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
         // hardcoding for two nodes
     }
     void print()
