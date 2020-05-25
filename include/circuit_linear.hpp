@@ -17,7 +17,7 @@ void generateLinear(Circuit::Component *linear, float value, std::string nodeA, 
     if (itB == schem.nodes.end())
     {
         Circuit::Node *b = new Circuit::Node(nodeB);
-        itB = schem.nodes.insert(std::pair<std::string, Circuit::Node *>(nodeA, b)).first;
+        itB = schem.nodes.insert(std::pair<std::string, Circuit::Node *>(nodeB, b)).first;
     }
     Circuit::Node *a = (*itA).second;
     Circuit::Node *b = (*itB).second;
@@ -25,8 +25,6 @@ void generateLinear(Circuit::Component *linear, float value, std::string nodeA, 
     a->comps.push_back(linear);
     b->comps.push_back(linear);
     schem.comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
-    schem.nodes.insert(std::pair<std::string, Circuit::Node *>(linear->name, a));
-    schem.nodes.insert(std::pair<std::string, Circuit::Node *>(linear->name, b));
 }
 class Circuit::Capacitor : public Component
 {

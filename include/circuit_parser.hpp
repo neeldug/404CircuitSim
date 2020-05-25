@@ -72,13 +72,14 @@ private:
 			}
 			case (int) 'v' : {
 				//REVIEW infinite resistance here is a bit dodgy
+				/*
 				assert( params.size() >= 4 && "Resistor - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
 				float value = stof( params[3] );
 				Circuit::Resistor *r = new Circuit::Resistor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
 				break;
-
+				*/
 			}
 			default : {
 				break;
