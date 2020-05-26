@@ -14,42 +14,14 @@
 
 class Parser{
 private:
-	std::set<std::string> acceptedCommands = {
+	static std::set<std::string> acceptedCommands = {
 			".step",
 			".tran",
 			".dc",
+			".op"
 			".model"
 	};
-	//NOTE converts statements like 12pf to 12e-12
-	static float parseVal(const std::string &value ){
-		
-		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
-		std::string unitSuffix = value.substr(suffixPos, string::npos);
-		int mult;
-		if( suffixPos == std::string::npos ){
-			return	std::stof( value );
-		}
-		else if (unitSuffix == "p")
-			mult = -12;
-		else if (unitSuffix == "n")
-			mult = -9;
-		else if (unitSuffix == "u")
-			mult = -6;
-		else if (unitSuffix == "m")
-			mult = -3;
-		else if (unitSuffix == "k")
-			mult = 3;
-		else if (unitSuffix == "Meg")
-			mult = 6;
-		else if (unitSuffix == "G")
-			mult = 9;
-		else {
-			std::cerr << "Invalid Unit Suffix" << '\n';
-			assert(0);
-		}
-		std::string num = value.substr(0, suffixPos);
-		return std::stof(num) * pow(10, mult);
-	}
+	
 	static void addComponent( const std::string& comp, Circuit::Schematic& schem ){
 
 		std::stringstream ss( comp );
@@ -114,8 +86,8 @@ private:
 				assert( params.size() >= 4 && "Voltage - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				std::string value = params[3];
-
+				std::vector<std::string> sourceConfig(params.begin() + 3, params.end());
+				
 				//Circuit::Source* source = new Circuit::Source( name, value);
 				break;
 			}
@@ -170,6 +142,36 @@ private:
 
 	}
 public:
+	//NOTE converts statements like 12pf to 12e-12
+	static float parseVal(const std::string &value ){
+		
+		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
+		std::string unitSuffix = value.substr(suffixPos, string::npos);
+		int mult;
+		if( suffixPos == std::string::npos ){
+			return	std::stof( value );
+		}
+		else if (unitSuffix == "p")
+			mult = -12;
+		else if (unitSuffix == "n")
+			mult = -9;
+		else if (unitSuffix == "u")
+			mult = -6;
+		else if (unitSuffix == "m")
+			mult = -3;
+		else if (unitSuffix == "k")
+			mult = 3;
+		else if (unitSuffix == "Meg")
+			mult = 6;
+		else if (unitSuffix == "G")
+			mult = 9;
+		else {
+			std::cerr << "Invalid Unit Suffix" << '\n';
+			assert(0);
+		}
+		std::string num = value.substr(0, suffixPos);
+		return std::stof(num) * pow(10, mult);
+	}
 	static Circuit::Schematic parse( std::istream& inputStream ){
 		//NOTE
 		//Refer to

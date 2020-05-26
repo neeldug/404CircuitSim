@@ -128,7 +128,7 @@ private:
 
 public:
     enum SimulationType{
-        DC, TRAN, SMALL_SIGNAL
+        OP, TRAN,  DC, SMALL_SIGNAL
     };
     const SimulationType type;
 
