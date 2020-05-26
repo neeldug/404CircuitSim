@@ -3,6 +3,8 @@
 
 #include "circuit_structure.hpp"
 class Circuit::Diode : public Component {
+private:
+	std::string modelName;
 public:
 	//REVIEW will probably have to make these doubles
 	float IS=0.1; //also stored in value (Component base class)
@@ -12,8 +14,8 @@ public:
 	float BV=100;
 	float IBV=0.1e-12;
 
-	Diode( std::string name, std::string nodeA, std::string nodeB ) : Component( name, IS ){
-		
+	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic& schem) : Component( name, IS ){
+		schem.setupConnections2Node( this, nodeA, nodeB );
 	}
 	void assignModel( std::vector<std::string> params ){
 		//NOTE Remember to update component value!
@@ -29,7 +31,13 @@ public:
 
 		value = IS;
 	}
-	
+	float conductance() const override
+    {
+        assert( false && "No conductance for diode yet");
+    }
+	std::string getModelName(){
+		return modelName;
+	}
 };
 
 #endif

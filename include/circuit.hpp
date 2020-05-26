@@ -6,5 +6,6 @@
 #include "circuit_source.hpp"
 #include "circuit_math.hpp"
 #include "circuit_parser.hpp"
+#include "circuit_diode.hpp"
 
 #endif

@@ -52,7 +52,7 @@ private:
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
 				float value = stof( params[3] );
-				Circuit::Resistor *r = new Circuit::Resistor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
+				Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
 				break;
 			}
 			case (int) 'c' : {
@@ -63,10 +63,10 @@ private:
 				float value = stof( params[3] );
 				if( params.size() >= 5 ){
 					float DC_init = stof( params[4] );
-					Circuit::Capacitor *r = new Circuit::Capacitor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem, DC_init );
+					Circuit::Capacitor *r = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, DC_init );
 				}
 				else{
-					Circuit::Capacitor *c = new Circuit::Capacitor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
+					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem );
 				} 
 				break;
 			}
@@ -78,10 +78,10 @@ private:
 				float value = stof( params[3] );
 				if( params.size() >= 5 ){
 					float I_init = stof( params[4] );
-					Circuit::Inductor *l = new Circuit::Inductor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem, I_init );
+					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
 				}
 				else{
-					Circuit::Inductor *l = new Circuit::Inductor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
+					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem );
 				} 
 				
 				break;
@@ -101,13 +101,15 @@ private:
 				assert( params.size() >= 4 && "Diode - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				std::string value = params[3];
+				std::string modName = params[3];
 
-				//Circuit::Source* source = new Source( name, valu);
+				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );				
 				break;
 			}
 			case (int) 'q' : {
-				std::cout<<"not implemented yet"<<std::endl;
+				// Qname C B E BJT_modelName
+				
+				Circuit::Transistor 
 				break;
 			}
 			case (int) 'm' : {
