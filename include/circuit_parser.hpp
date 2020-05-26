@@ -10,6 +10,7 @@
 #include <sstream>
 #include <algorithm>
 #include <limits>
+#include <cmath>
 
 class Parser{
 private:
@@ -20,13 +21,33 @@ private:
 			".model"
 	};
 	//NOTE converts statements like 12pf to 12e-12
-	float parseVal( std::string value ){
-		std::string::size_type suffixPos =  value.find_first_not_of("0.123456789");
-		float mult;
+	static float parseVal(const std::string &value ){
+		std::string::size_t suffixPos =  value.find_first_not_of("0.123456789");
+		std::string unitSuffix = value.substr(suffixPos, string::npos);
+		int mult;
 		if( suffixPos == std::string::npos ){
 			return	std::stof( value );
 		}
-		std::string num;
+		else if (unitSuffix == "p")
+			mult = -12;
+		else if (unitSuffix == "n")
+			mult = -9;
+		else if (unitSuffix == "u")
+			mult = -6;
+		else if (unitSuffix == "m")
+			mult = -3;
+		else if (unitSuffix == "k")
+			mult = 3;
+		else if (unitSuffix == "Meg")
+			mult = 6;
+		else if (unitSuffix == "G")
+			mult = 9;
+		else {
+			std::cerr << "Invalid Unit Suffix" << '\n';
+			assert(0);
+		}
+		std::string num = value.substr(0, suffixPos);
+		return std::stof(num) * pow(10, mult);
 	}
 	static void addComponent( const std::string& comp, Circuit::Schematic& schem ){
 
@@ -42,8 +63,8 @@ private:
 		std::string name = params[0];
 
 		//NOTE has to be int for switch but basically comparing chars
-		int component = (int) std::tolower( name[0] ); 
-		
+		int component = (int) std::tolower( name[0] );
+
 
 		switch( component ){
 			case (int) 'r' : {
@@ -67,7 +88,7 @@ private:
 				}
 				else{
 					Circuit::Capacitor *c = new Circuit::Capacitor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
-				} 
+				}
 				break;
 			}
 			case (int) 'l' : {
@@ -82,8 +103,8 @@ private:
 				}
 				else{
 					Circuit::Inductor *l = new Circuit::Inductor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
-				} 
-				
+				}
+
 				break;
 			}
 			case (int) 'v' : {
@@ -133,7 +154,7 @@ private:
 				break;
 			}
 		}
-		
+
 	}
 	static void parseCommand( const std::string& comp, Circuit::Schematic& schem ){
 
