@@ -87,12 +87,23 @@ private:
 				break;
 			}
 			case (int) 'v' : {
-				//REVIEW infinite resistance here is a bit dodgy
+				//REVIEW This isn't finished
 				assert( params.size() >= 4 && "Voltage - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				float value = stof( params[3] );
-				Circuit::Resistor *r = new Circuit::Resistor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
+				std::string value = params[3];
+
+				//Circuit::Source* source = new Source( name, valu);
+				break;
+			}
+			case (int) 'd' : {
+				//REVIEW This isn't finished
+				assert( params.size() >= 4 && "Diode - too few params" );
+				std::string nodeA = params[1];
+				std::string nodeB = params[2];
+				std::string value = params[3];
+
+				//Circuit::Source* source = new Source( name, valu);
 				break;
 			}
 			case (int) 'q' : {
