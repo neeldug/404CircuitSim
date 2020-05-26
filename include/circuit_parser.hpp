@@ -110,12 +110,13 @@ private:
 			}
 			case (int) 'v' : {
 				//REVIEW This isn't finished
+				//Vname N+ N- <DC=> DCValue
 				assert( params.size() >= 4 && "Voltage - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
 				std::string value = params[3];
 
-				//Circuit::Source* source = new Source( name, valu);
+				//Circuit::Source* source = new Circuit::Source( name, value);
 				break;
 			}
 			case (int) 'd' : {
@@ -136,7 +137,7 @@ private:
 				std::string nodeEmitter = params[3];
 				std::string modelName = params[4];
 
-				Circuit::Transistor* tran = new Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
+				Circuit::Transistor* tran = new Circuit::Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
 				
 				break;
 			}
