@@ -5,23 +5,30 @@
 
 #include "circuit_structure.hpp"
 
-class Circuit::CurrentSource
+// NOTE - Value could be a function
+
+class Circuit::Current : public Circuit::Source
 {
-// private:
-//     const std::string name;
-//     float value;
-//     const Circuit::Node *pos;
-//     const Circuit::Node *neg;
-
-// NOTE - Made Everything public for now to avoid having to write getters and setters
-
 public:
-    const std::string name;
-    float value;
-    const Circuit::Node *pos;
-    const Circuit::Node *neg;
-    CurrentSource(const std::string &name, float value) : name(name), value(value), pos(nullptr), neg(nullptr) {}
-    CurrentSource(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg) : name(name), value(value), pos(pos), neg(neg) {}
+    Current(const std::string &name, float value) : Source(name, value) {}
+    Current(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
+        : Source(name, value, pos, neg) {}
+    bool isCurrent() const override
+    {
+        return true;
+    }
+};
+
+class Circuit::Voltage : public Circuit::Source
+{
+public:
+    Voltage(const std::string &name, float value) : Source(name, value) {}
+    Voltage(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
+        : Source(name, value, pos, neg) {}
+    bool isCurrent() const override
+    {
+        return false;
+    }
 };
 
 #endif

@@ -7,23 +7,87 @@
 #include "circuit_structure.hpp"
 #include "symbolic.hpp"
 
-void getCurrentVector(const Circuit::Schematic &circuit, Symbolic &currentVector)
+void getCurrent(const Circuit::Schematic &circuit, Vector<double> &current, Matrix<double> &conductance)
 {
-    std::cout << "Getting Current Vector" << std::endl;
-    std::for_each(circuit.sources.begin(), circuit.sources.end(), [=](const auto source){
-        if (source->pos->id != -1) std::cout << currentVector(source->pos->id);
-        if (source->neg->id != -1) std::cout << currentVector(source->neg->id);
+    std::for_each(circuit.sources.begin(), circuit.sources.end(), [&](const auto source) {
+        if (source->isCurrent())
+        {
+            if (source->pos->id != -1)
+                current[source->pos->id] += source->value;
+            if (source->neg->id != -1)
+                current[source->neg->id] -= source->value;
+        }
+    });
+
+    std::for_each(circuit.sources.begin(), circuit.sources.end(), [&](const auto source) {
+        Vector<double> new_conductance(circuit.nodes.size(), 0.0);
+
+        if (!source->isCurrent())
+        {
+            if (source->pos->id != -1)
+                if (source->pos->id != -1)
+                {
+                    current[source->pos->id] = source->value;
+                    new_conductance[source->pos->id] = 1.0;
+                }
+
+            if (source->neg->id != -1)
+            {
+                new_conductance[source->neg->id] = -1.0;
+                if (source->pos->id == -1)
+                {
+                    current[source->neg->id] = source->value;
+                    conductance[source->neg->id] = new_conductance;
+                    return;
+                }
+
+                conductance[source->neg->id] = conductance[source->pos->id] + conductance[source->neg->id];
+            }
+
+            conductance[source->pos->id] = new_conductance;
+        }
     });
 }
 
-void generateMatrices(const Circuit::Schematic &circuit)
+void getConductance(const Circuit::Schematic &circuit, Matrix<double> &conductance)
+{
+    std::for_each(circuit.comps.begin(), circuit.comps.end(), [&](const auto comp) {
+        std::for_each(comp.second->nodes.begin(), comp.second->nodes.end(), [&](const auto node) {
+            if (node->id != -1)
+                conductance[node->id][node->id] += comp.second->conductance();
+        });
+        if (comp.second->nodes.size() == 2)
+        {
+            if (comp.second->nodes[0]->id != -1 && comp.second->nodes[1]->id != -1)
+            {
+                conductance[comp.second->nodes[0]->id][comp.second->nodes[1]->id] -= comp.second->conductance();
+                conductance[comp.second->nodes[1]->id][comp.second->nodes[0]->id] -= comp.second->conductance();
+            }
+        }
+    });
+}
+
+void dc(const Circuit::Schematic &circuit)
 {
     const int NUM_NODES = circuit.nodes.size();
-    Symbolic currentVector("currentVector", NUM_NODES);
-    Symbolic voltageVector("voltageVector", NUM_NODES);
-    Symbolic conductanceMatrix("conductanceMatrix", NUM_NODES, NUM_NODES);
-    // std::cout << int(expand(det(conductanceMatrix))) << std::endl;
-    getCurrentVector(circuit, currentVector);
+    Vector<double> voltage;
+    Vector<double> current(NUM_NODES, 0.0);
+    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+
+    getConductance(circuit, conductance);
+
+    getCurrent(circuit, current, conductance);
+
+    // std::cout << current << endl;
+    // std::cout << conductance << endl;
+    voltage = conductance.inverse() * current;
+
+    for_each(circuit.nodes.begin(), circuit.nodes.end(), [&](const auto node_pair) {
+        node_pair.second->voltage = voltage[node_pair.second->id];
+    });
+
+    // std::cout << "Voltage Vector: " << std::endl;
+    // std::cout << voltage << std::endl;
 }
 
 #endif
