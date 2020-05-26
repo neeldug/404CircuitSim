@@ -22,7 +22,8 @@ private:
 	};
 	//NOTE converts statements like 12pf to 12e-12
 	static float parseVal(const std::string &value ){
-		std::string::size_t suffixPos =  value.find_first_not_of("0.123456789");
+		
+		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
 		std::string unitSuffix = value.substr(suffixPos, string::npos);
 		int mult;
 		if( suffixPos == std::string::npos ){
@@ -87,13 +88,8 @@ private:
 					Circuit::Capacitor *r = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, DC_init );
 				}
 				else{
-<<<<<<< HEAD
 					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem );
 				} 
-=======
-					Circuit::Capacitor *c = new Circuit::Capacitor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
-				}
->>>>>>> 4c74b18a23591f3d368d4ac5f29fe7e28262564a
 				break;
 			}
 			case (int) 'l' : {
@@ -107,15 +103,9 @@ private:
 					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
 				}
 				else{
-<<<<<<< HEAD
 					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem );
 				} 
 				
-=======
-					Circuit::Inductor *l = new Circuit::Inductor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
-				}
-
->>>>>>> 4c74b18a23591f3d368d4ac5f29fe7e28262564a
 				break;
 			}
 			case (int) 'v' : {
@@ -129,7 +119,6 @@ private:
 				break;
 			}
 			case (int) 'd' : {
-				//REVIEW This isn't finished
 				assert( params.size() >= 4 && "Diode - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
@@ -141,7 +130,14 @@ private:
 			case (int) 'q' : {
 				// Qname C B E BJT_modelName
 				
-				Circuit::Transistor 
+				assert( params.size() >= 5 );
+				std::string nodeCollector = params[1];
+				std::string nodeBase = params[2];
+				std::string nodeEmitter = params[3];
+				std::string modelName = params[4];
+
+				Circuit::Transistor* tran = new Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
+				
 				break;
 			}
 			case (int) 'm' : {

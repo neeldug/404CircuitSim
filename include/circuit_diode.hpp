@@ -2,6 +2,7 @@
 #define GUARD_DIODE_HPP
 
 #include "circuit_structure.hpp"
+
 class Circuit::Diode : public Component {
 private:
 	std::string modelName;
