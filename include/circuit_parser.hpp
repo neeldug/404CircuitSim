@@ -13,6 +13,21 @@
 
 class Parser{
 private:
+	std::set<std::string> acceptedCommands = {
+			".step",
+			".tran",
+			".dc",
+			".model"
+	};
+	//NOTE converts statements like 12pf to 12e-12
+	float parseVal( std::string value ){
+		std::string::size_type suffixPos =  value.find_first_not_of("0.123456789");
+		float mult;
+		if( suffixPos == std::string::npos ){
+			return	std::stof( value );
+		}
+		std::string num;
+	}
 	static void addComponent( const std::string& comp, Circuit::Schematic& schem ){
 
 		std::stringstream ss( comp );
@@ -29,6 +44,7 @@ private:
 		//NOTE has to be int for switch but basically comparing chars
 		int component = (int) std::tolower( name[0] ); 
 		
+
 		switch( component ){
 			case (int) 'r' : {
 				//TODO Would be helpful to say which resistor has broken syntax rules
@@ -72,19 +88,44 @@ private:
 			}
 			case (int) 'v' : {
 				//REVIEW infinite resistance here is a bit dodgy
-				/*
-				assert( params.size() >= 4 && "Resistor - too few params" );
+				assert( params.size() >= 4 && "Voltage - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
 				float value = stof( params[3] );
 				Circuit::Resistor *r = new Circuit::Resistor( name.substr( 1, name.size() - 1 ), value, nodeA, nodeB, schem );
 				break;
-				*/
+			}
+			case (int) 'q' : {
+				std::cout<<"not implemented yet"<<std::endl;
+				break;
+			}
+			case (int) 'm' : {
+				std::cout<<"not implemented yet"<<std::endl;
+				break;
+			}
+			case (int) 'e' :{
+				std::cout<<"not implemented yet"<<std::endl;
+			}
+			case (int) 'g' : {
+				std::cout<<"not implemented yet"<<std::endl;
+				break;
+			}
+			case (int) 'h' : {
+				std::cout<<"not implemented yet"<<std::endl;
+				break;
+			}
+			case (int) 'f' : {
+				std::cout<<"not implemented yet"<<std::endl;
+				break;
 			}
 			default : {
 				break;
 			}
 		}
+		
+	}
+	static void parseCommand( const std::string& comp, Circuit::Schematic& schem ){
+
 	}
 public:
 	static Circuit::Schematic parse( std::istream& inputStream ){
@@ -93,12 +134,7 @@ public:
 		//https://web.stanford.edu/class/ee133/handouts/general/spice_ref.pdf for
 		//sytnax of SPICE files
 
-		std::set<std::string> acceptedCommands = {
-			".step",
-			".tran",
-			".dc",
-			".model"
-		};
+
 		std::string inputLine;
 		std::vector<std::string> netlist;
 
@@ -116,7 +152,9 @@ public:
 				netlist.push_back( inputLine );
 				addComponent( inputLine, schem );
 			}
+			if( inputLine[0] == '.'){
 
+			}
 		}
 		assert( endStatement && "No end statement present in netlist");
 		return schem;

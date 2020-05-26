@@ -40,12 +40,16 @@ private:
     int start = 0;
 
 public:
-    Schematic() : id(createIDGenerator(start)) {}
+    Schematic();
     std::function<int()> id;
     std::string title;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<Source *> sources;
+
+    class Simulation;
+    std::vector<Simulation *> sims;
+
     void out()
     {
         for_each(nodes.begin(), nodes.end(), [](const auto node) {
@@ -58,8 +62,8 @@ public:
         std::cout << std::endl;
     }
 
-    class Simulation;
-    std::vector<Simulation *> sims;
+    void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
+
 };
 
 class Circuit::Node
@@ -78,6 +82,9 @@ public:
     void print()
     {
         std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
+    }
+    std::string getName(){
+        return name;
     }
 };
 
@@ -129,6 +136,10 @@ public:
 class Circuit::Schematic::Simulation
 {
 private:
+    enum Type{
+        DC, TRAN, SMALL_SIGNAL
+    };
+    Type simType;
     struct ParamTable
     {
         std::map<std::string, float> lookup;
@@ -149,6 +160,36 @@ public:
         assert(tables.size() > tableNum && "Attempted value retrieved from non-existant table.");
         return (tables[tableNum])->lookup[param];
     }
-};
+
+};  
+
+void Circuit::Schematic::setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB )
+{
+    std::map<std::string, Circuit::Node *>::iterator itA = this->nodes.find(nodeA);
+    std::map<std::string, Circuit::Node *>::iterator itB = this->nodes.find(nodeB);
+
+    if (itA == this->nodes.end())
+    {
+        Circuit::Node *a = new Circuit::Node(nodeA);
+        itA = this->nodes.insert(std::pair<std::string, Circuit::Node *>(nodeA, a)).first;
+    }
+    if (itB == this->nodes.end())
+    {
+        Circuit::Node *b = new Circuit::Node(nodeB);
+        itB = this->nodes.insert(std::pair<std::string, Circuit::Node *>(nodeB, b)).first;
+    }
+    Circuit::Node *a = (*itA).second;
+    Circuit::Node *b = (*itB).second;
+
+    a->comps.push_back(linear);
+    b->comps.push_back(linear);
+    this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
+    linear->nodes.push_back(a);
+    linear->nodes.push_back(b);
+}
+
+Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
+    nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
+}
 
 #endif
