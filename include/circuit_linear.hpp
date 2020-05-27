@@ -32,8 +32,9 @@ public:
     //NOTE I_init is initial current in inductor
     float I_init;
     Inductor(std::string name, float value) : Component(name, value){};
-    Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic &schem) : Component(name, value)
+    Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic &schem) : Component( name, value )
     {
+        //REVIEW move node connections into compoment constructor
         schem.setupConnections2Node(this, nodeA, nodeB);
     }
     Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic &schem, float I_init) : Inductor(name, value, nodeA, nodeB, schem)
