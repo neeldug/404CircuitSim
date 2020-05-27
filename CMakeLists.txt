@@ -15,14 +15,14 @@ target_include_directories(symbolic INTERFACE lib/symbolic)
 include_directories(include)
 
 # Main Executable - Simulator
-add_executable(simulator src/main.cpp)
-target_link_libraries(simulator symbolic)
+# add_executable(simulator src/main.cpp)
+# target_link_libraries(simulator symbolic)
 
 # Test Executables
-add_executable(test_math test/test_math.cpp)
-add_executable(test_parser test/parser_test.cpp)
+add_executable(test_math src/math/math.cpp)
+# add_executable(test_parser test/parser_test.cpp)
 target_link_libraries(test_math symbolic)
-target_link_libraries(test_parser symbolic)
+# target_link_libraries(test_parser symbolic)
 
 add_test(NAME TEST_MATH COMMAND test_math WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-add_test(NAME TEST_PARSER COMMAND "test_parser <SpiceNetlists/test.cir" WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+# add_test(NAME TEST_PARSER COMMAND "test_parser <SpiceNetlists/test.cir" WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -42,6 +42,7 @@ private:
 public:
     Schematic();
     std::function<int()> id;
+    // How to set title
     std::string title;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
@@ -73,7 +74,9 @@ private:
 
 public:
     static Node *ground;
-    Node(const std::string& name) : name(name) {}
+    Node(const std::string& name, int id) : name(name), id(id), voltage(0.0) {}
+    // NOTE - Needs an ID
+    // NOTE - Added ID
 	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
 
     int id;
@@ -88,7 +91,7 @@ public:
     }
 };
 
-Circuit::Node *Circuit::Node::ground = new Node("ground", 0.0, -1);
+Circuit::Node *Circuit::Node::ground = new Node("0", -1);
 
 class Circuit::Component
 {
@@ -100,10 +103,11 @@ public:
     std::string name;
     std::vector<Node *> nodes;
     virtual float conductance() const = 0;
+    // conductance might not work for diodes and transistors
     float current()
     {
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
-        // hardcoding for two nodes
+        // Direction of current
     }
     void print()
     {
@@ -127,6 +131,7 @@ private:
     std::vector<ParamTable *> tables;
 
 public:
+  // maybe could be static
     enum SimulationType{
         OP, TRAN,  DC, SMALL_SIGNAL
     };
@@ -149,20 +154,37 @@ public:
 
     }
 
-};  
+};
 
 void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::string node ){
+
+    // start add ground support
+    if(node == "0"){
+      // into the node
+      // a->comps.push_back(linear);
+
+      // this goes into the schematic
+      this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
+      linear->nodes.push_back(Node::ground);
+      return;
+    }
+
+    //end add ground support
+
     std::map<std::string, Circuit::Node *>::iterator it = this->nodes.find(node);
 
     if (it == this->nodes.end())
     {
-        Circuit::Node *a = new Circuit::Node(node);
+        Circuit::Node *a = new Circuit::Node(node, this->id());
         it = this->nodes.insert(std::pair<std::string, Circuit::Node *>(node, a)).first;
     }
 
     Circuit::Node *a = (*it).second;
 
+    // into the node
     a->comps.push_back(linear);
+
+    // this goes into the schematic
     this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
     linear->nodes.push_back(a);
 }
@@ -178,8 +200,9 @@ void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, std:
     setupConnectionNode(linear, nodeC);
 }
 
+// don't need to insert ground into nodes
 Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
-    nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
+    // nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
 }
 
 #endif
