@@ -38,14 +38,18 @@ private:
         };
     }
     int start = 0;
-
+    void setupConnectionNode( Circuit::Component *linear, std::string node);
 public:
-    Schematic() : id(createIDGenerator(start)) {}
+    Schematic();
     std::function<int()> id;
     std::string title;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<Source *> sources;
+
+    class Simulation;
+    std::vector<Simulation *> sims;
+
     void out()
     {
         for_each(nodes.begin(), nodes.end(), [](const auto node) {
@@ -58,8 +62,8 @@ public:
         std::cout << std::endl;
     }
 
-    class Simulation;
-    std::vector<Simulation *> sims;
+    void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
+    void setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC );
 };
 
 class Circuit::Node
@@ -78,6 +82,9 @@ public:
     void print()
     {
         std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
+    }
+    std::string getName(){
+        return name;
     }
 };
 
@@ -109,22 +116,6 @@ public:
     }
 };
 
-// Value should be some type of time varying function
-class Circuit::Source
-{
-protected:
-    const std::string name;
-    Source(const std::string &name, float value)
-        : name(name), value(value), pos(nullptr), neg(nullptr) {}
-    Source(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg)
-        : name(name), value(value), pos(pos), neg(neg) {}
-
-public:
-    float value;
-    const Circuit::Node *pos;
-    const Circuit::Node *neg;
-    virtual bool isCurrent() const = 0;
-};
 
 class Circuit::Schematic::Simulation
 {
@@ -136,6 +127,11 @@ private:
     std::vector<ParamTable *> tables;
 
 public:
+    enum SimulationType{
+        OP, TRAN,  DC, SMALL_SIGNAL
+    };
+    const SimulationType type;
+
     ~Simulation()
     {
         std::for_each(tables.begin(), tables.end(),
@@ -149,6 +145,41 @@ public:
         assert(tables.size() > tableNum && "Attempted value retrieved from non-existant table.");
         return (tables[tableNum])->lookup[param];
     }
-};
+    Simulation( SimulationType type ) : type(type){
+
+    }
+
+};  
+
+void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::string node ){
+    std::map<std::string, Circuit::Node *>::iterator it = this->nodes.find(node);
+
+    if (it == this->nodes.end())
+    {
+        Circuit::Node *a = new Circuit::Node(node);
+        it = this->nodes.insert(std::pair<std::string, Circuit::Node *>(node, a)).first;
+    }
+
+    Circuit::Node *a = (*it).second;
+
+    a->comps.push_back(linear);
+    this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
+    linear->nodes.push_back(a);
+}
+
+void Circuit::Schematic::setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB )
+{
+    setupConnectionNode(linear, nodeA);
+    setupConnectionNode(linear, nodeB);
+}
+void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC ){
+    setupConnectionNode(linear, nodeA);
+    setupConnectionNode(linear, nodeB);
+    setupConnectionNode(linear, nodeC);
+}
+
+Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
+    nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
+}
 
 #endif
