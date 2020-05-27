@@ -1,7 +1,7 @@
 // TODO - Implement Circuit Parser
 // REVIEW - Maybe at some point make this all just a constructor of Schematic
 #ifndef GUARD_CIRCUIT_PARSER_HPP
-#define GUARD_CIRCUIT_PARESR_HPP
+#define GUARD_CIRCUIT_PARSER_HPP
 
 #include "circuit.hpp"
 #include <iostream>
@@ -22,7 +22,7 @@ private:
 	};
 	//NOTE converts statements like 12pf to 12e-12
 	static float parseVal(const std::string &value ){
-		
+
 		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
 		std::string unitSuffix = value.substr(suffixPos, string::npos);
 		int mult;
@@ -89,7 +89,7 @@ private:
 				}
 				else{
 					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem );
-				} 
+				}
 				break;
 			}
 			case (int) 'l' : {
@@ -104,8 +104,8 @@ private:
 				}
 				else{
 					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem );
-				} 
-				
+				}
+
 				break;
 			}
 			case (int) 'v' : {
@@ -124,20 +124,20 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );				
+				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
 				break;
 			}
 			case (int) 'q' : {
 				// Qname C B E BJT_modelName
-				
+
 				assert( params.size() >= 5 );
 				std::string nodeCollector = params[1];
 				std::string nodeBase = params[2];
 				std::string nodeEmitter = params[3];
 				std::string modelName = params[4];
 
-				Circuit::Transistor* tran = new Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
-				
+				// Circuit::Transistor* tran = new Circuit::Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
+
 				break;
 			}
 			case (int) 'm' : {
