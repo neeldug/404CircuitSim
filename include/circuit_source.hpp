@@ -64,7 +64,7 @@ public:
 class Circuit::Voltage : public Circuit::Source
 {
 public:
-	
+
 	Voltage( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset ,float SINE_amplitude, float SINE_frequency, Schematic* schem ) :  Source( name,  DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem ){
 		schem->setupConnections2Node( this, nodePos, nodeNeg );
 	}
