@@ -17,7 +17,7 @@ public:
 	float VAF=std::numeric_limits<float>::max();
 	bool model_CE_resistance = false;
 
-	
+
 	TType transistorType;
 	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, IS, schem ){
 		if( modelName == "NPN" ){
