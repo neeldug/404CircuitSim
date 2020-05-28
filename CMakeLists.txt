@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(Circuit_Simulator VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -march=native -flto -frename-registers")
 enable_testing()
 
 # Set bin as output directory
