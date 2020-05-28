@@ -1,12 +1,18 @@
 #ifndef GUARD_CIRCUIT_MATH_HPP
 #define GUARD_CIRCUIT_MATH_HPP
 
-/*
 #include <iostream>
 #include <algorithm>
 
 #include "circuit_structure.hpp"
 #include "symbolic.hpp"
+
+class Circuit::Math
+{
+public:
+    void getCurrent(const Circuit::Schematic &circuit, Vector<double> &current, Matrix<double> &conductance);
+    void getConductance(const Circuit::Schematic &circuit, Matrix<double> &conductance);
+};
 
 void getCurrent(const Circuit::Schematic &circuit, Vector<double> &current, Matrix<double> &conductance)
 {
@@ -68,28 +74,4 @@ void getConductance(const Circuit::Schematic &circuit, Matrix<double> &conductan
     });
 }
 
-void dc(const Circuit::Schematic &circuit)
-{
-    const int NUM_NODES = circuit.nodes.size();
-    Vector<double> voltage;
-    Vector<double> current(NUM_NODES, 0.0);
-    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
-
-    getConductance(circuit, conductance);
-
-    getCurrent(circuit, current, conductance);
-
-    // std::cout << current << endl;
-    // std::cout << conductance << endl;
-    voltage = conductance.inverse() * current;
-
-    for_each(circuit.nodes.begin(), circuit.nodes.end(), [&](const auto node_pair) {
-        node_pair.second->voltage = voltage[node_pair.second->id];
-    });
-
-    // std::cout << "Voltage Vector: " << std::endl;
-    // std::cout << voltage << std::endl;
-
-}
-*/
 #endif

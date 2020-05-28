@@ -26,6 +26,8 @@ namespace Circuit
     class Current;
     class Voltage;
     class Parser;
+    class Simulator;
+    class Math;
 } // namespace Circuit
 
 class Circuit::Schematic
@@ -182,7 +184,7 @@ void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::s
 
       // this goes into the schematic
       this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
-      linear->nodes.push_back(Node::ground);
+    //   linear->nodes.push_back(Node::ground);
       return;
     }
 
@@ -192,7 +194,7 @@ void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::s
 
     if (it == this->nodes.end())
     {
-        Circuit::Node *a = new Circuit::Node(node, this->id());
+        Circuit::Node *a = new Circuit::Node(node);
         it = this->nodes.insert(std::pair<std::string, Circuit::Node *>(node, a)).first;
     }
 

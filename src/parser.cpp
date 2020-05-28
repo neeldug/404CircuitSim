@@ -40,5 +40,3 @@ std::vector<std::string> generateComponent(std::string line) {
 	}
 	return v;
 }
-
-// Circuit::Component
