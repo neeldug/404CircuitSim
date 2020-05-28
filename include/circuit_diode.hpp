@@ -1,7 +1,6 @@
 #ifndef GUARD_DIODE_HPP
 #define GUARD_DIODE_HPP
 
-
 class Circuit::Diode : public Component {
 private:
 	std::string modelName;
