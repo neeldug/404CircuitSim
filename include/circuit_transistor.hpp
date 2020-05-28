@@ -12,9 +12,9 @@ private:
 
 public:
 	//REVIEW will probably have to make these doubles
-	float BF=100;
-	float IS=1e-16;
-	float VAF=std::numeric_limits<float>::max();
+	double BF=100;
+	double IS=1e-16;
+	double VAF=std::numeric_limits<double>::max();
 	bool model_CE_resistance = false;
 
 
@@ -38,7 +38,7 @@ public:
 		assert( params.size() == 6 && "Incorrect number of diode params" );
 		value = IS;
 	}
-	float conductance() const override
+	double conductance() const override
     {
         assert( false && "No conductance for diode yet");
     }
@@ -47,7 +47,7 @@ public:
 		return modelName;
 	}
 
-	virtual float getValue() override{
+	virtual double getValue(ParamTable * param) const override{
 		assert( false && "No value associated with transistor");
 		return 0;
 	}

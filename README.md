@@ -93,9 +93,9 @@ The API of the Circuit Simulator is a header only library, where each header fil
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
     std::vector<Simulation *> sims;
-    void out();
-    void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
-    void setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC );
+    void out() const;
+    void setupConnections2Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB );
+    void setupConnections3Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB, const std::string& nodeC );
 
 ``` 
 
@@ -106,9 +106,9 @@ The API of the Circuit Simulator is a header only library, where each header fil
 	Node(const std::string &name, Circuit::Schematic * schem);
     double voltage;
     std::vector<Component *> comps;
-    void print();
-    std::string getName();
-    int getId();
+    void print() const;
+    std::string getName() const;
+    int getId() const;
 
 ```
 
@@ -124,7 +124,8 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```c++
 
-    Simulator( SimulationType type );
+    static enum SimulationType;
+    Simulator( Circuit::Schematic *schem, SimulationType type );
     const SimulationType type;
     void run();
 
@@ -145,12 +146,12 @@ TODO - Add Math definitions
     std::string name;
     std::vector<Node *> nodes;
     virtual double conductance() const
-    Node* getPosNode()
-    Node* getNegNode()
-    double current()
-    void print()
-    virtual ~Component()
-    virtual double getValue(ParamTable *param)
+    Node* getPosNode() const
+    Node* getNegNode() const
+    double current() const
+    void print() const
+    virtual double getValue(ParamTable *param) const
+    virtual bool isSource() const
 
 ```
 
@@ -158,7 +159,7 @@ TODO - Add Math definitions
 
 ```c++
 
-    Resistor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
+    Resistor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
     double conductance() const override
 
 ``` 
@@ -168,8 +169,8 @@ TODO - Add Math definitions
 ```c++
 
     double DC_init;
-    Capacitor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
-    Capacitor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem, double DC_init)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem, double DC_init)
     double conductance() const override
 
 ```
@@ -179,9 +180,8 @@ TODO - Add Math definitions
 ```c++
 
     double I_init;
-    Inductor(std::string name, double value, Schematic* schem) : Component(name, value, schem )
-    Inductor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
-    Inductor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic *schem, double I_init)
+    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
+    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init)
     double conductance() const override
 
 ``` 
@@ -196,7 +196,7 @@ TODO - Add Math definitions
 	double TT=12e-9;
 	double BV=100;
 	double IBV=0.1e-12;
-	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem)
+	Diode( const std::string &name, const std::string &nodeA, const std::string &nodeB, const std::string &model, Schematic* schem)
 	void assignModel( std::vector<std::string> params )
 	double conductance() const override
 	std::string getModelName()
@@ -213,7 +213,7 @@ TODO - Add Math definitions
 	double VAF=std::numeric_limits<double>::max();
 	bool model_CE_resistance = false;
 	TType transistorType;
-	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem)
+	Transistor( const std::string &name, const std::string &nodeCollector, const std::string &nodeBase, const std::string &nodeEmitter, const std::string &model, Schematic* schem)
 	void assignModel( std::vector<std::string> params )
 	double conductance() const override
 	std::string getModelName()
@@ -225,7 +225,8 @@ TODO - Add Math definitions
 
 ```c++
 
-	virtual double getValue() override
+	double getSourceOutput( ParamTable* param, double t )
+	virtual bool isSource() const override
 	virtual bool isCurrent() const = 0;
 
 ```
@@ -234,8 +235,8 @@ TODO - Add Math definitions
 
 ```c++
 
-	Voltage( std::string name, double DC, std::string nodePos, std::string nodeNeg, double smallSignalAmp, double SINE_DC_offset ,double SINE_amplitude, double SINE_frequency, Schematic* schem )
-	Voltage( std::string name, double DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
+	Voltage( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset ,double SINE_amplitude, double SINE_frequency, Schematic* schem )
+	Voltage( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem )
 	bool isCurrent() const override
 
 ``` 
@@ -244,8 +245,8 @@ TODO - Add Math definitions
 
 ```c++
 
-	Current( std::string name, double DC, std::string nodePos, std::string nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic* schem )
-	Current( std::string name, double DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
+	Current( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic* schem )
+	Current( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem )
 	bool isCurrent() const override
 
 ```

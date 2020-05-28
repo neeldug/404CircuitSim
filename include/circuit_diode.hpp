@@ -6,12 +6,12 @@ private:
 	std::string modelName;
 public:
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	float IS=0.1; //also stored in value (Component base class)
-	float RS=16;
-	float CJO=2e-12;
-	float TT=12e-9;
-	float BV=100;
-	float IBV=0.1e-12;
+	double IS=0.1; //also stored in value (Component base class)
+	double RS=16;
+	double CJO=2e-12;
+	double TT=12e-9;
+	double BV=100;
+	double IBV=0.1e-12;
 
 	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
 		schem->setupConnections2Node( this, nodeA, nodeB );
@@ -30,7 +30,7 @@ public:
 
 		value = IS;
 	}
-	float conductance() const override
+	double conductance() const override
     {
         assert( false && "No conductance for diode yet");
     }

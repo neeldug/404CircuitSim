@@ -13,201 +13,215 @@
 
 namespace Circuit
 {
-    class Component;
-    class Capacitor;
-    class Inductor;
-    class Resistor;
-    class Transistor;
-    class Mosfet;
-    class Diode;
-    class Schematic;
-    class Node;
-    class Source;
-    class Current;
-    class Voltage;
-    class Parser;
-    class Simulator;
-    class Math;
-    struct ParamTable;
+	class Component;
+	class Capacitor;
+	class Inductor;
+	class Resistor;
+	class Transistor;
+	class Mosfet;
+	class Diode;
+	class Schematic;
+	class Node;
+	class Source;
+	class Current;
+	class Voltage;
+	class Parser;
+	class Simulator;
+	class Math;
+	struct ParamTable;
 } // namespace Circuit
 
 struct Circuit::ParamTable
 {
-    std::map<std::string, float> lookup;
+	std::map<std::string, double> lookup;
 };
+
 class Circuit::Schematic
 {
-    friend class Simulator;
+	friend class Simulator;
 
 private:
-    std::vector<ParamTable *> tables;
-    Circuit::Node *ground;
-    std::function<int()> createIDGenerator(int &start) const
-    {
-        return [&]() {
-            return start++;
-        };
-    }
-    int start = 0;
-    void setupConnectionNode( Circuit::Component *linear, std::string node);
+	std::vector<ParamTable *> tables;
+	std::function<int()> createIDGenerator(int &start) const
+	{
+		return [&]() {
+			return start++;
+		};
+	}
+	int start = -1;
+	void setupConnectionNode( Circuit::Component *linear, const std::string &node);
 public:
-    Schematic();
-    std::function<int()> id;
-    // How to set title
-    std::string title;
-    std::map<std::string, Node *> nodes;
-    std::map<std::string, Component *> comps;
-    std::vector<Source *> sources;
+	Schematic();
+	std::function<int()> id;
+	std::string title;
+	std::map<std::string, Node *> nodes;
+	std::map<std::string, Component *> comps;
+	std::vector<Simulator *> sims = {};
 
-    class Simulation;
-    std::vector<Simulation *> sims;
+	void out() const
+	{
+		for_each(nodes.begin(), nodes.end(), [](const auto node) {
+			node.second->print();
+		});
+		for_each(comps.begin(), comps.end(), [](const auto comp) {
+			comp.second->print();
+		});
+	}
 
-    void out()
-    {
-        for_each(nodes.begin(), nodes.end(), [](const auto node) {
-            node.second->print();
-        });
-        for_each(comps.begin(), comps.end(), [](const auto comp) {
-            comp.second->print();
-        });
-        std::cout << std::endl;
-        std::cout << std::endl;
-    }
-
-    void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
-    void setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC );
-    ~Schematic(){
-        std::for_each(tables.begin(), tables.end(),
-                      [](ParamTable *&t) {
-                          delete t;
-                      });
-    }
+	void setupConnections2Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB );
+	void setupConnections3Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB, const std::string& nodeC );
+	~Schematic();
 };
 
 class Circuit::Node
 {
 private:
-    std::string name;
-    unsigned int id;
+	Schematic *schem;
+	std::string name;
+	int id;
 public:
+	double voltage;
+	std::vector<Component *> comps;
+	Node(const std::string& name, Schematic *schem) : name(name) {
+		id = schem->id();
+		voltage = 0.0;
+		this->schem = schem;
+	}
 
-    float voltage;
-    std::vector<Component *> comps;
-    Node(const std::string& name, Schematic *schem) : name(name) {
-        id = schem->id();
-    }
+	void print() const
+	{
+		std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
+	}
+	std::string getName() const{
+		return name;
+	}
+	int getId() const{
+		return id;
+	}
 
-    void print()
-    {
-        std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
-    }
-    std::string getName(){
-        return name;
-    }
-    int getId(){
-        return id;
-    }
+	~Node(){
+		assert(comps.size() == 0 && "Can't delete a Node with components");
+		schem->nodes.erase(name);
+	}
 };
 
 
 class Circuit::Component
 {
 protected:
-    float value;
-    Schematic *schem;
-    Component( std::string name, float value, Schematic* schem ) : name(name), value(value), schem(schem) {}
-    bool variableDefined = false;
-    std::string variableName; 
+	double value;
+	Schematic *schem;
+	Component( const std::string& name, double value, Schematic* schem ) : name(name), value(value), schem(schem) {}
+	bool variableDefined = false;
+	std::string variableName; 
 public:
-    std::string name;
-    std::vector<Node *> nodes;
-    virtual float conductance() const{
-        return 0.0;
-    };
+	std::string name;
+	std::vector<Node *> nodes;
+	virtual double conductance() const{
+		return 0.0;
+	};
 
-    Node* getPosNode(){
-        return nodes[0];
-    }
-    Node* getNegNode(){
-        return nodes[1];
-    }
+	Node* getPosNode() const{
+		return nodes[0];
+	}
+	Node* getNegNode() const{
+		return nodes[1];
+	}
 
-    float current()
-    {
+	double current() const
+	{
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
-        // Direction of current
-        // assuming node[0] is more positive
-    }
-    void print()
-    {
-        std::cout << typeid(*this).name() << name << ":\t" << current() << "A" << std::endl;
-    }
-    virtual ~Component()
-    {
-        //deleteFromSchematicMap();
-        //deleteFromAdjacentNodes();
-    }
-    virtual float getValue( ParamTable * param ){
-        if( variableDefined ){
-            return param->lookup[variableName];
-        }
-        else{
-            return value;
-        }
-    };
-    virtual bool isSource(){
-        return false;
-    }
+		// Direction of current
+		// assuming node[0] is more positive
+	}
+	virtual void print() const
+	{
+		std::cout << typeid(*this).name() << name << ":\t" << current() << "A" << std::endl;
+	}
+	virtual ~Component()
+	{
+		//deleteFromSchematicMap();
+		this->schem->comps.erase(name);
+		
+		//deleteFromAdjacentNodes();
+		for(Node *n : nodes){
+			n->comps.erase(std::find(n->comps.begin(), n->comps.end(), this));
+			if(n->comps.size() == 0) delete n;
+		}
+		
+	}
+	virtual double getValue( ParamTable * param ) const {
+		if( variableDefined ){
+			return param->lookup[variableName];
+		}
+		else{
+			return value;
+		}
+	};
+	virtual bool isSource() const{
+		return false;
+	}
 };
 
-void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::string node ){
+void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, const std::string &node ){
 
-    // start add ground support
-    if(node == "0"){
-      // into the node
-      // a->comps.push_back(linear);
 
-      // this goes into the schematic
-      this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
-    //   linear->nodes.push_back(Node::ground);
-      return;
-    }
+	//end add ground support
 
-    //end add ground support
+	std::map<std::string, Circuit::Node *>::iterator it = this->nodes.find(node);
 
-    std::map<std::string, Circuit::Node *>::iterator it = this->nodes.find(node);
+	if (it == this->nodes.end())
+	{
+		Circuit::Node *a = new Circuit::Node(node, this);
+		it = this->nodes.insert(std::pair<std::string, Circuit::Node *>(node, a)).first;
+	}
 
-    if (it == this->nodes.end())
-    {
-        Circuit::Node *a = new Circuit::Node(node);
-        it = this->nodes.insert(std::pair<std::string, Circuit::Node *>(node, a)).first;
-    }
+	Circuit::Node *a = (*it).second;
 
-    Circuit::Node *a = (*it).second;
+	// into the node
+	a->comps.push_back(linear);
 
-    // into the node
-    a->comps.push_back(linear);
-
-    // this goes into the schematic
-    this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
-    linear->nodes.push_back(a);
+	// this goes into the schematic
+	this->comps.insert(std::pair<std::string, Circuit::Component *>(linear->name, linear));
+	linear->nodes.push_back(a);
 }
 
-void Circuit::Schematic::setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB )
+void Circuit::Schematic::setupConnections2Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB )
 {
-    setupConnectionNode(linear, nodeA);
-    setupConnectionNode(linear, nodeB);
+	setupConnectionNode(linear, nodeA);
+	setupConnectionNode(linear, nodeB);
 }
-void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC ){
-    setupConnectionNode(linear, nodeA);
-    setupConnectionNode(linear, nodeB);
-    setupConnectionNode(linear, nodeC);
+void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB, const std::string& nodeC ){
+	setupConnectionNode(linear, nodeA);
+	setupConnectionNode(linear, nodeB);
+	setupConnectionNode(linear, nodeC);
 }
 
 // don't need to insert ground into nodes
 Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
-    ground = new Node("0", 0.0, -1);
-    nodes.insert(std::pair< std::string, Node *> (ground->getName(), ground));
+	Node *ground = new Node("0", this );
+	nodes.insert(std::pair< std::string, Node *> (ground->getName(), ground));
 }
 
+Circuit::Schematic::~Schematic(){
+		std::for_each(tables.begin(), tables.end(),
+					  [](ParamTable *&t) {
+						  delete t;
+					  });
+		// std::for_each(nodes.begin(), nodes.end(), [](auto kv){
+		// 	delete kv.second;
+		// });
+		
+		
+
+
+		//NOTE David thomas approved
+		while(comps.size() != 0 ){
+			delete comps.begin()->second;
+		}
+
+		std::for_each(sims.begin(), sims.end(), [](auto kv){
+			delete kv;
+		});
+	}
 #endif

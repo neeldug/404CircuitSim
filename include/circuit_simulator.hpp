@@ -3,7 +3,7 @@
 
 class Circuit::Simulator
 {
-private:
+public:
     enum SimulationType
     {
         OP,
@@ -12,7 +12,6 @@ private:
         SMALL_SIGNAL
     };
 
-public:
     const SimulationType type;
 
     Simulator(Schematic *schem, SimulationType type) : type(type)
