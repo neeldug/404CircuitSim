@@ -1,7 +1,0 @@
-.OP
-VV1 N0002 0 5
-RR_top N0001 N0002 1k
-RR_Bottom 0 N0001 4k
-.END
-*Any lines beginning with "*" or asterisk is a comment.
-*First letter defines component, other letters define name, e.g. V1, R_top, etc. Next two columns describe the nodes that the component are connected to, ground is referred to as 0, lastly is any properties of the component
