@@ -125,7 +125,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```c++
 
-// TODO
+TODO
 
 ``` 
 
@@ -166,7 +166,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```
 
-#### Circuit:: Inductor
+#### Circuit::Inductor
 
 ```c++
 
@@ -188,7 +188,6 @@ The API of the Circuit Simulator is a header only library, where each header fil
 	float TT=12e-9;
 	float BV=100;
 	float IBV=0.1e-12;
-
 	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem)
 	void assignModel( std::vector<std::string> params )
 	float conductance() const override
@@ -197,7 +196,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```
 
-#### Circuit:: Transistor
+#### Circuit::Transistor
 
 ```c++
 
@@ -207,10 +206,8 @@ The API of the Circuit Simulator is a header only library, where each header fil
 	bool model_CE_resistance = false;
 	TType transistorType;
 	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem)
-
 	void assignModel( std::vector<std::string> params )
 	float conductance() const override
-
 	std::string getModelName()
 	virtual float getValue() override
 
@@ -225,7 +222,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```
 
-#### Circuit:: Voltage
+#### Circuit::Voltage
 
 ```c++
 
@@ -239,7 +236,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```c++
 
-	Current( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset ,float SINE_amplitude, float SINE_frequency, Schematic* schem )
+	Current( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset, float SINE_amplitude, float SINE_frequency, Schematic* schem )
 	Current( std::string name, float DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
 	bool isCurrent() const override
 
