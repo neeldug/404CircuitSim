@@ -31,6 +31,8 @@ namespace Circuit
 class Circuit::Schematic
 {
 private:
+    Circuit::Node *ground;
+
     std::function<int()> createIDGenerator(int &start) const
     {
         return [&]() {
@@ -72,9 +74,12 @@ private:
     std::string name;
 
 public:
-    static Node *ground;
-    Node(const std::string& name) : name(name) {}
-	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
+    Node(const std::string& name) : name(name) {
+        std::cout<<"NAME"<<name<<std::endl;
+    }
+	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {
+        std::cout<<"NAME"<<name<<std::endl;
+    }
 
     int id;
     float voltage;
@@ -88,7 +93,6 @@ public:
     }
 };
 
-Circuit::Node *Circuit::Node::ground = new Node("ground", 0.0, -1);
 
 class Circuit::Component
 {
@@ -101,7 +105,9 @@ public:
     std::string name;
     std::vector<Node *> nodes;
 
-    virtual float conductance() const = 0;
+    virtual float conductance() const{
+        return 0.0;
+    };
 
     Node* getPosNode(){
         return nodes[0];
@@ -124,9 +130,9 @@ public:
         //deleteFromSchematicMap();
         //deleteFromAdjacentNodes();
     }
-    float getValue(){
+    virtual float getValue(){
         return value;
-    }
+    };
 };
 
 
@@ -193,7 +199,8 @@ void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, std:
 }
 
 Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
-    nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
+    ground = new Node("0", 0.0, -1);
+    nodes.insert(std::pair< std::string, Node *> (ground->getName(), ground));
 }
 
 #endif

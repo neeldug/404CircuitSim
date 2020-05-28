@@ -31,7 +31,11 @@ protected:
 		function =  (double)SINE_DC_offset + ( (double)  SINE_amplitude ) * sin( (double) SINE_frequency * timeVar );
 
 	}
+
 public:
+	virtual float getValue() override{
+		return DC;
+	}
 	virtual bool isCurrent() const = 0;
 };
 
@@ -57,6 +61,12 @@ class Circuit::Voltage : public Circuit::Source
 {
 public:
 	
+	Voltage( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset ,float SINE_amplitude, float SINE_frequency, Schematic* schem ) :  Source( name,  DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem ){
+		schem->setupConnections2Node( this, nodePos, nodeNeg );
+	}
+	Voltage( std::string name, float DC, std::string nodePos, std::string nodeNeg, Schematic *schem ) : Voltage(name, DC, nodePos,  nodeNeg, 0, 0 , 0, 0, schem ) {
+
+	}
 	bool isCurrent() const override
 	{
 		return false;

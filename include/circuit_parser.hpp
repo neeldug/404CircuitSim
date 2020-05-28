@@ -22,9 +22,8 @@ private:
 			".op"
 			".model"
 	};
-<<<<<<< HEAD
 	
-	float parseVal(const std::string &value ){
+	static float parseVal(const std::string &value ){
 		
 		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
 		std::string unitSuffix = value.substr(suffixPos, std::string::npos);
@@ -55,10 +54,10 @@ private:
 	}
 
 	template <class SourceType>
-	SourceType sourceFactory( std::string line, Schematic &schem ) {
+	static SourceType* sourceFactory( std::string line, Schematic *schem ) {
 		static_assert(std::is_base_of<Circuit::Source, SourceType>::value, "Only derivates of source type maybe passed into this function"); 
 		
-		std::regex nameNodes(R"(^([A-z]*) ([A-z]*) ([A-z]*))");
+		std::regex nameNodes(R"(^(\w+) (\w+) (\w+))");
 		std::smatch nameNodesM;
 
 		std::string name;
@@ -95,7 +94,7 @@ private:
 		}
 		
 		//DC value already variable safe although not implemented
-		std::regex dc(R"(^(?:(?:\w+ ?){3}) (?:{?)([0-9]*|[a-z]*)+(?:}?))");
+		std::regex dc("^(?:(?:\\w+ ?){3})\\s(?:\\{?)([0-9]*|[a-z]*)+(?:\\}?)");
 		std::smatch dcM;
 		if( regex_search( line, dcM, dc ) ){
 			if( std::isdigit(dcM.str(1)[0])){
@@ -104,7 +103,7 @@ private:
 		}
 
 		//sine function variable safe although not implemented
-		std::regex sine(R"(^(?:(?:\w+ ?){3}(?:(?: sine)|(?: SINE))\(\s?)(\d+ )(\d+ )(\d+ ))");
+		std::regex sine(R"(^(?:(?:\w+ ?){3})(?:sine\s?\(|SINE\s?\()(\s?)(\d+ )(\d+ )(\d+ ))");
 		std::smatch sineFunc;
 		if( regex_search( line, dcM, sine ) ){
 			if( std::isdigit(dcM.str(1)[0])){
@@ -121,10 +120,7 @@ private:
 		return new SourceType(name, DC, nodePos, nodeNeg, smallSignalAmp, SINE_DC_offset , SINE_amplitude,  SINE_frequency, schem );
 	}
 
-	static void addComponent( const std::string& comp, Circuit::Schematic* schem ){
-=======
-	static void addComponent( const std::string& comp, Circuit::Schematic& schem ){
->>>>>>> 292f7bfcea6aa8759b8f3e7fa8e93f037f9f9d1d
+	static void addComponent( std::string comp, Circuit::Schematic* schem ){
 
 		std::stringstream ss( comp );
 		std::vector<std::string> params;
@@ -182,19 +178,16 @@ private:
 				break;
 			}
 			case (int) 'v' : {
-				//REVIEW This isn't finished
-				//Vname N+ N- <DC=> DCValue
 				assert( params.size() >= 4 && "Voltage - too few params" );
-<<<<<<< HEAD
-
+				Circuit::Voltage* volt = sourceFactory<Circuit::Voltage>( comp, schem );
 				
-=======
-				std::string nodeA = params[1];
-				std::string nodeB = params[2];
-				std::vector<std::string> sourceConfig(params.begin() + 3, params.end());
 
-				//Circuit::Source* source = new Circuit::Source( name, value);
->>>>>>> 292f7bfcea6aa8759b8f3e7fa8e93f037f9f9d1d
+				break;
+			}
+			case (int) 'i' : {	
+				assert( params.size() >= 4 && "Voltage - too few params" );
+				Circuit::Current* curr = sourceFactory<Circuit::Current>( comp, schem );
+
 				break;
 			}
 			case (int) 'd' : {
@@ -247,42 +240,8 @@ private:
 
 	}
 public:
-<<<<<<< HEAD
 	
 	static Circuit::Schematic* parse( std::istream& inputStream ){
-=======
-	//NOTE converts statements like 12pf to 12e-12
-	static float parseVal(const std::string &value ){
-
-		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
-		std::string unitSuffix = value.substr(suffixPos, string::npos);
-		int mult;
-		if( suffixPos == std::string::npos ){
-			return	std::stof( value );
-		}
-		else if (unitSuffix == "p")
-			mult = -12;
-		else if (unitSuffix == "n")
-			mult = -9;
-		else if (unitSuffix == "u")
-			mult = -6;
-		else if (unitSuffix == "m")
-			mult = -3;
-		else if (unitSuffix == "k")
-			mult = 3;
-		else if (unitSuffix == "Meg")
-			mult = 6;
-		else if (unitSuffix == "G")
-			mult = 9;
-		else {
-			std::cerr << "Invalid Unit Suffix" << '\n';
-			assert(0);
-		}
-		std::string num = value.substr(0, suffixPos);
-		return std::stof(num) * pow(10, mult);
-	}
-	static Circuit::Schematic parse( std::istream& inputStream ){
->>>>>>> 292f7bfcea6aa8759b8f3e7fa8e93f037f9f9d1d
 		//NOTE
 		//Refer to
 		//https://web.stanford.edu/class/ee133/handouts/general/spice_ref.pdf for

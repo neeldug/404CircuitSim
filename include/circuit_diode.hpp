@@ -38,6 +38,10 @@ public:
 	std::string getModelName(){
 		return modelName;
 	}
+	virtual float getValue() override{
+		assert( false && "No value associated with transistor");
+		return 0;
+	}
 };
 
 #endif
