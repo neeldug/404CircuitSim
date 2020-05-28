@@ -5,7 +5,6 @@
 //program
 #include "symbolicc++.h"
 #include "circuit_structure.hpp"
-#include "circuit_util.hpp"
 #include "circuit_linear.hpp"
 #include "circuit_diode.hpp"
 #include "circuit_transistor.hpp"
