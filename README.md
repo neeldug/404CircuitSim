@@ -67,7 +67,8 @@ The API of the Circuit Simulator is a header only library, where each header fil
  - Circuit::Schematic       # circuit abstraction
  - Circuit::Node            # circuit node abstraction
  - Circuit::Parser          # controls input
- - Circuit::Math            # controls output
+ - Circuit::Simulator       # controls output
+ - Circuit::Math            # provides math functions
 
  - Circuit::Component       # component abstraction
  - Circuit::Resistor        # resistor abstraction
@@ -121,11 +122,26 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ``` 
 
+#### Circuit::Simulator
+
+```c++
+
+    enum SimulationType{
+        OP, TRAN,  DC, SMALL_SIGNAL
+    };
+    const SimulationType type;
+    ~Simulation()
+    float getValue(int tableNum, std::string param)
+    Simulation( SimulationType type )
+    void run();
+
+```
+
 #### Circuit::Math
 
 ```c++
 
-TODO
+TODO - Add Math definitions
 
 ``` 
 
