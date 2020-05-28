@@ -25,12 +25,14 @@ namespace Circuit
     class Source;
     class Current;
     class Voltage;
-    Schematic parse();
+    class Parser;
 } // namespace Circuit
 
 class Circuit::Schematic
 {
 private:
+    Circuit::Node *ground;
+
     std::function<int()> createIDGenerator(int &start) const
     {
         return [&]() {
@@ -73,11 +75,12 @@ private:
     std::string name;
 
 public:
-    static Node *ground;
-    Node(const std::string& name, int id) : name(name), id(id), voltage(0.0) {}
-    // NOTE - Needs an ID
-    // NOTE - Added ID
-	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
+    Node(const std::string& name) : name(name) {
+        std::cout<<"NAME"<<name<<std::endl;
+    }
+	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {
+        std::cout<<"NAME"<<name<<std::endl;
+    }
 
     int id;
     float voltage;
@@ -91,19 +94,29 @@ public:
     }
 };
 
-Circuit::Node *Circuit::Node::ground = new Node("0", -1);
 
 class Circuit::Component
 {
 protected:
-    Component(std::string name, float value) : name(name), value(value) {}
     float value;
+    Schematic *schem;
+    Component( std::string name, float value, Schematic* schem ) : name(name), value(value), schem(schem) {}
 
 public:
     std::string name;
     std::vector<Node *> nodes;
-    virtual float conductance() const = 0;
-    // conductance might not work for diodes and transistors
+
+    virtual float conductance() const{
+        return 0.0;
+    };
+
+    Node* getPosNode(){
+        return nodes[0];
+    }
+    Node* getNegNode(){
+        return nodes[1];
+    }
+
     float current()
     {
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
@@ -118,6 +131,9 @@ public:
         //deleteFromSchematicMap();
         //deleteFromAdjacentNodes();
     }
+    virtual float getValue(){
+        return value;
+    };
 };
 
 
@@ -153,6 +169,7 @@ public:
     Simulation( SimulationType type ) : type(type){
 
     }
+    void run();
 
 };
 
@@ -202,7 +219,8 @@ void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, std:
 
 // don't need to insert ground into nodes
 Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
-    // nodes.insert(std::pair< std::string, Node *> (Node::ground->getName(), Node::ground));
+    ground = new Node("0", 0.0, -1);
+    nodes.insert(std::pair< std::string, Node *> (ground->getName(), ground));
 }
 
 #endif

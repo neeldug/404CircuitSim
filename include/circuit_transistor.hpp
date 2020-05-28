@@ -19,7 +19,7 @@ public:
 
 
 	TType transistorType;
-	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic& schem) : Component( name, IS ){
+	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, IS, schem ){
 		if( modelName == "NPN" ){
 			transistorType = NPN;
 		}
@@ -27,7 +27,7 @@ public:
 			transistorType = NPN;
 		}
 		this->modelName = modelName;
-		schem.setupConnections3Node( this, nodeCollector, nodeBase, nodeEmitter );
+		schem->setupConnections3Node( this, nodeCollector, nodeBase, nodeEmitter );
 	}
 
 	//REVIEW Model not setup
@@ -45,6 +45,11 @@ public:
 
 	std::string getModelName(){
 		return modelName;
+	}
+
+	virtual float getValue() override{
+		assert( false && "No value associated with transistor");
+		return 0;
 	}
 };
 

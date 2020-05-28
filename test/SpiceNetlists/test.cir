@@ -1,5 +1,7 @@
-* D:\home\jjl119\Imperial\SummerProject\404CircuitSim\Draft1.asc
-V1 N001 N002 5
-R1 N001 N002 5
+* C:\users\jjl119\My Documents\LTspiceXVII\Draft1.asc
+R1 N001 N003 20
+R2 N002 N001 20
+R3 0 N002 20
+V1 N003 0 5
 .backanno
 .end

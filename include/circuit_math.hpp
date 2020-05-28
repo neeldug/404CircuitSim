@@ -1,6 +1,7 @@
 #ifndef GUARD_CIRCUIT_MATH_HPP
 #define GUARD_CIRCUIT_MATH_HPP
 
+/*
 #include <iostream>
 #include <algorithm>
 
@@ -12,10 +13,10 @@ void getCurrent(const Circuit::Schematic &circuit, Vector<double> &current, Matr
     std::for_each(circuit.sources.begin(), circuit.sources.end(), [&](const auto source) {
         if (source->isCurrent())
         {
-            if (source->pos->id != -1)
-                current[source->pos->id] += source->value;
-            if (source->neg->id != -1)
-                current[source->neg->id] -= source->value;
+            if (source->getPosNode()->id != -1)
+                current[source->getPosNode()->id] += source->getValue();
+            if (source->getNegNode()->id != -1)
+                current[source->getNegNode()->id] -= source->getValue();
         }
     });
 
@@ -24,27 +25,27 @@ void getCurrent(const Circuit::Schematic &circuit, Vector<double> &current, Matr
 
         if (!source->isCurrent())
         {
-            if (source->pos->id != -1)
-                if (source->pos->id != -1)
+            if (source->getPosNode()->id != -1)
+                if (source->getPosNode()->id != -1)
                 {
-                    current[source->pos->id] = source->value;
-                    new_conductance[source->pos->id] = 1.0;
+                    current[source->getPosNode()->id] = source->getValue();
+                    new_conductance[source->getPosNode()->id] = 1.0;
                 }
 
-            if (source->neg->id != -1)
+            if (source->getNegNode()->id != -1)
             {
-                new_conductance[source->neg->id] = -1.0;
-                if (source->pos->id == -1)
+                new_conductance[source->getNegNode()->id] = -1.0;
+                if (source->getPosNode()->id == -1)
                 {
-                    current[source->neg->id] = source->value;
-                    conductance[source->neg->id] = new_conductance;
+                    current[source->getNegNode()->id] = source->getValue();
+                    conductance[source->getNegNode()->id] = new_conductance;
                     return;
                 }
 
-                conductance[source->neg->id] = conductance[source->pos->id] + conductance[source->neg->id];
+                conductance[source->getNegNode()->id] = conductance[source->getPosNode()->id] + conductance[source->getNegNode()->id];
             }
 
-            conductance[source->pos->id] = new_conductance;
+            conductance[source->getPosNode()->id] = new_conductance;
         }
     });
 }
@@ -88,6 +89,7 @@ void dc(const Circuit::Schematic &circuit)
 
     // std::cout << "Voltage Vector: " << std::endl;
     // std::cout << voltage << std::endl;
-}
 
+}
+*/
 #endif
