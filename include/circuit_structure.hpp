@@ -74,10 +74,8 @@ private:
     std::string name;
 
 public:
-    Node(const std::string& name) : name(name) {
-    }
-	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {
-    }
+    Node(const std::string& name) : name(name) {}
+	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
 
     int id;
     float voltage;
