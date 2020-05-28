@@ -1,7 +1,6 @@
 #ifndef GUARD_DIODE_HPP
 #define GUARD_DIODE_HPP
 
-#include "circuit_structure.hpp"
 
 class Circuit::Diode : public Component {
 private:
@@ -15,8 +14,8 @@ public:
 	float BV=100;
 	float IBV=0.1e-12;
 
-	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic& schem) : Component( name, IS ){
-		schem.setupConnections2Node( this, nodeA, nodeB );
+	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
+		schem->setupConnections2Node( this, nodeA, nodeB );
 	}
 	void assignModel( std::vector<std::string> params ){
 		//NOTE Remember to update component value!

@@ -25,7 +25,7 @@ namespace Circuit
     class Source;
     class Current;
     class Voltage;
-    Schematic parse();
+    class Parser;
 } // namespace Circuit
 
 class Circuit::Schematic
@@ -93,13 +93,23 @@ Circuit::Node *Circuit::Node::ground = new Node("ground", 0.0, -1);
 class Circuit::Component
 {
 protected:
-    Component(std::string name, float value) : name(name), value(value) {}
     float value;
+    Schematic *schem;
+    Component( std::string name, float value, Schematic* schem ) : name(name), value(value), schem(schem) {}
 
 public:
     std::string name;
     std::vector<Node *> nodes;
+
     virtual float conductance() const = 0;
+
+    Node* getPosNode(){
+        return nodes[0];
+    }
+    Node* getNegNode(){
+        return nodes[1];
+    }
+
     float current()
     {
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
@@ -113,6 +123,9 @@ public:
     {
         //deleteFromSchematicMap();
         //deleteFromAdjacentNodes();
+    }
+    float getValue(){
+        return value;
     }
 };
 
@@ -148,6 +161,7 @@ public:
     Simulation( SimulationType type ) : type(type){
 
     }
+    void run();
 
 };  
 
