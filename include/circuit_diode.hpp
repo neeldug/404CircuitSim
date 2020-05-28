@@ -5,7 +5,7 @@ class Circuit::Diode : public Component {
 private:
 	std::string modelName;
 public:
-	//REVIEW will probably have to make these doubles
+	//REVIEW will probably have to make these doubles and might make this a nested class
 	float IS=0.1; //also stored in value (Component base class)
 	float RS=16;
 	float CJO=2e-12;
@@ -36,10 +36,6 @@ public:
     }
 	std::string getModelName(){
 		return modelName;
-	}
-	virtual float getValue() override{
-		assert( false && "No value associated with transistor");
-		return 0;
 	}
 };
 
