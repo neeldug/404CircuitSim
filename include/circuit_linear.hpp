@@ -29,7 +29,6 @@ class Circuit::Inductor : public Component
 public:
     //NOTE I_init is initial current in inductor
     float I_init;
-    Inductor(std::string name, float value, Schematic* schem) : Component(name, value, schem ){};
     Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem) : Component( name, value, schem )
     {
         //REVIEW move node connections into compoment constructor
@@ -49,7 +48,6 @@ public:
 class Circuit::Resistor : public Component
 {
 public:
-    Resistor(std::string name, float value, Schematic* schem ) : Component(name, value, schem){};
     Resistor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem) : Component(name, value, schem)
     {
         schem->setupConnections2Node( this, nodeA, nodeB );

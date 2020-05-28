@@ -76,6 +76,7 @@ The API of the Circuit Simulator is a header only library, where each header fil
  - Circuit::Inductor        # inductor abstraction
  - Circuit::Diode           # diode abstraction
  - Circuit::Transistor      # transistor abstraction
+ - Circuit::Mosfet          # mosfet abstraction
 
  - Circuit::Source          # power source abstraction
  - Circuit::Voltage         # voltage source abstraction
@@ -91,8 +92,6 @@ The API of the Circuit Simulator is a header only library, where each header fil
     std::string title;
     std::map<std::string, Node *> nodes;
     std::map<std::string, Component *> comps;
-    std::vector<Source *> sources;
-    class Simulation;
     std::vector<Simulation *> sims;
     void out();
     void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
@@ -104,13 +103,12 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```c++
 
-    Node(const std::string& name)
-	Node(const std::string &name, float voltage, int id)
-    int id;
-    float voltage;
+	Node(const std::string &name, Circuit::Schematic * schem);
+    double voltage;
     std::vector<Component *> comps;
-    void print()
-    std::string getName()
+    void print();
+    std::string getName();
+    int getId();
 
 ```
 
@@ -126,13 +124,8 @@ The API of the Circuit Simulator is a header only library, where each header fil
 
 ```c++
 
-    enum SimulationType{
-        OP, TRAN,  DC, SMALL_SIGNAL
-    };
+    Simulator( SimulationType type );
     const SimulationType type;
-    ~Simulation()
-    float getValue(int tableNum, std::string param)
-    Simulation( SimulationType type )
     void run();
 
 ```
@@ -151,13 +144,13 @@ TODO - Add Math definitions
 
     std::string name;
     std::vector<Node *> nodes;
-    virtual float conductance() const
+    virtual double conductance() const
     Node* getPosNode()
     Node* getNegNode()
-    float current()
+    double current()
     void print()
     virtual ~Component()
-    virtual float getValue()
+    virtual double getValue(ParamTable *param)
 
 ```
 
@@ -165,9 +158,8 @@ TODO - Add Math definitions
 
 ```c++
 
-    Resistor(std::string name, float value, Schematic* schem)
-    Resistor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem)
-    float conductance() const override
+    Resistor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
+    double conductance() const override
 
 ``` 
 
@@ -175,10 +167,10 @@ TODO - Add Math definitions
 
 ```c++
 
-    float DC_init;
-    Capacitor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem)
-    Capacitor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem, float DC_init)
-    float conductance() const override
+    double DC_init;
+    Capacitor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
+    Capacitor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem, double DC_init)
+    double conductance() const override
 
 ```
 
@@ -186,11 +178,11 @@ TODO - Add Math definitions
 
 ```c++
 
-    float I_init;
-    Inductor(std::string name, float value, Schematic* schem) : Component(name, value, schem )
-    Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic* schem)
-    Inductor(std::string name, float value, std::string nodeA, std::string nodeB, Schematic *schem, float I_init)
-    float conductance() const override
+    double I_init;
+    Inductor(std::string name, double value, Schematic* schem) : Component(name, value, schem )
+    Inductor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic* schem)
+    Inductor(std::string name, double value, std::string nodeA, std::string nodeB, Schematic *schem, double I_init)
+    double conductance() const override
 
 ``` 
 
@@ -198,17 +190,17 @@ TODO - Add Math definitions
 
 ```c++
 
-	float IS=0.1;
-	float RS=16;
-	float CJO=2e-12;
-	float TT=12e-9;
-	float BV=100;
-	float IBV=0.1e-12;
+	double IS=0.1;
+	double RS=16;
+	double CJO=2e-12;
+	double TT=12e-9;
+	double BV=100;
+	double IBV=0.1e-12;
 	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem)
 	void assignModel( std::vector<std::string> params )
-	float conductance() const override
+	double conductance() const override
 	std::string getModelName()
-	virtual float getValue() override
+	virtual double getValue() override
 
 ```
 
@@ -216,16 +208,16 @@ TODO - Add Math definitions
 
 ```c++
 
-	float BF=100;
-	float IS=1e-16;
-	float VAF=std::numeric_limits<float>::max();
+	double BF=100;
+	double IS=1e-16;
+	double VAF=std::numeric_limits<double>::max();
 	bool model_CE_resistance = false;
 	TType transistorType;
 	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem)
 	void assignModel( std::vector<std::string> params )
-	float conductance() const override
+	double conductance() const override
 	std::string getModelName()
-	virtual float getValue() override
+	virtual double getValue() override
 
 ``` 
 
@@ -233,7 +225,7 @@ TODO - Add Math definitions
 
 ```c++
 
-	virtual float getValue() override
+	virtual double getValue() override
 	virtual bool isCurrent() const = 0;
 
 ```
@@ -242,8 +234,8 @@ TODO - Add Math definitions
 
 ```c++
 
-	Voltage( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset ,float SINE_amplitude, float SINE_frequency, Schematic* schem )
-	Voltage( std::string name, float DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
+	Voltage( std::string name, double DC, std::string nodePos, std::string nodeNeg, double smallSignalAmp, double SINE_DC_offset ,double SINE_amplitude, double SINE_frequency, Schematic* schem )
+	Voltage( std::string name, double DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
 	bool isCurrent() const override
 
 ``` 
@@ -252,8 +244,8 @@ TODO - Add Math definitions
 
 ```c++
 
-	Current( std::string name, float DC, std::string nodePos, std::string nodeNeg, float smallSignalAmp, float SINE_DC_offset, float SINE_amplitude, float SINE_frequency, Schematic* schem )
-	Current( std::string name, float DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
+	Current( std::string name, double DC, std::string nodePos, std::string nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic* schem )
+	Current( std::string name, double DC, std::string nodePos, std::string nodeNeg, Schematic *schem )
 	bool isCurrent() const override
 
 ```

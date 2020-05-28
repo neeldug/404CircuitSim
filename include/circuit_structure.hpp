@@ -28,13 +28,20 @@ namespace Circuit
     class Parser;
     class Simulator;
     class Math;
+    struct ParamTable;
 } // namespace Circuit
 
+struct Circuit::ParamTable
+{
+    std::map<std::string, float> lookup;
+};
 class Circuit::Schematic
 {
-private:
-    Circuit::Node *ground;
+    friend class Simulator;
 
+private:
+    std::vector<ParamTable *> tables;
+    Circuit::Node *ground;
     std::function<int()> createIDGenerator(int &start) const
     {
         return [&]() {
@@ -69,26 +76,36 @@ public:
 
     void setupConnections2Node( Circuit::Component *linear, std::string nodeA, std::string nodeB );
     void setupConnections3Node( Circuit::Component *linear, std::string nodeA, std::string nodeB, std::string nodeC );
+    ~Schematic(){
+        std::for_each(tables.begin(), tables.end(),
+                      [](ParamTable *&t) {
+                          delete t;
+                      });
+    }
 };
 
 class Circuit::Node
 {
 private:
     std::string name;
-
+    unsigned int id;
 public:
-    Node(const std::string& name) : name(name) {}
-	Node(const std::string &name, float voltage, int id) : id(id), name(name), voltage(voltage) {}
 
-    int id;
     float voltage;
     std::vector<Component *> comps;
+    Node(const std::string& name, Schematic *schem) : name(name) {
+        id = schem->id();
+    }
+
     void print()
     {
         std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
     }
     std::string getName(){
         return name;
+    }
+    int getId(){
+        return id;
     }
 };
 
@@ -99,11 +116,11 @@ protected:
     float value;
     Schematic *schem;
     Component( std::string name, float value, Schematic* schem ) : name(name), value(value), schem(schem) {}
-
+    bool variableDefined = false;
+    std::string variableName; 
 public:
     std::string name;
     std::vector<Node *> nodes;
-
     virtual float conductance() const{
         return 0.0;
     };
@@ -119,6 +136,7 @@ public:
     {
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
         // Direction of current
+        // assuming node[0] is more positive
     }
     void print()
     {
@@ -129,46 +147,17 @@ public:
         //deleteFromSchematicMap();
         //deleteFromAdjacentNodes();
     }
-    virtual float getValue(){
-        return value;
+    virtual float getValue( ParamTable * param ){
+        if( variableDefined ){
+            return param->lookup[variableName];
+        }
+        else{
+            return value;
+        }
     };
-};
-
-
-class Circuit::Schematic::Simulation
-{
-private:
-    struct ParamTable
-    {
-        std::map<std::string, float> lookup;
-    };
-    std::vector<ParamTable *> tables;
-
-public:
-  // maybe could be static
-    enum SimulationType{
-        OP, TRAN,  DC, SMALL_SIGNAL
-    };
-    const SimulationType type;
-
-    ~Simulation()
-    {
-        std::for_each(tables.begin(), tables.end(),
-                      [](ParamTable *&t) {
-                          delete t;
-                      });
+    virtual bool isSource(){
+        return false;
     }
-
-    float getValue(int tableNum, std::string param)
-    {
-        assert(tables.size() > tableNum && "Attempted value retrieved from non-existant table.");
-        return (tables[tableNum])->lookup[param];
-    }
-    Simulation( SimulationType type ) : type(type){
-
-    }
-    void run();
-
 };
 
 void Circuit::Schematic::setupConnectionNode( Circuit::Component *linear, std::string node ){

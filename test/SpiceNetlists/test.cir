@@ -1,7 +1,6 @@
 * C:\users\jjl119\My Documents\LTspiceXVII\Draft1.asc
-R1 N001 N003 20
-R2 N002 N001 20
-R3 0 N002 20
-V1 N003 0 5
+V1 N001 N002 SINE(1 4 2)
+R1 N001 N002 10
 .backanno
 .end
+

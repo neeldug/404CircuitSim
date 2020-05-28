@@ -16,9 +16,7 @@ protected:
 	float SINE_DC_offset = 0;
 	float SINE_amplitude = 0;
 	float SINE_frequency = 0;
-	Source(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg, Schematic* schem) :  Component( name, value, schem ){
-		DC = value;
-	}
+
 	Source( std::string name, float DC, float smallSignalAmp, float SINE_DC_offset ,float SINE_amplitude, float SINE_frequency, Schematic* schem ) :  Component( name,  DC, schem ){
 
 		this->name = name;
@@ -28,13 +26,19 @@ protected:
 		this->SINE_amplitude = SINE_amplitude;
 		this->SINE_frequency = SINE_frequency;
 
-		function =  (double)SINE_DC_offset + ( (double)  SINE_amplitude ) * sin( (double) SINE_frequency * timeVar );
+		function =  (double) DC + (double)SINE_DC_offset + ( (double)  SINE_amplitude ) * sin( (double) SINE_frequency * timeVar );
 
+	}
+	Source(const std::string &name, float value, const Circuit::Node *pos, const Circuit::Node *neg, Schematic* schem) :  Source( name, value, 0, 0, 0, 0, schem ){
+		
 	}
 
 public:
-	virtual float getValue() override{
-		return DC;
+	double getSourceOutput( ParamTable* param, double t ){
+		return function[timeVar==t];
+	}
+	virtual bool isSource() override{
+		return true;
 	}
 	virtual bool isCurrent() const = 0;
 };
