@@ -11,7 +11,8 @@ int main(){
 		return 1;
 	}
 	Circuit::Schematic* schem = Circuit::Parser::parse( netlist );
-	schem->out();
+	Circuit::ParamTable *param = nullptr;
+	schem->out(param);
 	netlist.close();
 	delete schem;
 }

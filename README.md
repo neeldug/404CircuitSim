@@ -145,7 +145,7 @@ TODO - Add Math definitions
 
     std::string name;
     std::vector<Node *> nodes;
-    virtual double conductance() const
+    virtual double conductance(ParamTable *param) const
     Node* getPosNode() const
     Node* getNegNode() const
     double current() const

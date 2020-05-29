@@ -30,7 +30,7 @@ public:
 
 		value = IS;
 	}
-	double conductance() const override
+	double conductance(ParamTable * param) const override
     {
         assert( false && "No conductance for diode yet");
     }

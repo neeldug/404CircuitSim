@@ -20,10 +20,10 @@ include_directories(include)
 # target_link_libraries(simulator symbolic)
 
 # Test Executables
-# add_executable(test_math test/test_math.cpp)
+add_executable(test_math test/test_math.cpp)
 add_executable(test_parser test/test_parser.cpp)
-# target_link_libraries(test_math symbolic)
+target_link_libraries(test_math symbolic)
 target_link_libraries(test_parser symbolic)
 
-# add_test(NAME TEST_MATH COMMAND test_math WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+add_test(NAME TEST_MATH COMMAND test_math WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 add_test(NAME TEST_PARSER COMMAND test_parser WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

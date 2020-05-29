@@ -58,13 +58,13 @@ public:
 	std::map<std::string, Component *> comps;
 	std::vector<Simulator *> sims = {};
 
-	void out() const
+	void out(ParamTable *param) const
 	{
-		for_each(nodes.begin(), nodes.end(), [](const auto node) {
+		for_each(nodes.begin(), nodes.end(), [&](const auto node) {
 			node.second->print();
 		});
-		for_each(comps.begin(), comps.end(), [](const auto comp) {
-			comp.second->print();
+		for_each(comps.begin(), comps.end(), [&](const auto comp) {
+			comp.second->print(param);
 		});
 	}
 
@@ -128,15 +128,15 @@ public:
 		return nodes[1];
 	}
 
-	double current() const
+	virtual double current(ParamTable * param) const
 	{
-		return (nodes[0]->voltage - nodes[1]->voltage) * conductance();
+		return (nodes[0]->voltage - nodes[1]->voltage) * conductance(param);
 		// Direction of current
 		// assuming node[0] is more positive
 	}
-	virtual void print() const
+	virtual void print(ParamTable * param) const
 	{
-		std::cout << typeid(*this).name() << name << ":\t" << current() << "A" << std::endl;
+		std::cout << typeid(*this).name() << name << ":\t" << current(param) << "A" << std::endl;
 	}
 	virtual ~Component()
 	{
@@ -201,6 +201,10 @@ void Circuit::Schematic::setupConnections3Node( Circuit::Component *linear, cons
 Circuit::Schematic::Schematic() : id(createIDGenerator(start)) {
 	Node *ground = new Node("0", this );
 	nodes.insert(std::pair< std::string, Node *> (ground->getName(), ground));
+	// temp need a table to simulate
+	ParamTable *param = nullptr;
+	tables.push_back(param);
+	// REVIEW - remove this
 }
 
 Circuit::Schematic::~Schematic(){

@@ -1,9 +1,6 @@
 #ifndef GUARD_CIRCUIT_LINEAR_HPP
 #define GUARD_CIRCUIT_LINEAR_HPP
 
-#include <string>
-
-
 class Circuit::Capacitor : public Component
 {
 public:
@@ -17,7 +14,7 @@ public:
     {
         this->DC_init = DC_init;
     }
-    double conductance() const override
+    double conductance(ParamTable * param) const override
     {
         // TODO
         return 1 / value;
@@ -38,7 +35,7 @@ public:
     {
         this->I_init = I_init;
     }
-    double conductance() const override
+    double conductance(ParamTable * param) const override
     {
         // TODO
         return 1 / value;

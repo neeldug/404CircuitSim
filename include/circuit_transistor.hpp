@@ -1,8 +1,6 @@
 #ifndef GUARD_CIRCUIT_TRANSISTOR_HPP
 #define GUARD_CIRCUIT_TRANSISTOR_HPP
 
-#include "circuit_structure.hpp"
-
 class Circuit::Transistor : public Component {
 private:
 	std::string modelName;
@@ -38,7 +36,7 @@ public:
 		assert( params.size() == 6 && "Incorrect number of diode params" );
 		value = IS;
 	}
-	double conductance() const override
+	double conductance(ParamTable * param) const override
     {
         assert( false && "No conductance for diode yet");
     }
