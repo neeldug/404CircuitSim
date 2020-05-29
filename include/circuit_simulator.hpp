@@ -42,14 +42,28 @@ public:
                     if (node_pair.second->getId() != -1)
                     {
                         node_pair.second->voltage = voltage[node_pair.second->getId()];
-                        printf("V(%s)\t\t%f\tnode_voltage\n", node_pair.first.c_str(), node_pair.second->voltage);   
+                        printf("V(%s)\t\t%f\tnode_voltage\n", node_pair.first.c_str(), node_pair.second->voltage);
                     }
                 });
 
-                for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp_pair){
+                for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp_pair) {
                     printf("I(%s)\t\t%f\tdevice_current\n", comp_pair.first.c_str(), comp_pair.second->current(param));
                 });
+            }
+            else if (type == TRAN)
+            {
+                double step = 10;
+                double stop = 100;
+                for (double t = 0; t += 10; t <= stop)
+                {
+                    const int NUM_NODES = schem->nodes.size() - 1;
+                    Vector<double> voltage(NUM_NODES, 0.0);
+                    Vector<double> current(NUM_NODES, 0.0);
+                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
 
+                    
+
+                }
             }
         }
     }
