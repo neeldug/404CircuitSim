@@ -117,7 +117,7 @@ protected:
 public:
 	std::string name;
 	std::vector<Node *> nodes;
-	virtual double conductance() const{
+	virtual double conductance(ParamTable * param) const{
 		return 0.0;
 	};
 

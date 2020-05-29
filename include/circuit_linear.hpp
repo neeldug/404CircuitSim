@@ -52,9 +52,9 @@ public:
     {
         schem->setupConnections2Node( this, nodeA, nodeB );
     };
-    double conductance() const override
+    double conductance(ParamTable * param) const override
     {
-        return 1 / value;
+        return 1 / getValue(param);
     }
 };
 
