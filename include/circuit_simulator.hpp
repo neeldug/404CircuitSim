@@ -1,6 +1,7 @@
 #ifndef GUARD_CIRCUIT_SIMULATOR_HPP
 #define GUARD_CIRCUIT_SIMULATOR_HPP
 #include <sstream>
+#include <iostream>
 class Circuit::Simulator
 {
 private:
@@ -74,6 +75,15 @@ public:
         SMALL_SIGNAL
     };
 
+    using enumPair = std::pair<SimulationType, std::string>;
+
+    std::map<SimulationType, std::string> simulationTypeMap = {
+        enumPair(OP, "OP"),
+        enumPair(TRAN, "TRAN"),
+        enumPair(DC, "DC"),
+        enumPair(SMALL_SIGNAL,"SMALL_SIGNAL"),
+    };
+
     const SimulationType type;
 
     Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
@@ -86,7 +96,7 @@ public:
         this->tranSaveStart = tranSaveStart;
         this->tranStepTime = tranStepTime;
     }
-    void run()
+    void run(std::ostream &dst)
     {
         spiceStream.str("");
         csvStream.str("");
@@ -100,12 +110,12 @@ public:
                 Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
                 Circuit::Math::getConductance(schem, conductance, param, 0.0, 0.0);
                 Circuit::Math::getCurrent(schem, current, conductance, param, 0.0, 0.0);
-                std::cout << conductance << std::endl;
-                std::cout << current << std::endl;
+                std::cerr << conductance << std::endl;
+                std::cerr << current << std::endl;
                 voltage = conductance.inverse() * current;
-                std::cout << voltage << std::endl;
+                std::cerr << voltage << std::endl;
 
-                std::cout << "\t-----Operating Point-----\t\n\n";
+                std::cerr << "\t-----Operating Point-----\t\n\n";
 
                 for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                     if (node_pair.second->getId() != -1)
@@ -130,16 +140,25 @@ public:
                 {
                     Vector<double> current(NUM_NODES, 0.0);
                     Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+                    Matrix<double> inverse(NUM_NODES, NUM_NODES, 0.0);
 
                     Math::getConductance(schem, conductance, param, t, tranStepTime);
                     Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
 
-                    // std::cout << conductance << std::endl;
-                    // std::cout << current << std::endl;
+                    std::cerr << conductance << std::endl;
+                    std::cerr << current << std::endl;
 
-                    voltage = conductance.inverse() * current;
+                    if(NUM_NODES == 1){
+                        inverse = conductance;
+                        inverse[0] = 1.0/inverse[0];
+                    }
+                    else {
+                        inverse = conductance.inverse();
+                    }
+                    
+                    voltage = inverse * current;
 
-                    // std::cout << voltage << std::endl;
+                    std::cerr << voltage << std::endl;
                     
                     for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                         if (node_pair.second->getId() != -1)
@@ -151,8 +170,8 @@ public:
                     spicePrint(param, t, tranStepTime);
                     csvPrint(param, t, tranStepTime);
                 }
-                // std::cout << spiceStream.str();
-                std::cout << csvStream.str();
+                // std::cerr << spiceStream.str();
+                dst << csvStream.str();
             }
         }
     }

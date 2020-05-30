@@ -1,6 +1,6 @@
 bin/*
 build/*
+out/*
+env/*
 !build.sh
 .vscode
-todo.txt
-circuit.csv

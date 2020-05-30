@@ -103,7 +103,7 @@ public:
 
 	void print() const
 	{
-		std::cout << "Node" << name << ":\t" << voltage << "V" << std::endl;
+		std::cerr << "Node" << name << ":\t" << voltage << "V" << std::endl;
 	}
 	std::string getName() const{
 		return name;
@@ -152,7 +152,7 @@ public:
 	}
 	virtual void print(ParamTable * param) const
 	{
-		std::cout << typeid(*this).name() << name << ":\t" << current(param) << "A" << std::endl;
+		std::cerr << typeid(*this).name() << name << ":\t" << current(param) << "A" << std::endl;
 	}
 	virtual ~Component()
 	{

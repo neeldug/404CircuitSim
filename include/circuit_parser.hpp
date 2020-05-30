@@ -36,7 +36,7 @@ private:
 		else if (unitSuffix == "n"){
 			mult = -9;
 		}
-		else if (unitSuffix == "u"){
+		else if (unitSuffix == "u" || unitSuffix == "µ"){
 			mult = -6;
 		}
 		else if (unitSuffix == "m"){
@@ -143,7 +143,7 @@ private:
 				assert( params.size() >= 4 && "Resistor - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				double value = stod( params[3] );
+				double value = parseVal( params[3] );
 				Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
 				break;
 			}
@@ -152,7 +152,7 @@ private:
 				assert( params.size() >= 4 && "Capacitor - too few params");
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				double value = stod( params[3] );
+				double value = parseVal(params[3]);
 				if( params.size() >= 5 ){
 					double DC_init = stod( params[4] );
 					Circuit::Capacitor *r = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, DC_init );
@@ -167,7 +167,7 @@ private:
 				assert( params.size() >= 4 && "Inductor - too few params");
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				double value = stod( params[3] );
+				double value = parseVal( params[3] );
 				if( params.size() >= 5 ){
 					double I_init = stod( params[4] );
 					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );

@@ -97,7 +97,7 @@ public:
 
     double conductance(ParamTable *param) const override
     {
-        return 1 / getValue(param);
+        return 1.0 / getValue(param);
     }
 };
 

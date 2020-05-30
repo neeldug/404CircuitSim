@@ -1,7 +1,7 @@
-* C:\users\sam\My Documents\LTspiceXVII\Draft2.asc
-L1 N001 0 1
-R1 N002 N001 100
-I1 0 N002 SINE(0 0.1 1k)
-.tran 1m
+*Title
+C1 N001 0 1u
+R1 N001 0 100000
+I1 N001 0 50u
+.tran 0 1 0 1u
 .backanno
 .end

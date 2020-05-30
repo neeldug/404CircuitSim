@@ -43,7 +43,7 @@ public:
 	virtual bool isCurrent() const = 0;
 	virtual void print(ParamTable *param) const override
 	{
-		printf("DC - %f | Small signal Amp - %f | ( %f + %f * sin( %f t ) ) \n", DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency);
+		fprintf(stderr, "DC - %f | Small signal Amp - %f | ( %f + %f * sin( %f t ) ) \n", DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency);
 	}
 };
 
