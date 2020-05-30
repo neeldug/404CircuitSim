@@ -11,7 +11,7 @@ int main(){
 		return 1;
 	}
 	Circuit::Schematic* schem = Circuit::Parser::parse( netlist );
-    Circuit::Simulator* sim = new Circuit::Simulator(schem, Circuit::Simulator::SimulationType::TRAN, 5e-3, 0, 0.1e-3);
+    Circuit::Simulator* sim = new Circuit::Simulator(schem, Circuit::Simulator::SimulationType::TRAN, 5e-3, 0, 0.01e-3);
     schem->sims.push_back(sim);
 
     for(auto sims : schem->sims){

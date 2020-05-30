@@ -24,28 +24,33 @@ private:
 	};
 	
 	static double parseVal(const std::string &value ){
-		
 		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
 		if( suffixPos == std::string::npos ){
 			return	std::stod( value );
 		}
 		std::string unitSuffix = value.substr(suffixPos, std::string::npos);
 		int mult;
-
-		if (unitSuffix == "p")
+		if (unitSuffix == "p"){
 			mult = -12;
-		else if (unitSuffix == "n")
-				mult = -9;
-			else if (unitSuffix == "u")
+		}
+		else if (unitSuffix == "n"){
+			mult = -9;
+		}
+		else if (unitSuffix == "u"){
 			mult = -6;
-		else if (unitSuffix == "m")
+		}
+		else if (unitSuffix == "m"){
 			mult = -3;
-		else if (unitSuffix == "k")
+		}
+		else if (unitSuffix == "k"){
 			mult = 3;
-		else if (unitSuffix == "Meg")
+		}
+		else if (unitSuffix == "Meg"){
 			mult = 6;
-		else if (unitSuffix == "G")
+		}
+		else if (unitSuffix == "G"){
 			mult = 9;
+		}
 		else {
 			std::cerr << "Invalid Unit Suffix" << '\n';
 			assert(0);
@@ -82,14 +87,14 @@ private:
 		double SINE_frequency = 0;
 
 		//NOTE Small Signal value
-		std::regex ac("AC (\\w+)");
+		std::regex ac("AC ([a-zA-Z\\d]+)");
 		std::smatch acM;
 		if( regex_search( line, acM, ac ) ){
 			smallSignalAmp = parseVal( acM.str(1) );	
 		}
 		
 		//DC value already variable safe although not implemented
-		std::regex dc("(?:^(?:(?:\\w+ ){3}))(\\d+)");
+		std::regex dc("(?:^(?:(?:[a-zA-Z\\d]+ ){3}))([a-zA-Z\\d]+)");
 		std::smatch dcM;
 		if( regex_search( line, dcM, dc ) ){
 			if( std::isdigit(dcM.str(1)[0])){
@@ -98,9 +103,8 @@ private:
 		}
 
 		//sine function variable safe although not implemented
-		std::regex sine(R"(^(?:(?:\w+ ?){3}) (?:sine\s?\(|SINE\s?\()(?:\s?)(\d+) (\d+) (\d+))");
+		std::regex sine(R"(^(?:(?:\w+ ?){3}) (?:sine\s?\(|SINE\s?\()(?:\s?)([a-zA-Z\d]+) ([a-zA-Z\d]+) ([a-zA-Z\d]+))");
 		std::smatch sineFunc;
-		std::cout<<line<<std::endl;
 		if( regex_search( line, sineFunc, sine ) ){
 			if( std::isdigit(sineFunc.str(1)[0])){
 				SINE_DC_offset = parseVal( sineFunc.str(1) );	
@@ -109,6 +113,7 @@ private:
 				SINE_amplitude = parseVal( sineFunc.str(2) );	
 			}
 			if( std::isdigit(sineFunc.str(3)[0])){
+				std::string val = sineFunc.str(3);
 				SINE_frequency = parseVal( sineFunc.str(3) );	
 			}
 		}

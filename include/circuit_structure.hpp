@@ -140,12 +140,14 @@ public:
 	Node* getNegNode() const{
 		return nodes[1];
 	}
-
-	virtual double current(ParamTable * param) const
+	virtual double getVoltage() const{
+		return getPosNode()->voltage - getNegNode()->voltage;
+	}
+	virtual double current(ParamTable * param, double time=0, double timestep=0) const 
 	{
 		return (nodes[0]->voltage - nodes[1]->voltage) * conductance(param);
 		// Direction of current
-		// assuming node[0] is more positive
+		// assuming node[0] is more positiveW
 	}
 	virtual void print(ParamTable * param) const
 	{

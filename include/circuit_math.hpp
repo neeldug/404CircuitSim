@@ -4,22 +4,22 @@
 class Circuit::Math
 {
 public:
-    static void getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t);
-    static void getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t = 0);
+    static void getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step);
+    static void getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step);
 };
 
-void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t)
+void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
 {
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp) {
         if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
         {
             if (cap->getPosNode()->getId() != -1)
-                current[cap->getPosNode()->getId()] += cap->getCurrentSource(param, t);
+                current[cap->getPosNode()->getId()] += cap->getCurrentSource(param, step);
             if (cap->getNegNode()->getId() != -1)
-                current[cap->getNegNode()->getId()] -= cap->getCurrentSource(param, t);
+                current[cap->getNegNode()->getId()] -= cap->getCurrentSource(param, step);
         }
 
-        if (comp.second->isSource())
+        else if (comp.second->isSource())
         {
             Circuit::Source *source = static_cast<Circuit::Source *>(comp.second);
             if (source->isCurrent())
@@ -66,7 +66,7 @@ void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &curren
     });
 }
 
-void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t)
+void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
 {
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp) {
         if (!comp.second->isSource())
@@ -77,7 +77,7 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                     if (Resistor *res = dynamic_cast<Resistor *>(comp.second))
                         conductance[node->getId()][node->getId()] += res->conductance(param);
                     else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
-                        conductance[node->getId()][node->getId()] += cap->getConductance(param, t);
+                        conductance[node->getId()][node->getId()] += cap->getConductance(param, t ==0 ? 0 : step);
                 }
             });
 
@@ -92,8 +92,8 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                     }
                     else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
                     {
-                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= cap->getConductance(param, t);
-                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= cap->getConductance(param, t);
+                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= cap->getConductance(param, t ==0 ? 0 : step);
+                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= cap->getConductance(param, t ==0 ? 0 : step);
                     }
                 }
             }

@@ -24,15 +24,15 @@ protected:
 		this->SINE_DC_offset = SINE_DC_offset;
 		this->SINE_amplitude = SINE_amplitude;
 		this->SINE_frequency = SINE_frequency;
-
-		function = (double)DC + (double)SINE_DC_offset + ((double)SINE_amplitude) * sin((double)SINE_frequency * timeVar);
+		double twoPi = 2.0 * 3.1415926535;
+		function = DC + SINE_DC_offset + (SINE_amplitude) * sin( twoPi * SINE_frequency * timeVar);
 	}
 	Source(const std::string &name, double value, const Circuit::Node *pos, const Circuit::Node *neg, Schematic *schem) : Source(name, value, 0, 0, 0, 0, schem)
 	{
 	}
 
 public:
-	double getSourceOutput(ParamTable *param, double t)
+	double getSourceOutput(ParamTable *param, double t) const
 	{
 		return function[timeVar == t];
 	}
@@ -57,8 +57,8 @@ class Circuit::Current : public Circuit::Source
 public:
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{
-
-		schem->setupConnections2Node(this, nodePos, nodeNeg);
+		//NOTE for some reason swapped for current sources order
+		schem->setupConnections2Node(this, nodeNeg, nodePos);
 	}
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem) : Current(name, DC, nodePos, nodeNeg, 0, 0, 0, 0, schem)
 	{
@@ -67,9 +67,9 @@ public:
 	{
 		return true;
 	}
-	double current(ParamTable *param) const override
+	double current(ParamTable *param, double t, double timestep=0) const override
 	{
-		return getValue(param);
+		return getSourceOutput(param, t);
 	}
 };
 
@@ -87,7 +87,7 @@ public:
 	{
 		return false;
 	}
-	double current(ParamTable *param) const override
+	double current(ParamTable *param, double t, double timestep=0) const override
 	{
 		// TODO - voltage source current
 		return getValue(param);

@@ -1,8 +1,13 @@
 #ifndef GUARD_CIRCUIT_LINEAR_HPP
 #define GUARD_CIRCUIT_LINEAR_HPP
 
+#include <limits>
+
 class Circuit::Capacitor : public Component
 {
+private:
+    //REVIEW LEAKING MEMORY
+    double i_prev = 0.0;
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;
@@ -15,20 +20,29 @@ public:
         this->DC_init = DC_init;
     }
 
-    double getConductance(ParamTable *param, double timestep)
+    double getConductance(ParamTable *param, double timestep) const
     {
+        if( timestep == 0 ){
+            return std::numeric_limits<double>::max();
+        }
         return value / timestep;
     }
 
     double getCurrentSource(ParamTable *param, double timestep)
     {
-        return getConductance(param, timestep) * (getPosNode()->voltage - getNegNode()->voltage);
+        double i_pres = getConductance(param, timestep) * (getPosNode()->voltage - getNegNode()->voltage);
+        i_prev = i_pres;
+        return i_pres;
     }
 
     double conductance(ParamTable *param) const override
     {
-        // TODO - ??
+        assert(false && "UNSAFE____Invalid call for conductance of capacitor!!!!");
         return 0.0;
+    }
+
+    double current (ParamTable *param, double time, double timestep) const override {
+        return (getVoltage())*getConductance(param, timestep) - i_prev;
     }
 };
 

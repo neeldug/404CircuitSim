@@ -11,46 +11,59 @@ private:
 
     std::stringstream spiceStream;
     std::stringstream csvStream;
-    
-    void spicePrintTitle(){
+
+    void spicePrintTitle()
+    {
         spiceStream << "Time\t";
-        for(auto node_pair : schem->nodes){
+        for (auto node_pair : schem->nodes)
+        {
             spiceStream << "V(" << node_pair.first << ")\t";
         }
-        for(auto comp_pair : schem->comps){
+        for (auto comp_pair : schem->comps)
+        {
             spiceStream << "I(" << comp_pair.first << ")\t";
         }
         spiceStream << "\n";
     }
-    void csvPrintTitle(){
+    void csvPrintTitle()
+    {
         csvStream << "Time,";
-        for(auto node_pair : schem->nodes){
+        for (auto node_pair : schem->nodes)
+        {
             csvStream << "V(" << node_pair.first << "),";
         }
-        for(auto comp_pair : schem->comps){
+        for (auto comp_pair : schem->comps)
+        {
             csvStream << "I(" << comp_pair.first << "),";
         }
+        csvStream << "\n";
     }
-    void spicePrint( ParamTable *param, double time ){
-        spiceStream << time<<"\t";
-        for(auto node_pair : schem->nodes){
+    void spicePrint(ParamTable *param, double time, double timestep)
+    {
+        spiceStream << time << "\t";
+        for (auto node_pair : schem->nodes)
+        {
             spiceStream << node_pair.second->voltage << "\t";
         }
-        for(auto comp_pair : schem->comps){
-            spiceStream << comp_pair.second->current(param) << "\t";
+        for (auto comp_pair : schem->comps)
+        {
+            spiceStream << comp_pair.second->current(param, time, timestep) << "\t";
         }
         spiceStream << "\n";
     }
-    void csvPrint( ParamTable *param, double time ){
-        csvStream << time<<",";
-        for(auto node_pair : schem->nodes){
-            csvStream << "V(" << node_pair.second->voltage << "),";
+    void csvPrint(ParamTable *param, double time, double timestep)
+    {
+        csvStream << time << ",";
+        for (auto node_pair : schem->nodes)
+        {
+            csvStream << node_pair.second->voltage << ",";
         }
-        for(auto comp_pair : schem->comps){
-            csvStream << "I(" << comp_pair.second->current(param) << "),";
+        for (auto comp_pair : schem->comps)
+        {
+            csvStream << comp_pair.second->current(param, time, timestep) << ",";
         }
+        csvStream << "\n";
     }
-
 
 public:
     enum SimulationType
@@ -83,8 +96,8 @@ public:
                 Vector<double> voltage(NUM_NODES, 0.0);
                 Vector<double> current(NUM_NODES, 0.0);
                 Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
-                Circuit::Math::getConductance(schem, conductance, param);
-                Circuit::Math::getCurrent(schem, current, conductance, param, 0.0);
+                Circuit::Math::getConductance(schem, conductance, param, 0.0, 0.0);
+                Circuit::Math::getCurrent(schem, current, conductance, param, 0.0, 0.0);
                 // std::cout << conductance << std::endl;
                 // std::cout << current << std::endl;
                 voltage = conductance.inverse() * current;
@@ -108,15 +121,24 @@ public:
             {
                 const int NUM_NODES = schem->nodes.size() - 1;
                 Vector<double> voltage(NUM_NODES, 0.0);
-                Vector<double> current(NUM_NODES, 0.0);
-                Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+
                 spicePrintTitle();
-                for (double t = 0; t <= tranStopTime; t += tranStepTime )
+                csvPrintTitle();
+                for (double t = 0; t <= tranStopTime; t += tranStepTime)
                 {
-                    Math::getConductance(schem, conductance, param);
-                    Math::getCurrent(schem, current, conductance, param, t);
+                    Vector<double> current(NUM_NODES, 0.0);
+                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+
+                    Math::getConductance(schem, conductance, param, t, tranStepTime);
+                    Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
+
+                    // std::cout << conductance << std::endl;
+                    // std::cout << current << std::endl;
 
                     voltage = conductance.inverse() * current;
+
+                    // std::cout << voltage << std::endl;
+                    
                     for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                         if (node_pair.second->getId() != -1)
                         {
@@ -124,9 +146,11 @@ public:
                         }
                     });
 
-                    spicePrint(param, t);
+                    spicePrint(param, t, tranStepTime);
+                    csvPrint(param, t, tranStepTime);
                 }
-                std::cout << spiceStream.str();
+                // std::cout << spiceStream.str();
+                std::cout << csvStream.str();
             }
         }
     }
