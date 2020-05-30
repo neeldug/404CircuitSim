@@ -1,10 +1,56 @@
 #ifndef GUARD_CIRCUIT_SIMULATOR_HPP
 #define GUARD_CIRCUIT_SIMULATOR_HPP
-
+#include <sstream>
 class Circuit::Simulator
 {
 private:
     Schematic *schem;
+    double tranStopTime;
+    double tranSaveStart;
+    double tranStepTime;
+
+    std::stringstream spiceStream;
+    std::stringstream csvStream;
+    
+    void spicePrintTitle(){
+        spiceStream << "Time\t";
+        for(auto node_pair : schem->nodes){
+            spiceStream << "V(" << node_pair.first << ")\t";
+        }
+        for(auto comp_pair : schem->comps){
+            spiceStream << "I(" << comp_pair.first << ")\t";
+        }
+        spiceStream << "\n";
+    }
+    void csvPrintTitle(){
+        csvStream << "Time,";
+        for(auto node_pair : schem->nodes){
+            csvStream << "V(" << node_pair.first << "),";
+        }
+        for(auto comp_pair : schem->comps){
+            csvStream << "I(" << comp_pair.first << "),";
+        }
+    }
+    void spicePrint( ParamTable *param, double time ){
+        spiceStream << time<<"\t";
+        for(auto node_pair : schem->nodes){
+            spiceStream << node_pair.second->voltage << "\t";
+        }
+        for(auto comp_pair : schem->comps){
+            spiceStream << comp_pair.second->current(param) << "\t";
+        }
+        spiceStream << "\n";
+    }
+    void csvPrint( ParamTable *param, double time ){
+        csvStream << time<<",";
+        for(auto node_pair : schem->nodes){
+            csvStream << "V(" << node_pair.second->voltage << "),";
+        }
+        for(auto comp_pair : schem->comps){
+            csvStream << "I(" << comp_pair.second->current(param) << "),";
+        }
+    }
+
 
 public:
     enum SimulationType
@@ -18,9 +64,17 @@ public:
     const SimulationType type;
 
     Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
+    Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart, double tranStepTime) : Simulator(schem, type)
+    {
 
+        this->tranStopTime = tranStopTime;
+        this->tranSaveStart = tranSaveStart;
+        this->tranStepTime = tranStepTime;
+    }
     void run()
     {
+        spiceStream.str("");
+        csvStream.str("");
         for (ParamTable *param : schem->tables)
         {
             if (type == OP)
@@ -52,18 +106,27 @@ public:
             }
             else if (type == TRAN)
             {
-                double step = 10;
-                double stop = 100;
-                for (double t = 0; t += 10; t <= stop)
+                const int NUM_NODES = schem->nodes.size() - 1;
+                Vector<double> voltage(NUM_NODES, 0.0);
+                Vector<double> current(NUM_NODES, 0.0);
+                Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+                spicePrintTitle();
+                for (double t = 0; t <= tranStopTime; t += tranStepTime )
                 {
-                    const int NUM_NODES = schem->nodes.size() - 1;
-                    Vector<double> voltage(NUM_NODES, 0.0);
-                    Vector<double> current(NUM_NODES, 0.0);
-                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+                    Math::getConductance(schem, conductance, param);
+                    Math::getCurrent(schem, current, conductance, param, t);
 
-                    
+                    voltage = conductance.inverse() * current;
+                    for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+                        if (node_pair.second->getId() != -1)
+                        {
+                            node_pair.second->voltage = voltage[node_pair.second->getId()];
+                        }
+                    });
 
+                    spicePrint(param, t);
                 }
+                std::cout << spiceStream.str();
             }
         }
     }

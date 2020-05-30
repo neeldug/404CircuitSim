@@ -50,6 +50,19 @@ private:
 	}
 	int start = -1;
 	void setupConnectionNode( Circuit::Component *linear, const std::string &node);
+	// std::map<std::string, Component*> tranMask;
+	// void applyMask(){
+	// 	for(std::pair<std::string, Component *> comp_pair : comps){
+	// 		if(Resistor* res = dynamic_cast<Resistor *>(comp_pair.second)){
+	// 			tranMask.insert(comp_pair);
+	// 		}
+	// 		else if(Capacitor *cap = dynamic_cast<Capacitor *>(comp_pair.second)){
+	// 			// resistor
+	// 			Resistor *res = new Resistor(comp_pair.first + "_R", , cap->getNegNode()->getName(), cap->getNegNode()->getName(), )
+	// 			// current source
+	// 		}
+	// 	}
+	// }
 public:
 	Schematic();
 	std::function<int()> id;

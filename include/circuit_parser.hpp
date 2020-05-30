@@ -35,8 +35,8 @@ private:
 		if (unitSuffix == "p")
 			mult = -12;
 		else if (unitSuffix == "n")
-			mult = -9;
-		else if (unitSuffix == "u")
+				mult = -9;
+			else if (unitSuffix == "u")
 			mult = -6;
 		else if (unitSuffix == "m")
 			mult = -3;

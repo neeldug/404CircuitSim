@@ -6,18 +6,29 @@ class Circuit::Capacitor : public Component
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;
-    Capacitor(const std::string& name, double value, const std::string& nodeA, const std::string& nodeB, Schematic* schem) : Component(name, value, schem)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
     {
-        schem->setupConnections2Node( this, nodeA, nodeB );
+        schem->setupConnections2Node(this, nodeA, nodeB);
     }
-    Capacitor(const std::string& name, double value, const std::string& nodeA, const std::string& nodeB, Schematic* schem, double DC_init) : Capacitor(name, value, nodeA, nodeB, schem)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init) : Capacitor(name, value, nodeA, nodeB, schem)
     {
         this->DC_init = DC_init;
     }
-    double conductance(ParamTable * param) const override
+
+    double getConductance(ParamTable *param, double timestep)
     {
-        // TODO
-        return 1 / value;
+        return value / timestep;
+    }
+
+    double getCurrentSource(ParamTable *param, double timestep)
+    {
+        return getConductance(param, timestep) * (getPosNode()->voltage - getNegNode()->voltage);
+    }
+
+    double conductance(ParamTable *param) const override
+    {
+        // TODO - ??
+        return 0.0;
     }
 };
 
@@ -26,16 +37,16 @@ class Circuit::Inductor : public Component
 public:
     //NOTE I_init is initial current in inductor
     double I_init;
-    Inductor(const std::string& name, double value, const std::string& nodeA, const std::string& nodeB, Schematic* schem) : Component( name, value, schem )
+    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
     {
         //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
     }
-    Inductor(const std::string& name, double value, const std::string& nodeA, const std::string& nodeB, Schematic *schem, double I_init) : Inductor(name, value, nodeA, nodeB, schem)
+    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init) : Inductor(name, value, nodeA, nodeB, schem)
     {
         this->I_init = I_init;
     }
-    double conductance(ParamTable * param) const override
+    double conductance(ParamTable *param) const override
     {
         // TODO
         return 1 / value;
@@ -45,11 +56,12 @@ public:
 class Circuit::Resistor : public Component
 {
 public:
-    Resistor(const std::string& name, double value, const std::string& nodeA, const std::string& nodeB, Schematic* schem) : Component(name, value, schem)
+    Resistor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
     {
-        schem->setupConnections2Node( this, nodeA, nodeB );
-    };
-    double conductance(ParamTable * param) const override
+        schem->setupConnections2Node(this, nodeA, nodeB);
+    }
+
+    double conductance(ParamTable *param) const override
     {
         return 1 / getValue(param);
     }
