@@ -19,6 +19,14 @@ void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &curren
                 current[cap->getNegNode()->getId()] -= cap->getCurrentSource(param, step);
         }
 
+        else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
+        {
+            if (ind->getPosNode()->getId() != -1)
+                current[ind->getPosNode()->getId()] += ind->getCurrentSource(param, step);
+            if (ind->getNegNode()->getId() != -1)
+                current[ind->getNegNode()->getId()] -= ind->getCurrentSource(param, step);
+        }
+
         else if (comp.second->isSource())
         {
             Circuit::Source *source = static_cast<Circuit::Source *>(comp.second);
@@ -77,7 +85,11 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                     if (Resistor *res = dynamic_cast<Resistor *>(comp.second))
                         conductance[node->getId()][node->getId()] += res->conductance(param);
                     else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
-                        conductance[node->getId()][node->getId()] += cap->getConductance(param, t ==0 ? 0 : step);
+                        conductance[node->getId()][node->getId()] += cap->getConductance(param, t == 0 ? 0 : step);
+                    else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
+                    {
+                        conductance[node->getId()][node->getId()] += ind->getConductance(param, t == 0 ? 0 : step);
+                    }
                 }
             });
 
@@ -92,8 +104,13 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                     }
                     else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
                     {
-                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= cap->getConductance(param, t ==0 ? 0 : step);
-                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= cap->getConductance(param, t ==0 ? 0 : step);
+                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= cap->getConductance(param, t == 0 ? 0 : step);
+                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= cap->getConductance(param, t == 0 ? 0 : step);
+                    }
+                    else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
+                    {
+                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= ind->getConductance(param, t == 0 ? 0 : step);
+                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= ind->getConductance(param, t == 0 ? 0 : step);
                     }
                 }
             }

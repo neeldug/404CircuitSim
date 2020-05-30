@@ -87,14 +87,14 @@ private:
 		double SINE_frequency = 0;
 
 		//NOTE Small Signal value
-		std::regex ac("AC ([a-zA-Z\\d]+)");
+		std::regex ac("AC ([a-zA-Z.\\d]+)");
 		std::smatch acM;
 		if( regex_search( line, acM, ac ) ){
 			smallSignalAmp = parseVal( acM.str(1) );	
 		}
 		
 		//DC value already variable safe although not implemented
-		std::regex dc("(?:^(?:(?:[a-zA-Z\\d]+ ){3}))([a-zA-Z\\d]+)");
+		std::regex dc("(?:^(?:(?:[a-zA-Z.\\d]+ ){3}))([a-zA-Z.\\d]+)");
 		std::smatch dcM;
 		if( regex_search( line, dcM, dc ) ){
 			if( std::isdigit(dcM.str(1)[0])){
@@ -103,7 +103,7 @@ private:
 		}
 
 		//sine function variable safe although not implemented
-		std::regex sine(R"(^(?:(?:\w+ ?){3}) (?:sine\s?\(|SINE\s?\()(?:\s?)([a-zA-Z\d]+) ([a-zA-Z\d]+) ([a-zA-Z\d]+))");
+		std::regex sine(R"(^(?:(?:\w+ ?){3}) (?:sine\s?\(|SINE\s?\()(?:\s?)([a-z.A-Z\d]+) ([a-z.A-Z\d]+) ([a-z.A-Z\d]+))");
 		std::smatch sineFunc;
 		if( regex_search( line, sineFunc, sine ) ){
 			if( std::isdigit(sineFunc.str(1)[0])){

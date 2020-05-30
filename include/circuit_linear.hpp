@@ -5,9 +5,6 @@
 
 class Circuit::Capacitor : public Component
 {
-private:
-    //REVIEW LEAKING MEMORY
-    double i_prev = 0.0;
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;
@@ -30,7 +27,7 @@ public:
 
     double getCurrentSource(ParamTable *param, double timestep)
     {
-        double i_pres = getConductance(param, timestep) * (getPosNode()->voltage - getNegNode()->voltage);
+        double i_pres = getConductance(param, timestep) * getVoltage();
         i_prev = i_pres;
         return i_pres;
     }
@@ -60,10 +57,33 @@ public:
     {
         this->I_init = I_init;
     }
+
     double conductance(ParamTable *param) const override
     {
-        // TODO
-        return 1 / value;
+        assert(false && "UNSAFE____Invalid call for conductance of inductor!!!!");
+        return 0.0;
+    }
+    
+    //REVIEW possible refractor of extra abstract class between
+    //component and inductor/capacitor
+    double getConductance(ParamTable *param, double timestep) const
+    {
+        double min_conductance = 1e-12;
+        if(timestep == 0){
+            return min_conductance;
+        }
+        return timestep/value;
+    }
+
+    double getCurrentSource(ParamTable *param, double timestep)
+    {
+        double i_pres = getConductance(param, timestep) * getVoltage();
+        i_prev = i_pres;
+        return i_pres;
+    }
+
+    double current (ParamTable *param, double time, double timestep) const override {
+        return (getVoltage())*getConductance(param, timestep) - i_prev;
     }
 };
 

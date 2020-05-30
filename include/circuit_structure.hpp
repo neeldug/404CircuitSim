@@ -122,6 +122,7 @@ public:
 class Circuit::Component
 {
 protected:
+	double i_prev = 0.0;
 	double value;
 	Schematic *schem;
 	Component( const std::string& name, double value, Schematic* schem ) : name(name), value(value), schem(schem) {}

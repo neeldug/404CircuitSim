@@ -77,9 +77,11 @@ public:
     const SimulationType type;
 
     Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
-    Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart, double tranStepTime) : Simulator(schem, type)
+    Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart=0, double tranStepTime=0) : Simulator(schem, type)
     {
-
+        if( tranStepTime == 0 ){
+            tranStepTime = tranStopTime/100.0;
+        }
         this->tranStopTime = tranStopTime;
         this->tranSaveStart = tranSaveStart;
         this->tranStepTime = tranStepTime;
@@ -98,10 +100,10 @@ public:
                 Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
                 Circuit::Math::getConductance(schem, conductance, param, 0.0, 0.0);
                 Circuit::Math::getCurrent(schem, current, conductance, param, 0.0, 0.0);
-                // std::cout << conductance << std::endl;
-                // std::cout << current << std::endl;
+                std::cout << conductance << std::endl;
+                std::cout << current << std::endl;
                 voltage = conductance.inverse() * current;
-                // std::cout << voltage << std::endl;
+                std::cout << voltage << std::endl;
 
                 std::cout << "\t-----Operating Point-----\t\n\n";
 
