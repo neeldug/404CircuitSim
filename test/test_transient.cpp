@@ -5,7 +5,7 @@
 int main(){
 
 	std::ifstream netlist;
-	netlist.open("test/SpiceNetlists/inductorExample.cir");
+	netlist.open("test/SpiceNetlists/voltageSourceDC.cir");
 	if(netlist.fail()){
 		std::cout<<"File Not Found!"<<std::endl;
 		return 1;
