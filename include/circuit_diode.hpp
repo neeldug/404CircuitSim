@@ -57,27 +57,27 @@ public:
 
 };
 
-class Circuit::Diode::ParasiticCapacitance : public Circuit::Capacitor{
-private:
-	Circuit::Diode *diode;
-public:
-	void setDiodeOwner( Diode *d );
-	void setCap( double vGuess ){
-		this->value = diode->CJ0 /pow(1.0 - vGuess/diode->VJ, 0.5);
-	}
-	Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d );
-};
+// class Circuit::Diode::ParasiticCapacitance : public Circuit::Capacitor{
+// private:
+// 	Circuit::Diode *diode;
+// public:
+// 	void setDiodeOwner( Diode *d );
+// 	void setCap( double vGuess ){
+// 		this->value = diode->CJ0 /pow(1.0 - vGuess/diode->VJ, 0.5);
+// 	}
+// 	Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d );
+// };
 
 Circuit::Diode::Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
 		schem->setupConnections2Node( this, nodeA, nodeB );
-		para_cap = new ParasiticCapacitance();
+		// para_cap = new ParasiticCapacitance();
 }
-double Circuit::Diode::getConductance( ParamTable * param, double timestep, double vGuess ){
-	para_cap->setCap(vGuess);
-	return this->GMIN;
-}
-Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d ){
-	diode = diode;
-}
+// double Circuit::Diode::getConductance( ParamTable * param, double timestep, double vGuess ){
+// 	para_cap->setCap(vGuess);
+// 	return this->GMIN;
+// }
+// Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d ){
+// 	diode = diode;
+// }
 
 #endif

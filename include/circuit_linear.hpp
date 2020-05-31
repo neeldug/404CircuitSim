@@ -13,6 +13,8 @@ protected:
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;
+    Current* opReplace = new Current();
+    
     Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
@@ -24,8 +26,8 @@ public:
 
     double getConductance(ParamTable *param, double timestep) const
     {
-        double min_conductance = 1e-12;
-        double max_conductance = 1e12;
+        double min_conductance = 1e-13;
+        double max_conductance = 1e13;
 
         if (timestep == -1)
         {
@@ -57,11 +59,10 @@ class Circuit::Inductor : public Component
 public:
     //NOTE I_init is initial current in inductor
     double I_init;
+    Voltage *opReplace = new Voltage();
     Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
-    {
         //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
-    }
     Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init) : Inductor(name, value, nodeA, nodeB, schem)
     {
         this->I_init = I_init;
@@ -72,8 +73,8 @@ public:
     //REVIEW should probably change this
     double getConductance(ParamTable *param, double timestep) const
     {
-        double min_conductance = 1e-12;
-        double max_conductance = 1e12;
+        double min_conductance = 1e-13;
+        double max_conductance = 1e13;
 
         if (timestep = -1)
         {

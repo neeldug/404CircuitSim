@@ -29,11 +29,9 @@ void solverFunction()
 		std::cerr << "failed to solve" << std::endl;
 		return;
 	}
+
+	auto y = A.block(0,0,1,1);
 	std::cout << x << std::endl;
-
-	A.block(0,0,1,1) = 100;
-
-	std::cout << A.block(0, 0, 1, 1) << std::endl;
 }
 
 int main()

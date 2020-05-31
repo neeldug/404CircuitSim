@@ -12,7 +12,7 @@ protected:
 	double SINE_DC_offset = 0;
 	double SINE_amplitude = 0;
 	double SINE_frequency = 0;
-
+	Source() = default;
 	Source(const std::string &name, double DC, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Component(name, DC, schem)
 	{
 
@@ -45,6 +45,12 @@ public:
 
 class Circuit::Current : public Circuit::Source
 {
+	friend class Capacitor;
+private:
+	//Note to be used by 
+	Current(){
+		this->DC = 0;
+	}
 public:
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{
@@ -66,6 +72,11 @@ public:
 
 class Circuit::Voltage : public Circuit::Source
 {
+	friend class Inductor;
+private:
+	Voltage(){
+		DC = 0;
+	}
 public:
 	Voltage(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{

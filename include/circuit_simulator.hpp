@@ -108,8 +108,8 @@ public:
                 const int NUM_NODES = schem->nodes.size() - 1;
                 Eigen::VectorXd voltage(NUM_NODES);
                 Eigen::VectorXd current(NUM_NODES);
-                Eigen::SparseMatrix<double> conductance(NUM_NODES, NUM_NODES);
-                Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+                Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+                Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 
                 Circuit::Math::getConductance(schem, conductance, param, 0, -1);
                 Circuit::Math::getCurrent(schem, current, conductance, param, 0, -1);
@@ -117,8 +117,13 @@ public:
                 std::cerr << conductance << std::endl;
                 std::cerr << current << std::endl;
 
-                solver.compute(conductance);
+                Eigen::SparseMatrix<double> sparse = conductance.sparseView();
+                sparse.makeCompressed();
+                solver.analyzePattern(sparse);
+                solver.factorize(sparse);
                 voltage = solver.solve(current);
+
+                std::cerr << voltage << std::endl;
 
                 dst << "\t-----Operating Point-----\t\n\n";
 
