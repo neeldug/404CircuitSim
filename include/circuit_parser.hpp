@@ -237,8 +237,34 @@ private:
 		}
 
 	}
-	static void parseCommand( const std::string& comp, Circuit::Schematic* schem ){
+	static void parseCommand( const std::string& cmd, Circuit::Schematic* schem ){
+		schem->simulationCommands.push_back( cmd );
+		std::stringstream ss( cmd );
+		std::vector<std::string> params;
+		std::string param;
+		while(ss>>param){
+			params.push_back(param);
+		}
 
+		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
+		if( params[0] == ".STEP" ){
+			std::cerr<<"step"<<std::endl;
+		}
+		else if( params[0] == ".TRAN"){
+			std::cerr<<"tran"<<std::endl;
+			assert(params.size() == 5 && "Incorrect number of parameters in transient command");
+			double stop = parseVal( params[2] );
+			double start = parseVal( params[3] );
+			double step = parseVal( params[4] );
+			
+			std::cerr<<stop<<" "<<start<<" "<<step<<std::endl;
+			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN, stop, start, step));
+			schem->simulationCommands.push_back( cmd );
+		}
+		else if( params[0] == ".op"){
+			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN));
+		}
+		
 	}
 public:
 	
@@ -250,7 +276,6 @@ public:
 
 
 		std::string inputLine;
-		std::vector<std::string> netlist;
 
 		Circuit::Schematic *schem = new Schematic();
 		if( std::getline( inputStream, inputLine ) ){
@@ -263,11 +288,10 @@ public:
 				break;
 			}
 			if( inputLine[0] != '*' || inputLine[0] != '.'){
-				netlist.push_back( inputLine );
 				addComponent( inputLine, schem );
 			}
 			if( inputLine[0] == '.'){
-
+				parseCommand(inputLine, schem);
 			}
 		}
 		assert( endStatement && "No end statement present in netlist");
