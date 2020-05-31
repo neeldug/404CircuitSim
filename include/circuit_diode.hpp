@@ -7,10 +7,10 @@ private:
 	const double GMIN = 1e-10;
 	const double V_T = 25e-3;
 
+
+public:
 	class ParasiticCapacitance;
 	ParasiticCapacitance* para_cap;
-public:
-	
 	//REVIEW will probably have to make these doubles and might make this a nested class
 	double IS=0.1; //also stored in value (Component base class)
 	double RS=16;
@@ -37,8 +37,10 @@ public:
 	double getConductance( ParamTable * param, double timestep ) const override
     {
 		return GMIN;
-    }	//NOTE
-	double getConductance(  ParamTable * param, double timestep, double vGuess  );
+    }
+	double getConductance(  ParamTable * param, double timestep, double vGuess  ){
+		para_cap
+	}
 	double getCurrentSource( ParamTable *param, double time, double timestep, double vGuess ){
 		double shockley;
 		double exponentialBreakdown;
@@ -54,30 +56,36 @@ public:
 	std::string getModelName(){
 		return modelName;
 	}
+	~Diode(){
+		delete para_cap;
+	}
 
 };
 
-// class Circuit::Diode::ParasiticCapacitance : public Circuit::Capacitor{
-// private:
-// 	Circuit::Diode *diode;
-// public:
-// 	void setDiodeOwner( Diode *d );
-// 	void setCap( double vGuess ){
-// 		this->value = diode->CJ0 /pow(1.0 - vGuess/diode->VJ, 0.5);
-// 	}
-// 	Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d );
-// };
+class Circuit::Diode::ParasiticCapacitance : public Circuit::Capacitor{
+private:
+	Circuit::Diode *diode;
+public:
+	ParasiticCapacitance( Circuit::Diode *d );
+	void setDiodeOwner( Diode *d );
+	void setCap( double vGuess ){
+		this->value = diode->CJ0 /pow(1.0 - vGuess/diode->VJ, 0.5);
+	}
+	~ParasiticCapacitance(){
+		delete diode;
+	}
+};
 
 Circuit::Diode::Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
 		schem->setupConnections2Node( this, nodeA, nodeB );
 		// para_cap = new ParasiticCapacitance();
 }
-// double Circuit::Diode::getConductance( ParamTable * param, double timestep, double vGuess ){
-// 	para_cap->setCap(vGuess);
-// 	return this->GMIN;
-// }
-// Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d ){
-// 	diode = diode;
-// }
+double Circuit::Diode::getConductance( ParamTable * param, double timestep, double vGuess ){
+	para_cap->setCap(vGuess);
+	return this->GMIN;
+}
+Circuit::Diode::ParasiticCapacitance::ParasiticCapacitance( Circuit::Diode *diode ){
+	this->diode = diode;
+}
 
 #endif

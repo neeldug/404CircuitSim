@@ -28,6 +28,8 @@ namespace Circuit
 	class Parser;
 	class Simulator;
 	class Math;
+	class LC;
+	class Diode;
 	struct ParamTable;
 } // namespace Circuit
 
