@@ -36,10 +36,6 @@ public:
 		assert( params.size() == 6 && "Incorrect number of diode params" );
 		value = IS;
 	}
-	double conductance(ParamTable * param) const override
-    {
-        assert( false && "No conductance for diode yet");
-    }
 
 	std::string getModelName(){
 		return modelName;

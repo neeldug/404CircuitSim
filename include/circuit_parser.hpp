@@ -261,7 +261,7 @@ private:
 			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN, stop, start, step));
 			schem->simulationCommands.push_back( cmd );
 		}
-		else if( params[0] == ".op"){
+		else if( params[0] == ".OP"){
 			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::OP));
 		}
 		

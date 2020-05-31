@@ -22,7 +22,14 @@ public:
 
     double getConductance(ParamTable *param, double timestep) const
     {
+        double min_conductance = 1e-12;
         double max_conductance = 1e12;
+
+        if (timestep == -1)
+        {
+            return min_conductance;
+        }
+
         if (timestep == 0)
         {
             return max_conductance;
@@ -58,9 +65,18 @@ public:
         this->I_init = I_init;
     }
 
+    //NOTE
+    //If timesetp == -1 Simiulation mode op
+    //REVIEW should probably change this
     double getConductance(ParamTable *param, double timestep) const
     {
         double min_conductance = 1e-12;
+        double max_conductance = 1e12;
+
+        if (timestep = -1)
+        {
+            return max_conductance;
+        }
         if (timestep == 0)
         {
             return min_conductance;
@@ -89,7 +105,7 @@ public:
         schem->setupConnections2Node(this, nodeA, nodeB);
     }
 
-    double getConductance(ParamTable *param, double time=0) const override
+    double getConductance(ParamTable *param, double time = 0) const override
     {
         return 1.0 / getValue(param);
     }

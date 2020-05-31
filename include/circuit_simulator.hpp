@@ -107,27 +107,41 @@ public:
             {
                 const int NUM_NODES = schem->nodes.size() - 1;
                 Vector<double> voltage(NUM_NODES, 0.0);
-                Vector<double> current(NUM_NODES, 0.0);
-                Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
-                Circuit::Math::getConductance(schem, conductance, param, 0.0, 0.0);
-                Circuit::Math::getCurrent(schem, current, conductance, param, 0.0, 0.0);
-                std::cerr << conductance << std::endl;
-                std::cerr << current << std::endl;
-                voltage = conductance.inverse() * current;
-                std::cerr << voltage << std::endl;
 
-                std::cerr << "\t-----Operating Point-----\t\n\n";
+                for (int i = 0; i < 2; i++)
+                {
+                    Vector<double> current(NUM_NODES, 0.0);
+                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+                    Circuit::Math::getConductance(schem, conductance, param, 0, -1);
+                    Circuit::Math::getCurrent(schem, current, conductance, param, 0, -1);
+
+                    std::cerr << conductance << std::endl;
+                    std::cerr << current << std::endl;
+
+                    std::cerr << conductance.inverse() << std::endl;
+
+                    voltage = conductance.inverse() * current;
+
+                    for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+                        if (node_pair.second->getId() != -1)
+                        {
+                            node_pair.second->voltage = voltage[node_pair.second->getId()];
+                        }
+                    });
+                }
+
+                dst << "\t-----Operating Point-----\t\n\n";
 
                 for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                     if (node_pair.second->getId() != -1)
                     {
                         node_pair.second->voltage = voltage[node_pair.second->getId()];
-                        printf("V(%s)\t\t%f\tnode_voltage\n", node_pair.first.c_str(), node_pair.second->voltage);
+                        dst << "V(" << node_pair.first << ")\t\t" << node_pair.second->voltage << "\tnode_voltage\n";
                     }
                 });
 
                 for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp_pair) {
-                    printf("I(%s)\t\t%f\tdevice_current\n", comp_pair.first.c_str(), comp_pair.second->current(param));
+                    dst << "I(" << comp_pair.first << ")\t\t" << comp_pair.second->getCurrent(param, 0, -1) << "\tdevice_current\n";
                 });
             }
             else if (type == TRAN)
@@ -146,7 +160,6 @@ public:
                     Math::getConductance(schem, conductance, param, t, tranStepTime);
 
                     std::cerr << conductance << std::endl;
-
 
                     Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
 

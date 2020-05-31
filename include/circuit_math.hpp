@@ -8,7 +8,7 @@ public:
     static void getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step);
 };
 
-void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
+void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t=0, double step=0)
 {
     // helper function
     auto addCurrentToNode = [&](int nodeId, double cur) {
@@ -76,7 +76,7 @@ void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &curren
     });
 }
 
-void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
+void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t=0, double step=0)
 {
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](const std::pair<std::string, Circuit::Component *> comp_pair) {
         if (!comp_pair.second->isSource())
@@ -85,7 +85,7 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
             std::for_each(comp_pair.second->nodes.begin(), comp_pair.second->nodes.end(), [&](const Node* node) {
                 if (node->getId() != -1)
                 {
-                    conductance[node->getId()][node->getId()] += comp_pair.second->getConductance(param, t == 0 ? 0 : step);
+                    conductance[node->getId()][node->getId()] += comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step);
                 }
             });
             // if not a transistor
@@ -94,8 +94,8 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                 // if there is no connection to ground - subtract conductance from G12 and G21
                 if (comp_pair.second->nodes[0]->getId() != -1 && comp_pair.second->nodes[1]->getId() != -1)
                 {
-                    conductance[comp_pair.second->nodes[0]->getId()][comp_pair.second->nodes[1]->getId()] -= comp_pair.second->getConductance(param, t == 0 ? 0 : step);
-                    conductance[comp_pair.second->nodes[1]->getId()][comp_pair.second->nodes[0]->getId()] -= comp_pair.second->getConductance(param, t == 0 ? 0 : step);
+                    conductance[comp_pair.second->nodes[0]->getId()][comp_pair.second->nodes[1]->getId()] -= comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step);
+                    conductance[comp_pair.second->nodes[1]->getId()][comp_pair.second->nodes[0]->getId()] -= comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step);
                 }
             }
             else
