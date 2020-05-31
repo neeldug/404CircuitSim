@@ -106,29 +106,19 @@ public:
             if (type == OP)
             {
                 const int NUM_NODES = schem->nodes.size() - 1;
-                Vector<double> voltage(NUM_NODES, 0.0);
+                Eigen::VectorXd voltage(NUM_NODES);
+                Eigen::VectorXd current(NUM_NODES);
+                Eigen::SparseMatrix<double> conductance(NUM_NODES, NUM_NODES);
+                Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
-                for (int i = 0; i < 2; i++)
-                {
-                    Vector<double> current(NUM_NODES, 0.0);
-                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
-                    Circuit::Math::getConductance(schem, conductance, param, 0, -1);
-                    Circuit::Math::getCurrent(schem, current, conductance, param, 0, -1);
+                Circuit::Math::getConductance(schem, conductance, param, 0, -1);
+                Circuit::Math::getCurrent(schem, current, conductance, param, 0, -1);
 
-                    std::cerr << conductance << std::endl;
-                    std::cerr << current << std::endl;
+                std::cerr << conductance << std::endl;
+                std::cerr << current << std::endl;
 
-                    std::cerr << conductance.inverse() << std::endl;
-
-                    voltage = conductance.inverse() * current;
-
-                    for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-                        if (node_pair.second->getId() != -1)
-                        {
-                            node_pair.second->voltage = voltage[node_pair.second->getId()];
-                        }
-                    });
-                }
+                solver.compute(conductance);
+                voltage = solver.solve(current);
 
                 dst << "\t-----Operating Point-----\t\n\n";
 
@@ -146,55 +136,55 @@ public:
             }
             else if (type == TRAN)
             {
-                const int NUM_NODES = schem->nodes.size() - 1;
-                Vector<double> voltage(NUM_NODES, 0.0);
+                // const int NUM_NODES = schem->nodes.size() - 1;
+                // Vector<double> voltage(NUM_NODES, 0.0);
 
-                // spicePrintTitle();
-                csvPrintTitle();
-                for (double t = 0; t <= tranStopTime; t += tranStepTime)
-                {
-                    Vector<double> current(NUM_NODES, 0.0);
-                    Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
-                    Matrix<double> inverse(NUM_NODES, NUM_NODES, 0.0);
+                // // spicePrintTitle();
+                // csvPrintTitle();
+                // for (double t = 0; t <= tranStopTime; t += tranStepTime)
+                // {
+                //     Vector<double> current(NUM_NODES, 0.0);
+                //     Matrix<double> conductance(NUM_NODES, NUM_NODES, 0.0);
+                //     Matrix<double> inverse(NUM_NODES, NUM_NODES, 0.0);
 
-                    Math::getConductance(schem, conductance, param, t, tranStepTime);
+                //     Math::getConductance(schem, conductance, param, t, tranStepTime);
 
-                    std::cerr << conductance << std::endl;
+                //     std::cerr << conductance << std::endl;
 
-                    Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
+                //     Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
 
-                    std::cerr << conductance << std::endl;
-                    // std::cerr << current << std::endl;
+                //     std::cerr << conductance << std::endl;
+                //     // std::cerr << current << std::endl;
 
-                    if (NUM_NODES == 1)
-                    {
-                        inverse = conductance;
-                        inverse[0] = 1.0 / inverse[0];
-                    }
-                    else
-                    {
-                        inverse = conductance.inverse();
-                    }
+                //     if (NUM_NODES == 1)
+                //     {
+                //         inverse = conductance;
+                //         inverse[0] = 1.0 / inverse[0];
+                //     }
+                //     else
+                //     {
+                //         inverse = conductance.inverse();
+                //     }
 
-                    // std::cerr << inverse << std::endl;
+                //     // std::cerr << inverse << std::endl;
 
-                    voltage = inverse * current;
+                //     voltage = inverse * current;
 
-                    std::cerr << voltage << std::endl;
+                //     std::cerr << voltage << std::endl;
 
-                    for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-                        if (node_pair.second->getId() != -1)
-                        {
-                            node_pair.second->voltage = voltage[node_pair.second->getId()];
-                        }
-                    });
+                //     for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+                //         if (node_pair.second->getId() != -1)
+                //         {
+                //             node_pair.second->voltage = voltage[node_pair.second->getId()];
+                //         }
+                //     });
 
-                    spicePrint(param, t, tranStepTime);
-                    csvPrint(param, t, tranStepTime);
-                }
-                // std::cerr << spiceStream.str();
-                dst << csvStream.str();
-                schem->out(NULL);
+                //     spicePrint(param, t, tranStepTime);
+                //     csvPrint(param, t, tranStepTime);
+                // }
+                // // std::cerr << spiceStream.str();
+                // dst << csvStream.str();
+                // schem->out(NULL);
             }
         }
     }

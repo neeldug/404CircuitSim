@@ -3,7 +3,8 @@
 
 //REVIEW need to see how order of include is affecting the ability to compile
 //program
-#include "symbolicc++.h"
+#include <Dense>
+#include <Sparse>
 #include "circuit_structure.hpp"
 #include "circuit_linear.hpp"
 #include "circuit_diode.hpp"

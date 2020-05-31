@@ -8,6 +8,8 @@
 
 class Circuit::Capacitor : public Component
 {
+protected:
+    Capacitor()=default;
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;

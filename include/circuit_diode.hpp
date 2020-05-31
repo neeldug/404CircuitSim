@@ -6,20 +6,20 @@ private:
 	std::string modelName = "D";
 	const double GMIN = 1e-10;
 	const double V_T = 25e-3;
+
+	class ParasiticCapacitance;
+	ParasiticCapacitance* para_cap;
 public:
 	
 	//REVIEW will probably have to make these doubles and might make this a nested class
-
 	double IS=0.1; //also stored in value (Component base class)
 	double RS=16;
-	double CJO=2e-12;
+	double CJ0=2e-12;
 	double TT=12e-9;
 	double BV=100;
 	double IBV=0.1e-12;
-
-	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
-		schem->setupConnections2Node( this, nodeA, nodeB );
-	}
+	double VJ = 0.7;
+	Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem);
 	void assignModel( std::vector<std::string> params ){
 		//NOTE Remember to update component value!
 		//REVIEW Maybe allow params to be variable dependent
@@ -27,7 +27,7 @@ public:
 		assert( params.size() == 6 && "Incorrect number of diode params" );
 		IS = stod( params[0] );
 		RS = stod( params[1] );
-		CJO = stod( params[2] );
+		CJ0 = stod( params[2] );
 		TT = stod( params[3] );
 		BV = stod( params[4] );
 		IBV = stod( params[5] );
@@ -37,7 +37,8 @@ public:
 	double getConductance( ParamTable * param, double timestep ) const override
     {
 		return GMIN;
-    }
+    }	//NOTE
+	double getConductance(  ParamTable * param, double timestep, double vGuess  );
 	double getCurrentSource( ParamTable *param, double time, double timestep, double vGuess ){
 		double shockley;
 		double exponentialBreakdown;
@@ -53,6 +54,30 @@ public:
 	std::string getModelName(){
 		return modelName;
 	}
+
 };
+
+class Circuit::Diode::ParasiticCapacitance : public Circuit::Capacitor{
+private:
+	Circuit::Diode *diode;
+public:
+	void setDiodeOwner( Diode *d );
+	void setCap( double vGuess ){
+		this->value = diode->CJ0 /pow(1.0 - vGuess/diode->VJ, 0.5);
+	}
+	Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d );
+};
+
+Circuit::Diode::Diode( std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic* schem) : Component( name, IS, schem ){
+		schem->setupConnections2Node( this, nodeA, nodeB );
+		para_cap = new ParasiticCapacitance();
+}
+double Circuit::Diode::getConductance( ParamTable * param, double timestep, double vGuess ){
+	para_cap->setCap(vGuess);
+	return this->GMIN;
+}
+Circuit::ParasiticCapcitance::ParasiticCapacitance( Circuit::Diode *d ){
+	diode = diode;
+}
 
 #endif

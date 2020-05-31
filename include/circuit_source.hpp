@@ -1,12 +1,10 @@
 #ifndef GUARD_CIRCUIT_SOURCE_HPP
 #define GUARD_CIRCUIT_SOURCE_HPP
-
+#include <cmath>
 class Circuit::Source : public Circuit::Component
 {
 protected:
 	std::string name;
-	Symbolic timeVar{"t"};
-	Symbolic function = 0;
 
 	double DC = 0;
 	double smallSignalAmp = 0;
@@ -24,8 +22,6 @@ protected:
 		this->SINE_DC_offset = SINE_DC_offset;
 		this->SINE_amplitude = SINE_amplitude;
 		this->SINE_frequency = SINE_frequency;
-		double twoPi = 2.0 * 3.1415926535;
-		function = DC + SINE_DC_offset + (SINE_amplitude) * sin( twoPi * SINE_frequency * timeVar);
 	}
 	Source(const std::string &name, double value, const Circuit::Node *pos, const Circuit::Node *neg, Schematic *schem) : Source(name, value, 0, 0, 0, 0, schem)
 	{
@@ -34,7 +30,7 @@ protected:
 public:
 	double getSourceOutput(ParamTable *param, double t) const
 	{
-		return function[timeVar == t];
+		return ( DC + SINE_DC_offset + (SINE_amplitude) * std::sin( 2.0 * M_PI * SINE_frequency * t));
 	}
 	bool isSource() const override
 	{

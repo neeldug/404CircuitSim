@@ -75,10 +75,6 @@ private:
 			nodeNeg = nameNodesM.str(3);
 		}
 
-		
-		Symbolic timeVar{"t"};
-		Symbolic function = 0;
-
 		double DC = 0;
 		double smallSignalAmp = 0;
 

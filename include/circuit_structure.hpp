@@ -119,6 +119,7 @@ protected:
 	double i_prev = 0.0;
 	double value;
 	Schematic *schem;
+	Component()=default;
 	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
 	bool variableDefined = false;
 	std::string variableName;
