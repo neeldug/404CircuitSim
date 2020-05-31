@@ -84,11 +84,11 @@ void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &co
                 {
                     if (Resistor *res = dynamic_cast<Resistor *>(comp.second))
                     {
-                        std::cerr << "G(R1): " << res->conductance(param) << std::endl;
+                        // std::cerr << "G(R1): " << res->conductance(param) << std::endl;
                         conductance[node->getId()][node->getId()] += res->conductance(param);
                     }
                     else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second)){
-                        std::cerr<< "G(C1): " << cap->getConductance(param, t == 0 ? 0 : step)<<std::endl;
+                        // std::cerr<< "G(C1): " << cap->getConductance(param, t == 0 ? 0 : step)<<std::endl;
                         conductance[node->getId()][node->getId()] += cap->getConductance(param, t == 0 ? 0 : step);
                     }
                     else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))

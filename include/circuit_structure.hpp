@@ -69,6 +69,8 @@ public:
 	std::string title;
 	std::map<std::string, Node *> nodes;
 	std::map<std::string, Component *> comps;
+	std::vector<std::string> commands;
+	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
 	void out(ParamTable *param) const
@@ -152,7 +154,7 @@ public:
 	}
 	virtual void print(ParamTable * param) const
 	{
-		std::cerr << typeid(*this).name() << name << ":\t" << current(param) << "A" << std::endl;
+		std::cerr << typeid(*this).name() << name << ":\t" << current(param) << "A " << value<<std::endl;
 	}
 	virtual ~Component()
 	{

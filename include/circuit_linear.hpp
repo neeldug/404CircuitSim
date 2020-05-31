@@ -20,7 +20,8 @@ public:
     double getConductance(ParamTable *param, double timestep) const
     {
         if( timestep == 0 ){
-            return std::numeric_limits<double>::max();
+            // return std::numeric_limits<double>::max();
+            return 1e12;
         }
         return value / timestep;
     }
@@ -77,13 +78,16 @@ public:
 
     double getCurrentSource(ParamTable *param, double timestep)
     {
-        double i_pres = getConductance(param, timestep) * getVoltage();
+        double i_pres = i_prev - getConductance(param, timestep) * getVoltage();
+        // i_pres = getVoltage() * getConductance(param, timestep) + i_prev;
+        // std::cerr << i_pres << std::endl;
         i_prev = i_pres;
         return i_pres;
     }
 
     double current (ParamTable *param, double time, double timestep) const override {
-        return (getVoltage())*getConductance(param, timestep) - i_prev;
+        //return -1*i_prev;
+        return (getVoltage())*getConductance(param, timestep)-1*i_prev;
     }
 };
 

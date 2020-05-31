@@ -81,16 +81,17 @@ public:
         enumPair(OP, "OP"),
         enumPair(TRAN, "TRAN"),
         enumPair(DC, "DC"),
-        enumPair(SMALL_SIGNAL,"SMALL_SIGNAL"),
+        enumPair(SMALL_SIGNAL, "SMALL_SIGNAL"),
     };
 
     const SimulationType type;
 
     Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
-    Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart=0, double tranStepTime=0) : Simulator(schem, type)
+    Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart = 0, double tranStepTime = 0) : Simulator(schem, type)
     {
-        if( tranStepTime == 0 ){
-            tranStepTime = tranStopTime/100.0;
+        if (tranStepTime == 0)
+        {
+            tranStepTime = tranStopTime / 100.0;
         }
         this->tranStopTime = tranStopTime;
         this->tranSaveStart = tranSaveStart;
@@ -143,23 +144,31 @@ public:
                     Matrix<double> inverse(NUM_NODES, NUM_NODES, 0.0);
 
                     Math::getConductance(schem, conductance, param, t, tranStepTime);
+
+                    std::cerr << conductance << std::endl;
+
+
                     Math::getCurrent(schem, current, conductance, param, t, tranStepTime);
 
                     std::cerr << conductance << std::endl;
-                    std::cerr << current << std::endl;
+                    // std::cerr << current << std::endl;
 
-                    if(NUM_NODES == 1){
+                    if (NUM_NODES == 1)
+                    {
                         inverse = conductance;
-                        inverse[0] = 1.0/inverse[0];
+                        inverse[0] = 1.0 / inverse[0];
                     }
-                    else {
+                    else
+                    {
                         inverse = conductance.inverse();
                     }
-                    
+
+                    // std::cerr << inverse << std::endl;
+
                     voltage = inverse * current;
 
                     std::cerr << voltage << std::endl;
-                    
+
                     for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                         if (node_pair.second->getId() != -1)
                         {
@@ -172,6 +181,7 @@ public:
                 }
                 // std::cerr << spiceStream.str();
                 dst << csvStream.str();
+                schem->out(NULL);
             }
         }
     }

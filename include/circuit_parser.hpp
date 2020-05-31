@@ -262,7 +262,7 @@ private:
 			schem->simulationCommands.push_back( cmd );
 		}
 		else if( params[0] == ".op"){
-			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN));
+			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::OP));
 		}
 		
 	}
@@ -283,6 +283,7 @@ public:
 		}
 		bool endStatement = false;
 		while( std::getline( inputStream, inputLine )){
+			std::cerr<<inputLine<<std::endl;
 			if( inputLine == ".END" || inputLine == ".end" ){
 				endStatement = true;
 				break;
