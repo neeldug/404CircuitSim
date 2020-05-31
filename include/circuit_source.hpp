@@ -47,17 +47,12 @@ public:
 	}
 };
 
-/*
-	Need a source value function of time
-*/
-
-// NOTE - Value could be a function
 class Circuit::Current : public Circuit::Source
 {
 public:
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{
-		//NOTE for some reason swapped for current sources order
+		//NOTE for some reason swapped for current sources order - because of error in specification file
 		schem->setupConnections2Node(this, nodeNeg, nodePos);
 	}
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem) : Current(name, DC, nodePos, nodeNeg, 0, 0, 0, 0, schem)
@@ -67,7 +62,7 @@ public:
 	{
 		return true;
 	}
-	double current(ParamTable *param, double t, double timestep=0) const override
+	double getCurrent(ParamTable *param, double t, double timestep=0) const override
 	{
 		return getSourceOutput(param, t);
 	}
@@ -87,7 +82,7 @@ public:
 	{
 		return false;
 	}
-	double current(ParamTable *param, double t, double timestep=0) const override
+	double getCurrent(ParamTable *param, double t, double timestep=0) const override
 	{
 		// TODO - voltage source current
 		return getValue(param);

@@ -3,6 +3,9 @@
 
 #include <limits>
 
+//REVIEW possible refractor of extra abstract class between
+//component and inductor/capacitor
+
 class Circuit::Capacitor : public Component
 {
 public:
@@ -19,9 +22,10 @@ public:
 
     double getConductance(ParamTable *param, double timestep) const
     {
-        if( timestep == 0 ){
-            // return std::numeric_limits<double>::max();
-            return 1e12;
+        double max_conductance = 1e12;
+        if (timestep == 0)
+        {
+            return max_conductance;
         }
         return value / timestep;
     }
@@ -33,14 +37,9 @@ public:
         return i_pres;
     }
 
-    double conductance(ParamTable *param) const override
+    double getCurrent(ParamTable *param, double time, double timestep) const override
     {
-        assert(false && "UNSAFE____Invalid call for conductance of capacitor!!!!");
-        return 0.0;
-    }
-
-    double current (ParamTable *param, double time, double timestep) const override {
-        return (getVoltage())*getConductance(param, timestep) - i_prev;
+        return (getVoltage()) * getConductance(param, timestep) - i_prev;
     }
 };
 
@@ -59,35 +58,26 @@ public:
         this->I_init = I_init;
     }
 
-    double conductance(ParamTable *param) const override
-    {
-        assert(false && "UNSAFE____Invalid call for conductance of inductor!!!!");
-        return 0.0;
-    }
-    
-    //REVIEW possible refractor of extra abstract class between
-    //component and inductor/capacitor
     double getConductance(ParamTable *param, double timestep) const
     {
         double min_conductance = 1e-12;
-        if(timestep == 0){
+        if (timestep == 0)
+        {
             return min_conductance;
         }
-        return timestep/value;
+        return timestep / value;
     }
 
     double getCurrentSource(ParamTable *param, double timestep)
     {
         double i_pres = i_prev - getConductance(param, timestep) * getVoltage();
-        // i_pres = getVoltage() * getConductance(param, timestep) + i_prev;
-        // std::cerr << i_pres << std::endl;
         i_prev = i_pres;
         return i_pres;
     }
 
-    double current (ParamTable *param, double time, double timestep) const override {
-        //return -1*i_prev;
-        return (getVoltage())*getConductance(param, timestep)-1*i_prev;
+    double getCurrent(ParamTable *param, double time, double timestep) const override
+    {
+        return (getVoltage()) * getConductance(param, timestep) - i_prev;
     }
 };
 
@@ -99,7 +89,7 @@ public:
         schem->setupConnections2Node(this, nodeA, nodeB);
     }
 
-    double conductance(ParamTable *param) const override
+    double getConductance(ParamTable *param, double time=0) const override
     {
         return 1.0 / getValue(param);
     }

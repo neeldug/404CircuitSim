@@ -10,65 +10,67 @@ public:
 
 void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &current, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
 {
+    // helper function
+    auto addCurrentToNode = [&](int nodeId, double cur) {
+        if (nodeId != -1)
+        {
+            current[nodeId] += cur;
+        }
+    };
+    // current sources
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp) {
-        if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
+        if (Circuit::Current *source = dynamic_cast<Circuit::Current *>(comp.second))
         {
-            if (cap->getPosNode()->getId() != -1)
-                current[cap->getPosNode()->getId()] += cap->getCurrentSource(param, step);
-            if (cap->getNegNode()->getId() != -1)
-                current[cap->getNegNode()->getId()] -= cap->getCurrentSource(param, step);
+            addCurrentToNode(source->getPosNode()->getId(), source->getSourceOutput(param, t));
+            addCurrentToNode(source->getNegNode()->getId(), -source->getSourceOutput(param, t));
         }
 
-        else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
+        else if (Circuit::Capacitor *source = dynamic_cast<Circuit::Capacitor *>(comp.second))
         {
-            if (ind->getPosNode()->getId() != -1)
-                current[ind->getPosNode()->getId()] += ind->getCurrentSource(param, step);
-            if (ind->getNegNode()->getId() != -1)
-                current[ind->getNegNode()->getId()] -= ind->getCurrentSource(param, step);
+            addCurrentToNode(source->getPosNode()->getId(), source->getCurrentSource(param, step));
+            addCurrentToNode(source->getNegNode()->getId(), -source->getCurrentSource(param, step));
         }
 
-        else if (comp.second->isSource())
+        else if (Circuit::Inductor *source = dynamic_cast<Circuit::Inductor *>(comp.second))
         {
-            Circuit::Source *source = static_cast<Circuit::Source *>(comp.second);
-            if (source->isCurrent())
-            {
-                if (source->getPosNode()->getId() != -1)
-                    current[source->getPosNode()->getId()] += source->getSourceOutput(param, t);
-                if (source->getNegNode()->getId() != -1)
-                    current[source->getNegNode()->getId()] -= source->getSourceOutput(param, t);
-            }
+            addCurrentToNode(source->getPosNode()->getId(), source->getCurrentSource(param, step));
+            addCurrentToNode(source->getNegNode()->getId(), -source->getCurrentSource(param, step));
         }
     });
 
+    // voltage - sources
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp) {
-        if (comp.second->isSource())
+        // new conductance row
+        if (Circuit::Voltage *source = dynamic_cast<Circuit::Voltage *>(comp.second))
         {
-            Circuit::Source *source = static_cast<Circuit::Source *>(comp.second);
             Vector<double> new_conductance(schem->nodes.size() - 1, 0.0);
-
-            if (!source->isCurrent())
+            if (source->getPosNode()->getId() != -1)
             {
-                if (source->getPosNode()->getId() != -1)
-                    if (source->getPosNode()->getId() != -1)
-                    {
-                        current[source->getPosNode()->getId()] = source->getSourceOutput(param, t);
-                        new_conductance[source->getPosNode()->getId()] = 1.0;
-                    }
-
-                if (source->getNegNode()->getId() != -1)
+                new_conductance[source->getPosNode()->getId()] = 1.0;
+                if (source->getNegNode()->getId() == -1)
+                {
+                    conductance[source->getPosNode()->getId()] = new_conductance;
+                    current[source->getPosNode()->getId()] = source->getSourceOutput(param, t);
+                    return;
+                }
+                else
                 {
                     new_conductance[source->getNegNode()->getId()] = -1.0;
-                    if (source->getPosNode()->getId() == -1)
-                    {
-                        current[source->getNegNode()->getId()] = source->getSourceOutput(param, t);
-                        conductance[source->getNegNode()->getId()] = new_conductance;
-                        return;
-                    }
+                    conductance[source->getNegNode()->getId()] += conductance[source->getPosNode()->getId()];
+                    conductance[source->getPosNode()->getId()] = new_conductance;
 
-                    conductance[source->getNegNode()->getId()] = conductance[source->getPosNode()->getId()] + conductance[source->getNegNode()->getId()];
+                    current[source->getNegNode()->getId()] += current[source->getPosNode()->getId()];
+                    current[source->getPosNode()->getId()] = source->getSourceOutput(param, t);
+                    return;
                 }
-
-                conductance[source->getPosNode()->getId()] = new_conductance;
+            }
+            else
+            {
+                assert(source->getNegNode()->getId() != -1 && "Both terminal cannot be connected to ground");
+                new_conductance[source->getNegNode()->getId()] = -1.0;
+                current[source->getNegNode()->getId()] = source->getSourceOutput(param, t);
+                conductance[source->getNegNode()->getId()] = new_conductance;
+                return;
             }
         }
     });
@@ -76,48 +78,31 @@ void Circuit::Math::getCurrent(Circuit::Schematic *schem, Vector<double> &curren
 
 void Circuit::Math::getConductance(Circuit::Schematic *schem, Matrix<double> &conductance, Circuit::ParamTable *param, double t, double step)
 {
-    std::for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp) {
-        if (!comp.second->isSource())
+    std::for_each(schem->comps.begin(), schem->comps.end(), [&](const std::pair<std::string, Circuit::Component *> comp_pair) {
+        if (!comp_pair.second->isSource())
         {
-            std::for_each(comp.second->nodes.begin(), comp.second->nodes.end(), [&](const auto node) {
+            // add conductance to leading diagonal
+            std::for_each(comp_pair.second->nodes.begin(), comp_pair.second->nodes.end(), [&](const Node* node) {
                 if (node->getId() != -1)
                 {
-                    if (Resistor *res = dynamic_cast<Resistor *>(comp.second))
-                    {
-                        // std::cerr << "G(R1): " << res->conductance(param) << std::endl;
-                        conductance[node->getId()][node->getId()] += res->conductance(param);
-                    }
-                    else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second)){
-                        // std::cerr<< "G(C1): " << cap->getConductance(param, t == 0 ? 0 : step)<<std::endl;
-                        conductance[node->getId()][node->getId()] += cap->getConductance(param, t == 0 ? 0 : step);
-                    }
-                    else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
-                    {
-                        conductance[node->getId()][node->getId()] += ind->getConductance(param, t == 0 ? 0 : step);
-                    }
+                    conductance[node->getId()][node->getId()] += comp_pair.second->getConductance(param, t == 0 ? 0 : step);
                 }
             });
-
-            if (comp.second->nodes.size() == 2)
+            // if not a transistor
+            if (comp_pair.second->nodes.size() == 2)
             {
-                if (comp.second->nodes[0]->getId() != -1 && comp.second->nodes[1]->getId() != -1)
+                // if there is no connection to ground - subtract conductance from G12 and G21
+                if (comp_pair.second->nodes[0]->getId() != -1 && comp_pair.second->nodes[1]->getId() != -1)
                 {
-                    if (Resistor *res = dynamic_cast<Resistor *>(comp.second))
-                    {
-                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= res->conductance(param);
-                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= res->conductance(param);
-                    }
-                    else if (Capacitor *cap = dynamic_cast<Capacitor *>(comp.second))
-                    {
-                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= cap->getConductance(param, t == 0 ? 0 : step);
-                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= cap->getConductance(param, t == 0 ? 0 : step);
-                    }
-                    else if (Inductor *ind = dynamic_cast<Inductor *>(comp.second))
-                    {
-                        conductance[comp.second->nodes[0]->getId()][comp.second->nodes[1]->getId()] -= ind->getConductance(param, t == 0 ? 0 : step);
-                        conductance[comp.second->nodes[1]->getId()][comp.second->nodes[0]->getId()] -= ind->getConductance(param, t == 0 ? 0 : step);
-                    }
+                    conductance[comp_pair.second->nodes[0]->getId()][comp_pair.second->nodes[1]->getId()] -= comp_pair.second->getConductance(param, t == 0 ? 0 : step);
+                    conductance[comp_pair.second->nodes[1]->getId()][comp_pair.second->nodes[0]->getId()] -= comp_pair.second->getConductance(param, t == 0 ? 0 : step);
                 }
+            }
+            else
+            {
+                // NOTE - if it is a transistor (also worth checking if number of nodes is actually 3)
+                assert(false && "Can't handle transistors for now. ABORT");
+                exit(1);
             }
         }
     });

@@ -1,11 +1,15 @@
 #ifndef GUARD_DIODE_HPP
 #define GUARD_DIODE_HPP
-
+#include <cmath>
 class Circuit::Diode : public Component {
 private:
-	std::string modelName;
+	std::string modelName = "D";
+	const double GMIN = 1e-10;
+	const double V_T = 25e-3;
 public:
+	
 	//REVIEW will probably have to make these doubles and might make this a nested class
+
 	double IS=0.1; //also stored in value (Component base class)
 	double RS=16;
 	double CJO=2e-12;
@@ -21,19 +25,31 @@ public:
 		//REVIEW Maybe allow params to be variable dependent
 
 		assert( params.size() == 6 && "Incorrect number of diode params" );
-		IS = stof( params[0] );
-		RS = stof( params[1] );
-		CJO = stof( params[2] );
-		TT = stof( params[3] );
-		BV = stof( params[4] );
-		IBV = stof( params[5] );
+		IS = stod( params[0] );
+		RS = stod( params[1] );
+		CJO = stod( params[2] );
+		TT = stod( params[3] );
+		BV = stod( params[4] );
+		IBV = stod( params[5] );
 
 		value = IS;
 	}
-	double conductance(ParamTable * param) const override
+	double getConductance( ParamTable * param, double timestep ) const override
     {
-        assert( false && "No conductance for diode yet");
+		return GMIN;
     }
+	double getCurrentSource( ParamTable *param, double time, double timestep, double vGuess ){
+		double shockley;
+		double exponentialBreakdown;
+		shockley = IS*( exp(vGuess/V_T) - 1 );
+		exponentialBreakdown = -IS*(exp(-(BV+vGuess)/V_T)-1 ) + BV/V_T;
+
+		i_prev = ( shockley + exponentialBreakdown );
+		return ( shockley + exponentialBreakdown );
+	}
+	double getCurrent( ParamTable *param, double time, double timestep) const override{
+		return ( i_prev +  getVoltage()*getConductance( param, timestep ) );
+	}
 	std::string getModelName(){
 		return modelName;
 	}

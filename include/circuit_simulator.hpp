@@ -48,7 +48,7 @@ private:
         }
         for (auto comp_pair : schem->comps)
         {
-            spiceStream << comp_pair.second->current(param, time, timestep) << "\t";
+            spiceStream << comp_pair.second->getCurrent(param, time, timestep) << "\t";
         }
         spiceStream << "\n";
     }
@@ -61,7 +61,7 @@ private:
         }
         for (auto comp_pair : schem->comps)
         {
-            csvStream << comp_pair.second->current(param, time, timestep) << ",";
+            csvStream << comp_pair.second->getCurrent(param, time, timestep) << ",";
         }
         csvStream << "\n";
     }
@@ -135,7 +135,7 @@ public:
                 const int NUM_NODES = schem->nodes.size() - 1;
                 Vector<double> voltage(NUM_NODES, 0.0);
 
-                spicePrintTitle();
+                // spicePrintTitle();
                 csvPrintTitle();
                 for (double t = 0; t <= tranStopTime; t += tranStepTime)
                 {
