@@ -28,8 +28,7 @@ namespace Circuit
 	class Simulator;
 	class Math;
 	class LC;
-	//class Diode;
-	//class ParasiticCapacitance;
+	class Diode;
 	struct ParamTable;
 } // namespace Circuit
 
