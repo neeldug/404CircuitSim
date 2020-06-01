@@ -1,6 +1,7 @@
 import plotly.express as px
 import pandas as pd
 import argparse
+import plotly.graph_objs as go
 
 parser = argparse.ArgumentParser(description="Add Options to Control Plot")
 parser.add_argument("file_name", metavar="FILE", type=str, nargs=1,
@@ -20,5 +21,18 @@ if __name__ == '__main__':
     else:
         column_names = df.columns.values if not args.include else ["Time", *args.include]
         df_vals = pd.melt(df, id_vars=column_names[0], value_vars=column_names[1:])
-        fig = px.line(df_vals, x="Time", y="value", color='variable')
+        # fig = px.line(df_vals, x="Time", y="value", color='variable')
+        fig = go.Figure(data=px.line(df_vals, x="Time", y="value", color='variable'))
+        fig.update_layout(title_text="Scale",
+                          updatemenus=[
+            dict(
+                 buttons=list([
+                     dict(label="Linear",
+                          method="relayout",
+                          args=[{"yaxis.type": "linear"}]),
+                     dict(label="Log",
+                          method="relayout",
+                          args=[{"yaxis.type": "log"}]),
+                                  ]),
+            )])
         fig.show()
