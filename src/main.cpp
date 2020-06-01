@@ -11,6 +11,7 @@ std::map<std::string, std::string> inputFlags = {
     flagString("-p", ""),    //plot output
     flagString("-o", "out"), //name output folder
 };
+// NOTE - maybe add a mode for plotting
 std::map<std::string, bool> inputlessFlags = {
     flagBool("-s", false), //dump spice file
     flagBool("-n", false), //print nodes and attached components names
