@@ -6,7 +6,7 @@ class Circuit::Math
 private:
     static void init_vector(Eigen::VectorXd &vec, double val = 0.0)
     {
-        for (size_t i = 0; i < vec.cols(); i++)
+        for (size_t i = 0; i < vec.rows(); i++)
         {
             vec[i] = val;
         }
@@ -33,7 +33,10 @@ private:
 
     static void addConductanceToMatrix(Eigen::MatrixXd &conductance, int i, int j, double val)
     {
-        conductance(i, j) += val;
+        if (i != -1 && j != -1)
+        {
+            conductance(i, j) += val;
+        }
     }
 
     static void handleCurrentSource(Eigen::VectorXd &current, int posId, int negId, double val)
@@ -44,8 +47,8 @@ private:
 
     static void handleVoltageSource(Eigen::MatrixXd &conductance, Eigen::VectorXd &current, int posId, int negId, double val)
     {
-        Eigen::VectorXd new_conductance(current.cols());
-        for (int i = 0; i < current.cols() - 1; i++)
+        Eigen::VectorXd new_conductance(current.rows());
+        for (int i = 0; i < current.rows() - 1; i++)
         {
             new_conductance[i] = 0;
         }
@@ -79,35 +82,12 @@ private:
             return;
         }
     }
-
-    static void handleConductanceMatrix(const std::pair<std::string, Circuit::Component *> comp_pair, Eigen::MatrixXd &conductance, ParamTable *param, double t, double step)
+    static void handleConductanceMatrixTwoNodes(Eigen::MatrixXd &conductance, int i, int j, double value)
     {
-        if (!comp_pair.second->isSource())
-        {
-            // add conductance to leading diagonal
-            std::for_each(comp_pair.second->nodes.begin(), comp_pair.second->nodes.end(), [&](Node *node) {
-                if (node->getId() != -1)
-                {
-                    addConductanceToMatrix(conductance, node->getId(), node->getId(), comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step));
-                }
-            });
-            // if not a transistor
-            if (comp_pair.second->nodes.size() == 2)
-            {
-                // if there is no connection to ground - subtract conductance from G12 and G21
-                if (comp_pair.second->nodes[0]->getId() != -1 && comp_pair.second->nodes[1]->getId() != -1)
-                {
-                    addConductanceToMatrix(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), -comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step));
-                    addConductanceToMatrix(conductance, comp_pair.second->nodes[1]->getId(), comp_pair.second->nodes[0]->getId(), -comp_pair.second->getConductance(param, step == -1 ? step : t == 0 ? t : step));
-                }
-            }
-            else
-            {
-                // NOTE - if it is a transistor (also worth checking if number of nodes is actually 3)
-                assert(false && "Can't handle transistors for now. ABORT");
-                exit(1);
-            }
-        }
+        addConductanceToMatrix(conductance, i, i, value);
+        addConductanceToMatrix(conductance, j, j, value);
+        addConductanceToMatrix(conductance, i, j, -value);
+        addConductanceToMatrix(conductance, j, i, -value);
     }
 
 public:
@@ -143,7 +123,7 @@ void Circuit::Math::getCurrentOP(Circuit::Schematic *schem, Eigen::VectorXd &cur
     });
 }
 
-void Circuit::Math::getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &current, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t = 0, double step = 0)
+void Circuit::Math::getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &current, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t, double step)
 {
     init_vector(current);
 
@@ -179,7 +159,8 @@ void Circuit::Math::getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd 
                 return;
             }
 
-            handleConductanceMatrix(comp_pair, conductance, param, 0, -1);
+            double value = comp_pair.second->getConductance(param, -1);
+            handleConductanceMatrixTwoNodes(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), value);
         }
     });
 }
@@ -191,7 +172,11 @@ void Circuit::Math::getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixX
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp_pair) {
         if (!comp_pair.second->isSource())
         {
-            handleConductanceMatrix(comp_pair, conductance, param, t, step);
+            if(t==0){
+                step = 0;
+            }
+            double value = comp_pair.second->getConductance(param, step);
+            handleConductanceMatrixTwoNodes(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), value);
         }
     });
 }

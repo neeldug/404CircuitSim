@@ -5,7 +5,7 @@
 int main()
 {
 	std::ifstream netlist;
-	netlist.open("test/SpiceNetlists/example.cir");
+	netlist.open("test/SpiceNetlists/phase.cir");
 	if (netlist.fail())
 	{
 		std::cout << "File Not Found!" << std::endl;

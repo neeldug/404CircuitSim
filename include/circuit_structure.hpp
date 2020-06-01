@@ -128,7 +128,7 @@ protected:
 public:
 	std::string name;
 	std::vector<Node *> nodes;
-	virtual double getConductance(ParamTable *param, double time) const
+	virtual double getConductance(ParamTable *param, double timestep) const
 	{
 		assert(false && "Calling base class conductance, overload in specific component");
 		return 0.0;

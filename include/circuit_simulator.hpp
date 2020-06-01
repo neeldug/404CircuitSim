@@ -164,6 +164,7 @@ public:
                     Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
                     std::cerr << conductance << std::endl;
+                    std::cerr << current << std::endl;
 
                     sparse = conductance.sparseView();
                     sparse.makeCompressed();
@@ -171,6 +172,8 @@ public:
                     solver.factorize(sparse);
                     voltage = solver.solve(current);
 
+                    std::cerr << voltage << std::endl;
+                    
                     for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                         if (node_pair.second->getId() != -1)
                         {

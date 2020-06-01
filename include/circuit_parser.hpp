@@ -244,16 +244,16 @@ private:
 
 		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
 		if( params[0] == ".STEP" ){
-			std::cerr<<"step"<<std::endl;
+			// std::cerr<<"step"<<std::endl;
 		}
 		else if( params[0] == ".TRAN"){
-			std::cerr<<"tran"<<std::endl;
+			// std::cerr<<"tran"<<std::endl;
 			assert(params.size() == 5 && "Incorrect number of parameters in transient command");
 			double stop = parseVal( params[2] );
 			double start = parseVal( params[3] );
 			double step = parseVal( params[4] );
 			
-			std::cerr<<stop<<" "<<start<<" "<<step<<std::endl;
+			// std::cerr<<stop<<" "<<start<<" "<<step<<std::endl;
 			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN, stop, start, step));
 			schem->simulationCommands.push_back( cmd );
 		}

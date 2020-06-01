@@ -42,14 +42,9 @@ public:
         double min_conductance = 1e-13;
         double max_conductance = 1e13;
 
-        if (timestep == -1)
-        {
-            return 0.0;
-        }
-
         if (timestep == 0)
         {
-            return max_conductance;
+            return min_conductance;
         }
         return value / timestep;
     }
@@ -87,18 +82,14 @@ public:
         double min_conductance = 1e-13;
         double max_conductance = 1e13;
 
-        if (timestep = -1)
-        {
-            return 0.0;
-        }
         if (timestep == 0)
         {
-            return min_conductance;
+            return max_conductance;
         }
         return timestep / value;
     }
 
-    double getCurrentSource(ParamTable *param, double timestep)
+    double getCurrentSource(ParamTable *param, double timestep) override
     {
         double i_pres = i_prev - getConductance(param, timestep) * getVoltage();
         i_prev = i_pres;
