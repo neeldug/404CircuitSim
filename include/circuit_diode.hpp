@@ -10,7 +10,7 @@ private:
 	const double V_T = 25e-3;
 
 public:
-	
+
 	class ParasiticCapacitance : public Circuit::Capacitor
 	{
 	public:
@@ -32,7 +32,7 @@ public:
 	double IBV = 0.1e-12;
 	double VJ = 0.7;
 	Diode() = default;
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, IS, schem)
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.0, schem)
 	{
 		para_cap = new ParasiticCapacitance();
 		schem->setupConnections2Node(this, nodeA, nodeB);

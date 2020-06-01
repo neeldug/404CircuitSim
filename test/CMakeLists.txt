@@ -1,4 +1,4 @@
-add_executable(test_math test_math.cpp)
+# add_executable(test_math test_math.cpp)
 # add_executable(test_parser test_parser.cpp)
 add_executable(test_transient test_transient.cpp)
 # add_executable(test_eigen test_eigen.cpp)
