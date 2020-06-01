@@ -63,7 +63,8 @@ public:
 	std::vector<Simulator *> sims = {};
 
 	bool nonLinear = false;
-	void containsNonLinearComponents(){
+	void containsNonLinearComponents()
+	{
 		nonLinear = true;
 	}
 	void out(ParamTable *param) const
@@ -124,7 +125,7 @@ protected:
 	double i_prev = 0.0;
 	double value;
 	Schematic *schem;
-	Component()=default;
+	Component() = default;
 	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
 	bool variableDefined = false;
 	std::string variableName;
@@ -161,10 +162,18 @@ public:
 	}
 	virtual ~Component()
 	{
-		this->schem->comps.erase(name);
+		if (this->schem->comps.find(name) != this->schem->comps.end())
+		{
+			this->schem->comps.erase(name);
+		}
+
 		for (Node *n : nodes)
 		{
-			n->comps.erase(std::find(n->comps.begin(), n->comps.end(), this));
+			std::vector<Circuit::Component *>::iterator it = std::find(n->comps.begin(), n->comps.end(), this);
+			if (it !=n->comps.end())
+			{	
+				n->comps.erase(std::find(n->comps.begin(), n->comps.end(), this));
+			}
 			if (n->comps.size() == 0)
 				delete n;
 		}

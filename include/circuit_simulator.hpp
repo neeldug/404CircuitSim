@@ -218,8 +218,8 @@ public:
 
                             Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-                            std::cerr << conductance << std::endl;
-                            std::cerr << current << std::endl;
+                            // std::cerr << conductance << std::endl;
+                            // std::cerr << current << std::endl;
 
                             sparse = conductance.sparseView();
                             sparse.makeCompressed();
@@ -227,7 +227,7 @@ public:
                             solver.factorize(sparse);
 
                             voltageNew = solver.solve(current);
-                            std::cerr << voltageNew << std::endl;
+                            // std::cerr << voltageNew << std::endl;
 
                             for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                                 if (node_pair.second->getId() != -1)
@@ -237,7 +237,8 @@ public:
                             });
 
                             error = Circuit::Math::MSE(voltageOld, voltageNew);
-                            std::cerr << ++num_iter << ": " << error << std::endl;
+                            std::cerr << t << " " << ++num_iter << ": " << error << std::endl;
+                            voltageOld = voltageNew;
                         }
                         if (format == SPACE)
                         {
