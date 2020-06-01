@@ -16,7 +16,7 @@ private:
     {
         for (size_t i = 0; i < mat.rows(); i++)
         {
-            for (size_t j = 0; j < mat.cols(); i++)
+            for (size_t j = 0; j < mat.cols(); j++)
             {
                 mat(i, j) = val;
             }

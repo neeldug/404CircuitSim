@@ -163,6 +163,8 @@ public:
                     Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
                     Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
+                    std::cerr << conductance << std::endl;
+
                     sparse = conductance.sparseView();
                     sparse.makeCompressed();
                     solver.analyzePattern(sparse);

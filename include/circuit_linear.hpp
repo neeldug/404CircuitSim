@@ -37,7 +37,7 @@ public:
         this->DC_init = DC_init;
     }
 
-    double getConductance(ParamTable *param, double timestep) const override
+    virtual double getConductance(ParamTable *param, double timestep) const override
     {
         double min_conductance = 1e-13;
         double max_conductance = 1e13;
@@ -54,7 +54,7 @@ public:
         return value / timestep;
     }
 
-    double getCurrentSource(ParamTable *param, double timestep)
+    virtual double getCurrentSource(ParamTable *param, double timestep) override
     {
         double i_pres = getConductance(param, timestep) * getVoltage();
         i_prev = i_pres;

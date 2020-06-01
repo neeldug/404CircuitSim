@@ -193,7 +193,7 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
+				//Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
 				break;
 			}
 			case (int) 'q' : {
@@ -279,7 +279,7 @@ public:
 		}
 		bool endStatement = false;
 		while( std::getline( inputStream, inputLine )){
-			std::cerr<<inputLine<<std::endl;
+			// std::cerr<<inputLine<<std::endl;
 			if( inputLine == ".END" || inputLine == ".end" ){
 				endStatement = true;
 				break;

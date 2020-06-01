@@ -19,7 +19,6 @@ namespace Circuit
 	class Resistor;
 	class Transistor;
 	class Mosfet;
-	class Diode;
 	class Schematic;
 	class Node;
 	class Source;
@@ -29,7 +28,8 @@ namespace Circuit
 	class Simulator;
 	class Math;
 	class LC;
-	class Diode;
+	//class Diode;
+	//class ParasiticCapacitance;
 	struct ParamTable;
 } // namespace Circuit
 
