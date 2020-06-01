@@ -27,10 +27,16 @@ if __name__ == '__main__':
                           updatemenus=[
             dict(
                  buttons=list([
-                     dict(label="Linear",
+                     dict(label="X Linear",
+                         method="relayout",
+                         args=[{"xaxis.type": "linear"}]),
+                     dict(label="X Log",
+                         method="relayout",
+                         args=[{"xaxis.type": "log"}]),
+                     dict(label="Y Linear",
                           method="relayout",
                           args=[{"yaxis.type": "linear"}]),
-                     dict(label="Log",
+                     dict(label="Y Log",
                           method="relayout",
                           args=[{"yaxis.type": "log"}]),
                                   ]),
