@@ -9,7 +9,6 @@ protected:
     LC()=default;
     LC(const std::string &name, double value, Circuit::Schematic *schem) : Component(name, value, schem) {}
 public:
-    virtual double getConductance(ParamTable *param, double timestep) const = 0;
     virtual double getCurrentSource(ParamTable *param, double timestep) = 0;
 
     double getCurrent(ParamTable *param, double time, double timestep) const override
