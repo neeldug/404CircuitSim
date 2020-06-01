@@ -1,16 +1,7 @@
 #ifndef GUARD_DIODE_HPP
 #define GUARD_DIODE_HPP
 #include <cmath>
-/*
-class Circuit::ParasiticCapacitance : public Circuit::Capacitor
-{
-private:
-	Circuit::Diode *diode;
 
-public:
-	void setDiodeOwner(Diode *d);
-	void setCap(double vGuess);
-};
 class Circuit::Diode : public Circuit::Component
 {
 private:
@@ -19,6 +10,18 @@ private:
 	const double V_T = 25e-3;
 
 public:
+	
+	class ParasiticCapacitance : public Circuit::Capacitor
+	{
+	public:
+		ParasiticCapacitance() = default;
+		void setDiodeOwner(Diode *d);
+		void setCap(double vGuess, const double& CJ0, const double& VJ)
+		{
+			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
+		}
+	};
+
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
 	double IS = 0.1; //also stored in value (Component base class)
@@ -29,8 +32,11 @@ public:
 	double IBV = 0.1e-12;
 	double VJ = 0.7;
 	Diode() = default;
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem);
-
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, IS, schem)
+	{
+		para_cap = new ParasiticCapacitance();
+		schem->setupConnections2Node(this, nodeA, nodeB);
+	}
 	void assignModel(std::vector<std::string> params)
 	{
 		//NOTE Remember to update component value!
@@ -46,8 +52,6 @@ public:
 
 		value = IS;
 	}
-	double getConductance(ParamTable *param, double timestep) const override;
-	double getConductance(ParamTable *param, double timestep, double vGuess) const;
 	double getCurrentSource(ParamTable *param, double time, double timestep, double vGuess)
 	{
 		double shockley;
@@ -65,35 +69,19 @@ public:
 	{
 		return modelName;
 	}
-	~Diode();
+	~Diode()
+	{
+		delete para_cap;
+	}
+	double getConductance(ParamTable *param, double timestep) const override
+	{
+		return GMIN;
+	}
+	double getConductance(ParamTable *param, double timestep, double vGuess) const
+	{
+		para_cap->setCap(vGuess, this->CJ0, this->VJ);
+		return GMIN;
+	}
+
 };
-
-Circuit::Diode::~Diode()
-{
-	delete para_cap;
-}
-
-void Circuit::ParasiticCapacitance::setCap(double vGuess)
-{
-	this->value = diode->CJ0 / pow(1.0 - vGuess / diode->VJ, 0.5);
-}
-
-
-double Circuit::Diode::getConductance(ParamTable *param, double timestep, double vGuess) const
-{
-	para_cap->setCap(vGuess);
-	return this->GMIN;
-}
-
-Circuit::Diode::Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, IS, schem)
-{
-	para_cap = new Circuit::ParasiticCapacitance();
-	para_cap->setDiodeOwner(this);
-	schem->setupConnections2Node(this, nodeA, nodeB);
-}
-void Circuit::ParasiticCapacitance::setDiodeOwner(Diode *d)
-{
-	this->diode = d;
-}
-*/
 #endif
