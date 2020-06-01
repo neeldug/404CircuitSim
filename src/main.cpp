@@ -48,7 +48,7 @@ int main(int argc, char const *argv[])
     for (Circuit::Simulator *sim : schem->sims)
     {
         std::filesystem::create_directory(inputFlags["-o"]);
-        std::ofstream out(inputFlags["-o"] + "/" + schem->title + sim->simulationTypeMap[sim->type]);
+        std::ofstream out(inputFlags["-o"] + "/" + schem->title + sim->simulationTypeMap[sim->type] + ".csv");
         // REVIEW - output format could be a flag
         sim->run(out, Circuit::Simulator::OutputFormat::CSV);
         out.close();
