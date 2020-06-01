@@ -131,7 +131,7 @@ protected:
 	std::string variableName;
 
 public:
-	std::string name;
+	std::string name = "not_named";
 	std::vector<Node *> nodes;
 	virtual double getConductance(ParamTable *param, double timestep) const
 	{
@@ -170,12 +170,13 @@ public:
 		for (Node *n : nodes)
 		{
 			std::vector<Circuit::Component *>::iterator it = std::find(n->comps.begin(), n->comps.end(), this);
-			if (it !=n->comps.end())
+			if (it != n->comps.end())
 			{	
-				n->comps.erase(std::find(n->comps.begin(), n->comps.end(), this));
+				n->comps.erase(it);
 			}
-			if (n->comps.size() == 0)
+			if (n->comps.size() == 0){
 				delete n;
+			}
 		}
 	}
 
@@ -253,6 +254,7 @@ Circuit::Schematic::~Schematic()
 	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
+		std::cerr<<comps.begin()->first<<std::endl;
 		delete comps.begin()->second;
 	}
 

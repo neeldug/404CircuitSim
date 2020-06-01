@@ -26,6 +26,7 @@ public:
 			this->nodes.push_back(pos);
 			this->nodes.push_back(neg);
 		}
+		virtual ~ParasiticCapacitance(){}
 	};
 
 	ParasiticCapacitance *para_cap;

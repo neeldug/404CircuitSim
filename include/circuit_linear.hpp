@@ -25,11 +25,12 @@ protected:
 public:
     //NOTE DC_init is starting DC voltage for transient analysis
     double DC_init;
-    Current *opReplace = new Current();
+    Current *opReplace;
 
     Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : LC(name, value, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
+        opReplace = new Current(schem);
     }
     Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init) : Capacitor(name, value, nodeA, nodeB, schem)
     {
@@ -54,7 +55,9 @@ public:
         i_prev = i_pres;
         return i_pres;
     }
-    virtual ~Capacitor(){};
+    virtual ~Capacitor(){
+        delete opReplace;
+    };
 };
 
 class Circuit::Inductor : public Circuit::LC
@@ -62,11 +65,12 @@ class Circuit::Inductor : public Circuit::LC
 public:
     //NOTE I_init is initial current in inductor
     double I_init;
-    Voltage *opReplace = new Voltage();
+    Voltage *opReplace;
     Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : LC(name, value, schem)
     {
         //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
+        opReplace = new Voltage(schem);
     }
     Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init) : Inductor(name, value, nodeA, nodeB, schem)
     {
@@ -94,7 +98,9 @@ public:
         i_prev = i_pres;
         return i_pres;
     }
-    virtual ~Inductor(){};
+    virtual ~Inductor(){
+        delete opReplace;
+    };
 };
 
 class Circuit::Resistor : public Component
