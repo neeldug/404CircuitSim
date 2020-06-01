@@ -12,6 +12,8 @@ private:
     std::stringstream spiceStream;
     std::stringstream csvStream;
 
+    double errorThreshold = 1e-10;
+
     void spicePrintTitle()
     {
         spiceStream << "Time\t";
@@ -151,53 +153,101 @@ public:
                     csvPrintTitle();
                 }
 
-                const int NUM_NODES = schem->nodes.size() - 1;
-                Eigen::VectorXd voltage(NUM_NODES);
-                Eigen::VectorXd current(NUM_NODES);
-                Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-                Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-                Eigen::SparseMatrix<double> sparse;
-
-                for (double t = 0; t <= tranStopTime; t += tranStepTime)
+                if (!schem->nonLinear)
                 {
-                    Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-                    Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-                    std::cerr << conductance << std::endl;
-                    std::cerr << current << std::endl;
+                    const int NUM_NODES = schem->nodes.size() - 1;
+                    Eigen::VectorXd voltage(NUM_NODES);
+                    Eigen::VectorXd current(NUM_NODES);
+                    Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+                    Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+                    Eigen::SparseMatrix<double> sparse;
 
-                    sparse = conductance.sparseView();
-                    sparse.makeCompressed();
-                    solver.analyzePattern(sparse);
-                    solver.factorize(sparse);
-                    voltage = solver.solve(current);
+                    for (double t = 0; t <= tranStopTime; t += tranStepTime)
+                    {
+                        Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+                        Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-                    std::cerr << voltage << std::endl;
-                    
-                    for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-                        if (node_pair.second->getId() != -1)
+                        // std::cerr << conductance << std::endl;
+                        // std::cerr << current << std::endl;
+
+                        sparse = conductance.sparseView();
+                        sparse.makeCompressed();
+                        solver.analyzePattern(sparse);
+                        solver.factorize(sparse);
+                        voltage = solver.solve(current);
+
+                        // std::cerr << voltage << std::endl;
+
+                        for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+                            if (node_pair.second->getId() != -1)
+                            {
+                                node_pair.second->voltage = voltage[node_pair.second->getId()];
+                            }
+                        });
+
+                        if (format == SPACE)
                         {
-                            node_pair.second->voltage = voltage[node_pair.second->getId()];
+                            spicePrint(param, t, tranStepTime);
                         }
-                    });
+                        else if (format == CSV)
+                        {
+                            csvPrint(param, t, tranStepTime);
+                        }
+                    }
+                }
+                else
+                {
+                    const int NUM_NODES = schem->nodes.size() - 1;
+                    Eigen::VectorXd voltageOld(NUM_NODES);
+                    Eigen::VectorXd voltageNew(NUM_NODES);
+                    Eigen::VectorXd current(NUM_NODES);
+                    Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+                    Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+                    Eigen::SparseMatrix<double> sparse;
 
-                    if (format == SPACE)
+                    Circuit::Math::init_vector(voltageOld);
+                    for (double t = 0; t <= tranStopTime; t += tranStepTime)
                     {
-                        spicePrint(param, t, tranStepTime);
+                        double error = 1e10;
+                        while (error > errorThreshold)
+                        {
+                            Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+                            Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
+
+                            sparse = conductance.sparseView();
+                            sparse.makeCompressed();
+                            solver.analyzePattern(sparse);
+                            solver.factorize(sparse);
+                            voltageNew = solver.solve(current);
+
+                            for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+                                if (node_pair.second->getId() != -1)
+                                {
+                                    node_pair.second->voltage = voltageNew[node_pair.second->getId()];
+                                }
+                            });
+
+                            error = Circuit::Math::MSE(voltageOld, voltageNew);
+                        }
+                        if (format == SPACE)
+                        {
+                            spicePrint(param, t, tranStepTime);
+                        }
+                        else if (format == CSV)
+                        {
+                            csvPrint(param, t, tranStepTime);
+                        }
                     }
-                    else if (format == CSV)
-                    {
-                        csvPrint(param, t, tranStepTime);
-                    }
                 }
-                if (format == SPACE)
-                {
-                    dst << spiceStream.str();
-                }
-                else if (format == CSV)
-                {
-                    dst << csvStream.str();
-                }
+            }
+            if (format == SPACE)
+            {
+                dst << spiceStream.str();
+            }
+            else if (format == CSV)
+            {
+                dst << csvStream.str();
             }
         }
     }

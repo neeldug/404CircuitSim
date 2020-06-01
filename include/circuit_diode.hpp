@@ -32,6 +32,7 @@ public:
 	double IBV = 0.1e-12;
 	double VJ = 0.7;
 	Diode() = default;
+
 	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.0, schem)
 	{
 		para_cap = new ParasiticCapacitance();
@@ -52,15 +53,18 @@ public:
 
 		value = IS;
 	}
-	double getCurrentSource(ParamTable *param, double time, double timestep, double vGuess)
+	
+	double getCurrentSource(ParamTable *param, double timestep)
 	{
+		double vGuess = getVoltage();
 		double shockley;
 		double exponentialBreakdown;
 		shockley = IS * (exp(vGuess / V_T) - 1);
 		exponentialBreakdown = -IS * (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T;
 		i_prev = (shockley + exponentialBreakdown);
-		return (shockley + exponentialBreakdown);
+		return (shockley + exponentialBreakdown) + para_cap->getCurrentSource( param,timestep );
 	}
+
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
 		return (i_prev + getVoltage() * getConductance(param, timestep));
@@ -75,12 +79,9 @@ public:
 	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		return GMIN;
-	}
-	double getConductance(ParamTable *param, double timestep, double vGuess) const
-	{
+		double vGuess = getVoltage();
 		para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		return GMIN;
+		return (GMIN+para_cap->getConductance(param, timestep));
 	}
 
 };

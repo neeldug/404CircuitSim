@@ -62,6 +62,10 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
+	bool nonLinear = false;
+	void containsNonLinearComponents(){
+		nonLinear = true;
+	}
 	void out(ParamTable *param) const
 	{
 		for_each(nodes.begin(), nodes.end(), [&](const auto node) {
