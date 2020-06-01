@@ -30,6 +30,8 @@ private:
 		}
 		std::string unitSuffix = value.substr(suffixPos, std::string::npos);
 		int mult;
+		// std::cerr<<(int)unitSuffix[0]<<" "<<unitSuffix<<std::endl;
+
 		if (unitSuffix == "p"){
 			mult = -12;
 		}

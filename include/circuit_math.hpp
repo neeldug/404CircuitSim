@@ -40,7 +40,7 @@ private:
     static void handleVoltageSource(Eigen::MatrixXd &conductance, Eigen::VectorXd &current, int posId, int negId, double val)
     {
         Eigen::VectorXd new_conductance(current.rows());
-        for (int i = 0; i < current.rows() - 1; i++)
+        for (int i = 0; i < current.rows(); i++)
         {
             new_conductance[i] = 0;
         }
@@ -94,14 +94,16 @@ public:
             vec[i] = val;
         }
     }
-    static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y){
+    static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y)
+    {
         double sum = 0;
         assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
         size_t size = X.rows();
-        for (size_t i = 0; i < size; i++) {
-            sum += abs(X[i]-Y[i]);
+        for (size_t i = 0; i < size; i++)
+        {
+            sum += abs(X[i] - Y[i]);
         }
-        double res = sum/(double) size;
+        double res = sum / (double)size;
         return res;
     }
 };
@@ -145,6 +147,10 @@ void Circuit::Math::getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &c
         {
             handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getCurrentSource(param, step));
         }
+        else if (Circuit::Diode *source = dynamic_cast<Circuit::Diode *>(comp.second))
+        {
+            handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getCurrentSource(param, step));
+        }
     });
 
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp) {
@@ -167,7 +173,6 @@ void Circuit::Math::getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd 
             {
                 return;
             }
-
             double value = comp_pair.second->getConductance(param, -1);
             handleConductanceMatrixTwoNodes(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), value);
         }

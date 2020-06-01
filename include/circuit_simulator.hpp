@@ -210,16 +210,24 @@ public:
                     for (double t = 0; t <= tranStopTime; t += tranStepTime)
                     {
                         double error = 1e10;
+                        int num_iter = 0;
                         while (error > errorThreshold)
                         {
                             Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+
+
                             Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
+
+                            std::cerr << conductance << std::endl;
+                            std::cerr << current << std::endl;
 
                             sparse = conductance.sparseView();
                             sparse.makeCompressed();
                             solver.analyzePattern(sparse);
                             solver.factorize(sparse);
+
                             voltageNew = solver.solve(current);
+                            std::cerr << voltageNew << std::endl;
 
                             for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
                                 if (node_pair.second->getId() != -1)
@@ -229,6 +237,7 @@ public:
                             });
 
                             error = Circuit::Math::MSE(voltageOld, voltageNew);
+                            std::cerr << ++num_iter << ": " << error << std::endl;
                         }
                         if (format == SPACE)
                         {

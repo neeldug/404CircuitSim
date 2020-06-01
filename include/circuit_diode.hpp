@@ -20,6 +20,10 @@ public:
 		{
 			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
 		}
+		void setNodes(Node *pos, Node *neg){
+			this->nodes.push_back(pos);
+			this->nodes.push_back(neg);
+		}
 	};
 
 	ParasiticCapacitance *para_cap;
@@ -37,6 +41,7 @@ public:
 	{
 		para_cap = new ParasiticCapacitance();
 		schem->setupConnections2Node(this, nodeA, nodeB);
+		para_cap->setNodes( this->getPosNode(),this->getNegNode() ); 
 	}
 	void assignModel(std::vector<std::string> params)
 	{
@@ -81,7 +86,9 @@ public:
 	{
 		double vGuess = getVoltage();
 		para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		return (GMIN+para_cap->getConductance(param, timestep));
+		double capConductance = para_cap->getConductance(param, timestep);
+		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
+		return (GMIN+capConductance);
 	}
 
 };
