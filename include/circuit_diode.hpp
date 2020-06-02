@@ -70,7 +70,7 @@ public:
 		shockley = IS * (exp(vGuess / V_T) - 1);
 		exponentialBreakdown = -IS * ( (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T );
 		i_prev = (shockley + exponentialBreakdown);
-		return (shockley + exponentialBreakdown);// + para_cap->getCurrentSource( param,timestep );
+		return (shockley + exponentialBreakdown)+para_cap->getCurrentSource( param,timestep );
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
@@ -91,7 +91,7 @@ public:
 		para_cap->setCap(vGuess, this->CJ0, this->VJ);
 		double capConductance = para_cap->getConductance(param, timestep);
 		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
-		return (GMIN);//+capConductance);
+		return (GMIN)+capConductance;
 	}
 
 };
