@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 int main()
 {
 	std::ifstream netlist;
-	netlist.open("../test/SpiceNetlists/super.cir");
+	netlist.open("test/SpiceNetlists/resistorNetwork.cir");
 	if (netlist.fail())
 	{
 		std::cerr << "File Not Found! " << fs::current_path()<<" out"<< std::endl;
@@ -16,7 +16,7 @@ int main()
 	Circuit::Schematic *schem = Circuit::Parser::parse(netlist);
 	for (auto sims : schem->sims)
 	{
-		//sims->run(std::cout, Circuit::Simulator::OutputFormat::CSV);
+		sims->run(std::cout, Circuit::Simulator::OutputFormat::CSV);
 	}
 	netlist.close();
 	delete schem;

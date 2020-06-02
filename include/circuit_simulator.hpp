@@ -7,60 +7,59 @@
 #include <unsupported/Eigen/NonLinearOptimization>
 #include <unsupported/Eigen/NumericalDiff>
 
-template<typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
+template <typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
 struct Functor
 {
 
-// Information that tells the caller the numeric type (eg. double) and size (input / output dim)
-typedef _Scalar Scalar;
-enum { // Required by numerical differentiation module
-	InputsAtCompileTime = NX,
-	ValuesAtCompileTime = NY
-};
+	// Information that tells the caller the numeric type (eg. double) and size (input / output dim)
+	typedef _Scalar Scalar;
+	enum
+	{ // Required by numerical differentiation module
+		InputsAtCompileTime = NX,
+		ValuesAtCompileTime = NY
+	};
 
-// Tell the caller the matrix sizes associated with the input, output, and jacobian
-typedef Eigen::Matrix<Scalar,InputsAtCompileTime,1> InputType;
-typedef Eigen::Matrix<Scalar,ValuesAtCompileTime,1> ValueType;
-typedef Eigen::Matrix<Scalar,ValuesAtCompileTime,InputsAtCompileTime> JacobianType;
+	// Tell the caller the matrix sizes associated with the input, output, and jacobian
+	typedef Eigen::Matrix<Scalar, InputsAtCompileTime, 1> InputType;
+	typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
+	typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, InputsAtCompileTime> JacobianType;
 
-// Local copy of the number of inputs
-int m_inputs, m_values;
+	// Local copy of the number of inputs
+	int m_inputs, m_values;
 
-// Two constructors:
-Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
-Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
+	// Two constructors:
+	Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
+	Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
 
-// Get methods for users to determine function input and output dimensions
-int inputs() const { return m_inputs; }
-int values() const { return m_values; }
-
+	// Get methods for users to determine function input and output dimensions
+	int inputs() const { return m_inputs; }
+	int values() const { return m_values; }
 };
 
 struct ConductanceFunc : Functor<double>
 {
 	// Simple constructor
-	double time = 0;
-	Circuit::Schematic* schem;
-	Circuit::ParamTable* param;
+	double time;
+	Circuit::Schematic *schem;
+	Circuit::ParamTable *param;
 	double timestep;
-	ConductanceFunc(Circuit::Schematic * schem, Circuit::ParamTable *param, double time, double timestep, int NUM_NODES): Functor<double>(NUM_NODES, NUM_NODES) {
+	ConductanceFunc(Circuit::Schematic *schem, Circuit::ParamTable *param, double time, double timestep, int NUM_NODES) : Functor<double>(NUM_NODES, NUM_NODES)
+	{
 		this->schem = schem;
 		this->param = param;
 		this->timestep = timestep;
 		this->time = time;
 	}
-	void updateTime(){
-		time += timestep;
-	}
 
 	// Implementation of the objective function
-	int operator()(const Eigen::VectorXd &voltage, Eigen::VectorXd &fvec) const {
+	int operator()(const Eigen::VectorXd &voltage, Eigen::VectorXd &fvec) const
+	{
 		std::for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-									if (node_pair.second->getId() != -1)
-									{
-										node_pair.second->voltage = voltage[node_pair.second->getId()];
-									}
-								});
+			if (node_pair.second->getId() != -1)
+			{
+				node_pair.second->voltage = voltage[node_pair.second->getId()];
+			}
+		});
 		const int NUM_NODES = schem->nodes.size() - 1;
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
@@ -69,11 +68,11 @@ struct ConductanceFunc : Functor<double>
 
 		// minimize Ax-b
 		fvec = conductance*voltage - current;
-		// fvec = voltage - conductance.inverse()*current;	
+		std::cerr<<fvec.norm()<<std::endl;
+		// fvec = voltage - conductance.inverse() * current;
 		return 0;
 	}
 };
-
 
 class Circuit::Simulator
 {
@@ -84,8 +83,6 @@ private:
 	double tranStepTime;
 	std::stringstream spiceStream;
 	std::stringstream csvStream;
-
-	double errorThreshold = 1e-10;
 
 	void spicePrintTitle()
 	{
@@ -241,16 +238,11 @@ public:
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						// std::cerr << conductance << std::endl;
-						// std::cerr << current << std::endl;
-
 						sparse = conductance.sparseView();
 						sparse.makeCompressed();
 						solver.analyzePattern(sparse);
 						solver.factorize(sparse);
 						voltage = solver.solve(current);
-
-						// std::cerr << voltage << std::endl;
 
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
@@ -271,31 +263,35 @@ public:
 				}
 				else
 				{
-					const int NUM_NODES = schem->nodes.size() - 1;
+					const unsigned int NUM_NODES = schem->nodes.size() - 1;
 					Eigen::VectorXd voltageOld(NUM_NODES);
 
 					Circuit::Math::init_vector(voltageOld);
 
-					int a = 1;					
+					int a = 1;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						if( (t/tranStopTime)/(0.01 *a)>=1){
-							std::cerr<<a<<"%"<<std::endl;
+						if ((t / tranStopTime) / (0.01 * a) >= 1)
+						{
+							std::cerr << a << "%" << std::endl;
 							a++;
 						}
-						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
+						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						Eigen::HybridNonLinearSolver<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
-						
+						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
+						// std::cerr<<lm.info();
+						std::cerr<<"\n\n\n\n";
 						lm.parameters.maxfev = 10000;
-						lm.parameters.xtol = 1.0e-10;
-						int ret = lm.solve(voltageOld);
+						lm.parameters.xtol = 1e-8;
+
+						int ret = lm.minimize(voltageOld);
+
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-								if (node_pair.second->getId() != -1)
-								{
-									node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-								}
-							});
+							if (node_pair.second->getId() != -1)
+							{
+								node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+							}
+						});
 
 						if (format == SPACE)
 						{
@@ -305,7 +301,6 @@ public:
 						{
 							csvPrint(param, t, tranStepTime);
 						}
-						//functor.updateTime();
 					}
 				}
 			}
