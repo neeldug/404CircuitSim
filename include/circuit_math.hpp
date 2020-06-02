@@ -96,15 +96,18 @@ public:
     }
     static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y)
     {
-        double sum = 0;
-        assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
-        size_t size = X.rows();
-        for (size_t i = 0; i < size; i++)
-        {
-            sum += abs(X[i] - Y[i]);
-        }
-        double res = sum / (double)size;
-        return res;
+        // double sum = 0;
+        // assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
+        // size_t size = X.rows();
+        // for (size_t i = 0; i < size; i++)
+        // {
+        //     sum += abs(X[i] - Y[i]);
+        // }
+        // double res = sum / (double)size;
+        // return res;
+        double dist;
+        dist = (X - Y).norm();
+        return dist;
     }
 };
 
