@@ -1,78 +1,7 @@
 #ifndef GUARD_CIRCUIT_SIMULATOR_HPP
 #define GUARD_CIRCUIT_SIMULATOR_HPP
 #include <sstream>
-#include <iostream>
 #include <Eigen/Dense>
-
-#include <unsupported/Eigen/NonLinearOptimization>
-#include <unsupported/Eigen/NumericalDiff>
-
-template <typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
-struct Functor
-{
-
-	// Information that tells the caller the numeric type (eg. double) and size (input / output dim)
-	typedef _Scalar Scalar;
-	enum
-	{ // Required by numerical differentiation module
-		InputsAtCompileTime = NX,
-		ValuesAtCompileTime = NY
-	};
-
-	// Tell the caller the matrix sizes associated with the input, output, and jacobian
-	typedef Eigen::Matrix<Scalar, InputsAtCompileTime, 1> InputType;
-	typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
-	typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, InputsAtCompileTime> JacobianType;
-
-	// Local copy of the number of inputs
-	int m_inputs, m_values;
-
-	// Two constructors:
-	Functor() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}
-	Functor(int inputs, int values) : m_inputs(inputs), m_values(values) {}
-
-	// Get methods for users to determine function input and output dimensions
-	int inputs() const { return m_inputs; }
-	int values() const { return m_values; }
-};
-
-struct ConductanceFunc : Functor<double>
-{
-	// Simple constructor
-	double time;
-	Circuit::Schematic *schem;
-	Circuit::ParamTable *param;
-	double timestep;
-	ConductanceFunc(Circuit::Schematic *schem, Circuit::ParamTable *param, double time, double timestep, int NUM_NODES) : Functor<double>(NUM_NODES, NUM_NODES)
-	{
-		this->schem = schem;
-		this->param = param;
-		this->timestep = timestep;
-		this->time = time;
-	}
-
-	// Implementation of the objective function
-	int operator()(const Eigen::VectorXd &voltage, Eigen::VectorXd &fvec) const
-	{
-		std::for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-			if (node_pair.second->getId() != -1)
-			{
-				node_pair.second->voltage = voltage[node_pair.second->getId()];
-			}
-		});
-		const int NUM_NODES = schem->nodes.size() - 1;
-		Eigen::VectorXd current(NUM_NODES);
-		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
-		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
-
-		// minimize Ax-b
-		fvec = conductance*voltage - current;
-		std::cerr<<fvec.norm()<<std::endl;
-		// fvec = voltage - conductance.inverse() * current;
-		return 0;
-	}
-};
 
 class Circuit::Simulator
 {
@@ -177,20 +106,21 @@ public:
 
 	void run(std::ostream &dst, OutputFormat format)
 	{
+		const int NUM_NODES = schem->nodes.size() - 1;
+		Eigen::VectorXd current(NUM_NODES);
+		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseMatrix<double> sparse;
+
 		for (ParamTable *param : schem->tables)
 		{
 			if (type == OP)
 			{
-				const int NUM_NODES = schem->nodes.size() - 1;
 				Eigen::VectorXd voltage(NUM_NODES);
-				Eigen::VectorXd current(NUM_NODES);
-				Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-				Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-
 				Circuit::Math::getConductanceOP(schem, conductance, param);
 				Circuit::Math::getCurrentOP(schem, current, conductance, param);
 
-				Eigen::SparseMatrix<double> sparse = conductance.sparseView();
+				sparse = conductance.sparseView();
 				sparse.makeCompressed();
 				solver.analyzePattern(sparse);
 				solver.factorize(sparse);
@@ -223,15 +153,10 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear)
+				if (!schem->nonLinear && false)
 				{
 
-					const int NUM_NODES = schem->nodes.size() - 1;
 					Eigen::VectorXd voltage(NUM_NODES);
-					Eigen::VectorXd current(NUM_NODES);
-					Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-					Eigen::SparseMatrix<double> sparse;
 
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
@@ -263,11 +188,10 @@ public:
 				}
 				else
 				{
-					const unsigned int NUM_NODES = schem->nodes.size() - 1;
 					Eigen::VectorXd voltageOld(NUM_NODES);
-
 					Circuit::Math::init_vector(voltageOld);
-
+					Eigen::VectorXd voltageNew(NUM_NODES);
+					Eigen::VectorXd voltageError(NUM_NODES);
 					int a = 1;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
@@ -276,23 +200,37 @@ public:
 							std::cerr << a << "%" << std::endl;
 							a++;
 						}
-						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
-						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
-						// std::cerr<<lm.info();
-						std::cerr<<"\n\n\n\n";
-						lm.parameters.maxfev = 10000;
-						lm.parameters.xtol = 1e-8;
 
-						int ret = lm.minimize(voltageOld);
+						bool error = true;
+						double errorVal;
+						while (error)
+						{
+							Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+							Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-							if (node_pair.second->getId() != -1)
-							{
-								node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-							}
-						});
+							sparse = conductance.sparseView();
+							sparse.makeCompressed();
+							solver.analyzePattern(sparse);
+							solver.factorize(sparse);
+							voltageNew = solver.solve(current);
+							voltageError = (voltageNew - voltageOld);
 
+							// errorVal = voltageError.norm();
+							errorVal = voltageNew.squaredNorm()-(voltageNew.dot(voltageOld));
+
+							std::cerr << errorVal << std::endl;
+
+							error = errorVal > 0.5;
+							voltageOld += 0.5 * voltageError;
+							// error = Circuit::Math::MSE(voltageOld, voltageNew);
+
+							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+								if (node_pair.second->getId() != -1)
+								{
+									node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+								}
+							});
+						}
 						if (format == SPACE)
 						{
 							spicePrint(param, t, tranStepTime);

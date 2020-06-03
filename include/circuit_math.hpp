@@ -94,8 +94,25 @@ public:
             vec[i] = val;
         }
     }
-    static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y)
-    {
+    static bool MSE(Eigen::VectorXd &X, const Eigen::VectorXd &Y)
+    {   
+        double err;
+        double lr = 0.5;
+        bool error = false;
+        assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
+        for (size_t i = 0; i < X.rows(); i++)
+        {
+            err = (Y[i] - X[i]);
+
+            if(abs(err / X[i]) > 0.01){
+                error = true;
+            }
+
+            X[i] += lr * err;
+        }
+        return error;
+
+
         // double sum = 0;
         // assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
         // size_t size = X.rows();
@@ -105,9 +122,9 @@ public:
         // }
         // double res = sum / (double)size;
         // return res;
-        double dist;
-        dist = (X - Y).norm();
-        return dist;
+        // double dist;
+        // dist = (X - Y).norm();
+        // return dist;
     }
 };
 

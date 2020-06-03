@@ -28,7 +28,8 @@ protected:
 public:
 	double getSourceOutput(ParamTable *param, double t) const
 	{
-		return ( DC + SINE_DC_offset + (SINE_amplitude) * std::sin( 2.0 * M_PI * SINE_frequency * t));
+		double returnVal = DC + SINE_DC_offset + (SINE_amplitude) * std::sin( 2.0 * M_PI * SINE_frequency * t);
+		return returnVal;
 	}
 	bool isSource() const override
 	{
