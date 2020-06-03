@@ -4,23 +4,32 @@
 int main(int argc, char *argv[])
 {
     int c;
-    while ((c = getopt(argc, argv, "abc:")) != -1)
+    bool s,n = false;
+    std::string o,p;
+    while ((c = getopt(argc, argv, "sno:p:")) != -1)
     {
         switch (c)
         {
-        case 'a':
-            printf("switch a \n");
+        case 's':
+            s = true;
             break;
-        case 'b':
-            printf("switch b \n");
+        case 'n':
+            n = true;
             break;
-        case 'c':
-            printf("switch c - val: %s\n", optarg); 
+        case 'o':
+            o = optarg;
+            break;
+        case 'p':
+            p = optarg;
             break;
         default:
             abort();
         }
     }
 
+    std::cerr << "s = " << s << '\n';
+    std::cerr << "n = " << n << '\n';
+    std::cerr << "o = " << o << '\n';
+    std::cerr << "p = " << p << '\n';
     return 0;
 }

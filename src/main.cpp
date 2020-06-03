@@ -3,6 +3,7 @@
 #include <circuit.hpp>
 #include <filesystem>
 #include <regex>
+#include <getopt.h>
 
 using flagString = std::pair<std::string, std::string>;
 using flagBool = std::pair<std::string, bool>;
