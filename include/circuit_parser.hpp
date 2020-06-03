@@ -284,7 +284,6 @@ public:
 		}
 		bool endStatement = false;
 		while( std::getline( inputStream, inputLine )){
-			// std::cerr<<inputLine<<std::endl;
 			if( inputLine == ".END" || inputLine == ".end" ){
 				endStatement = true;
 				break;

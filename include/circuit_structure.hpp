@@ -62,7 +62,7 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
-	bool nonLinear = false;
+	bool nonLinear = true;
 	void containsNonLinearComponents()
 	{
 		nonLinear = true;
@@ -254,7 +254,6 @@ Circuit::Schematic::~Schematic()
 	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
-		std::cerr<<comps.begin()->first<<std::endl;
 		delete comps.begin()->second;
 	}
 

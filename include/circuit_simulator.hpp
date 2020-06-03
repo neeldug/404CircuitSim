@@ -35,7 +35,7 @@ int inputs() const { return m_inputs; }
 int values() const { return m_values; }
 
 };
-
+int a = 0;//REVIEW - TESTING DELETE A
 struct ConductanceFunc : Functor<double>
 {
 	// Simple constructor
@@ -49,27 +49,21 @@ struct ConductanceFunc : Functor<double>
 		this->timestep = timestep;
 		this->time = time;
 	}
-	void updateTime(){
-		time += timestep;
-	}
-
 	// Implementation of the objective function
 	int operator()(const Eigen::VectorXd &voltage, Eigen::VectorXd &fvec) const {
-		std::for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-									if (node_pair.second->getId() != -1)
-									{
-										node_pair.second->voltage = voltage[node_pair.second->getId()];
-									}
-								});
 		const int NUM_NODES = schem->nodes.size() - 1;
-		Eigen::VectorXd current(NUM_NODES);
+		std::map<int, Circuit::Node*> saveVolts;
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
+
+		Eigen::VectorXd current(NUM_NODES);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
 
 		// minimize Ax-b
 		fvec = conductance*voltage - current;
 		// fvec = voltage - conductance.inverse()*current;	
+		//std::cerr<<a<<",("<<current.transpose()<<")"<<std::endl;
+		a++;
 		return 0;
 	}
 };
@@ -274,29 +268,65 @@ public:
 					const int NUM_NODES = schem->nodes.size() - 1;
 					Eigen::VectorXd voltageOld(NUM_NODES);
 
-					Circuit::Math::init_vector(voltageOld);
+					int a = 1;	
 
-					int a = 1;					
+					Eigen::VectorXd prev(NUM_NODES);
+					Eigen::VectorXd current(NUM_NODES);
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
+						Circuit::Math::init_vector(voltageOld);
+						current = voltageOld;
 						if( (t/tranStopTime)/(0.01 *a)>=1){
 							std::cerr<<a<<"%"<<std::endl;
 							a++;
 						}
+						/*
 						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						Eigen::HybridNonLinearSolver<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
-						
-						lm.parameters.maxfev = 10000;
-						lm.parameters.xtol = 1.0e-10;
-						int ret = lm.solve(voltageOld);
-						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-								if (node_pair.second->getId() != -1)
-								{
-									node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-								}
-							});
+						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
+						lm.parameters.maxfev=400;
+						std::cerr<<lm.parameters.gtol<<"gtol"<<std::endl;
+						int ret = lm.minimize(voltageOld);
+						std::cerr<<ret<<std::endl;
+						*/
+						bool found = true;
+						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
+						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
 
+						Eigen::MatrixXd jaq(NUM_NODES,NUM_NODES);
+						numDiff.df(voltageOld, jaq);
+						for(int i = 0; i< 100;i++){
+							Eigen::VectorXd funcResult(NUM_NODES);
+							functor(voltageOld, funcResult);
+							voltageOld = voltageOld - (jaq.transpose().inverse())*funcResult;
+							
+							/*
+							if(i==99){
+								if( funcResult.norm()>=1000 ){
+									found = false;
+								}
+								else if( funcResult.norm() >=10 ){
+									std::cerr<<funcResult.norm()<<std::endl;
+									voltageOld = current + (current - prev);
+									i=0;
+								}
+							}
+							*/
+							
+						}	
+						for(int i = 0; i<NUM_NODES;i++){
+							if(std::isnan(voltageOld(i))){
+								voltageOld(i) = 1e-12;
+							}
+						}
+						if(found){
+							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+									if (node_pair.second->getId() != -1)
+									{
+										node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+									}
+								});
+						}
 						if (format == SPACE)
 						{
 							spicePrint(param, t, tranStepTime);
@@ -305,7 +335,7 @@ public:
 						{
 							csvPrint(param, t, tranStepTime);
 						}
-						//functor.updateTime();
+						prev=current;
 					}
 				}
 			}
