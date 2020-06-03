@@ -189,12 +189,13 @@ public:
 				else
 				{
 					Eigen::VectorXd voltageOld(NUM_NODES);
-					Circuit::Math::init_vector(voltageOld);
 					Eigen::VectorXd voltageNew(NUM_NODES);
 					Eigen::VectorXd voltageError(NUM_NODES);
 					int a = 1;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
+						Circuit::Math::init_vector(voltageOld);
+
 						if ((t / tranStopTime) / (0.01 * a) >= 1)
 						{
 							std::cerr << a << "%" << std::endl;
@@ -205,6 +206,7 @@ public:
 						double errorVal;
 						while (error)
 						{
+
 							Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 							Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
@@ -215,13 +217,13 @@ public:
 							voltageNew = solver.solve(current);
 							voltageError = (voltageNew - voltageOld);
 
-							// errorVal = voltageError.norm();
-							errorVal = voltageNew.squaredNorm()-(voltageNew.dot(voltageOld));
+							errorVal = std::sqrt(voltageError.squaredNorm());
+							// errorVal = voltageNew.squaredNorm()-(voltageNew.dot(voltageOld));
 
-							std::cerr << errorVal << std::endl;
+							// std::cerr << errorVal << std::endl;
 
-							error = errorVal > 0.5;
-							voltageOld += 0.5 * voltageError;
+							error = errorVal > 0.05;
+							voltageOld += voltageError;
 							// error = Circuit::Math::MSE(voltageOld, voltageNew);
 
 							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
