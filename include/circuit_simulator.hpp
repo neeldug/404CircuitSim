@@ -274,7 +274,6 @@ public:
 					Eigen::VectorXd current(NUM_NODES);
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Circuit::Math::init_vector(voltageOld);
 						current = voltageOld;
 						if( (t/tranStopTime)/(0.01 *a)>=1){
 							std::cerr<<a<<"%"<<std::endl;
@@ -316,7 +315,8 @@ public:
 						}	
 						for(int i = 0; i<NUM_NODES;i++){
 							if(std::isnan(voltageOld(i))){
-								voltageOld(i) = 1e-12;
+								Circuit::Math::init_vector(voltageOld);
+								break;
 							}
 						}
 						if(found){
