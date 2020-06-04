@@ -1,5 +1,6 @@
 #ifndef GUARD_CIRCUIT_SIMULATOR_HPP
 #define GUARD_CIRCUIT_SIMULATOR_HPP
+
 #include <sstream>
 #include <Eigen/Dense>
 
@@ -170,118 +171,40 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear && false)
+				Eigen::VectorXd voltage(NUM_NODES);
+
+				for (double t = 0; t <= tranStopTime; t += tranStepTime)
 				{
+					progressBar(t/tranStopTime);
+					Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+					Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-					Eigen::VectorXd voltage(NUM_NODES);
+					// std::cerr << std::endl;
+					// std::cerr << conductance << std::endl;
 
-					for (double t = 0; t <= tranStopTime; t += tranStepTime)
+					sparse = conductance.sparseView();
+					sparse.makeCompressed();
+					solver.analyzePattern(sparse);
+					solver.factorize(sparse);
+					voltage = solver.solve(current);
+
+					// std::cerr << voltage << std::endl;
+
+					for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+						if (node_pair.second->getId() != -1)
+						{
+							node_pair.second->voltage = voltage[node_pair.second->getId()];
+						}
+					});
+
+					if (format == SPACE)
 					{
-						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-						sparse = conductance.sparseView();
-						sparse.makeCompressed();
-						solver.analyzePattern(sparse);
-						solver.factorize(sparse);
-						voltage = solver.solve(current);
-						std::cerr << "Voltage : " << voltage << '\n';
-						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-							if (node_pair.second->getId() != -1)
-							{
-								node_pair.second->voltage = voltage[node_pair.second->getId()];
-							}
-						});
-
-						if (format == SPACE)
-						{
-							spicePrint(param, t, tranStepTime);
-						}
-						else if (format == CSV)
-						{
-							csvPrint(param, t, tranStepTime);
-						}
+						spicePrint(param, t, tranStepTime);
 					}
-				}
-				else
-				{
-					Eigen::VectorXd voltageOld(NUM_NODES);
-					Eigen::VectorXd voltage(NUM_NODES);
-					for (double t = 0; t <= tranStopTime; t += tranStepTime)
+					else if (format == CSV)
 					{
-						double vGuess = 1e-12;
-
-						for(int i = 0; i< 100;i++){
-							double voltageDiff = 0;
-							for(auto x : schem->nonLinearComps){
-								x->setConductance(param, tranStepTime, vGuess);
-								Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-								Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-								sparse = conductance.sparseView();
-								sparse.makeCompressed();
-								solver.analyzePattern(sparse);
-								solver.factorize(sparse);
-								voltage = solver.solve(current);
-								double vPos = (x->getPosNode()->getId()!=-1) ? voltage(x->getPosNode()->getId()) : 0;
-								double vNeg = (x->getNegNode()->getId()!=-1) ? voltage(x->getNegNode()->getId()) : 0;
-								voltageDiff = vPos - vNeg;
-								vGuess = vGuess - voltageDiff/(1/(25e-3)*x->IS*(vGuess/x->V_T));
-								if(std::isnan(vGuess)){
-									vGuess = 1e-12;
-								}
-							}
-							std::cerr<<abs(voltageDiff-vGuess)<<std::endl;
-						}
-<<<<<<< HEAD
-
-						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-
-						sparse = conductance.sparseView();
-						sparse.makeCompressed();
-						solver.analyzePattern(sparse);
-						solver.factorize(sparse);
-						voltage = solver.solve(current);
-
-
-						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-							if (node_pair.second->getId() != -1)
-							{
-								node_pair.second->voltage = voltage[node_pair.second->getId()];
-							}
-						});
-=======
-						// ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
-						// Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						// Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
-						// // std::cerr<<lm.info();
-						// std::cerr<<"\n\n\n\n";
-						// lm.parameters.maxfev = 10000;
-						// lm.parameters.xtol = 1e-8;
-						//
-						// int ret = lm.minimize(voltageOld);
-						//
-						// for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-						// 	if (node_pair.second->getId() != -1)
-						// 	{
-						// 		node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-						// 	}
-						// });
-
->>>>>>> b21652bdd7e88a93c674375010b46c1c0f78e5b3
-
-						if (format == SPACE)
-						{
-							spicePrint(param, t, tranStepTime);
-						}
-						else if (format == CSV)
-						{
-							csvPrint(param, t, tranStepTime);
-						}
+						csvPrint(param, t, tranStepTime);
 					}
-					std::cerr << std::endl;
 				}
 			}
 			if (format == SPACE)
@@ -292,7 +215,9 @@ public:
 			{
 				dst << csvStream.str();
 			}
+			std::cerr << std::endl;
 		}
 	}
 };
+
 #endif

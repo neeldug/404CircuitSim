@@ -1,0 +1,10 @@
+* C:\users\sam\My Documents\ELEC40004\404CircuitSim\test\SpiceNetlists\Draft1.asc
+V1 N001 0 SINE(0 5 1k)
+D1 N001 N002 D
+C1 N002 0 10n
+R1 N002 0 1k
+.model D D
+.lib C:\users\sam\My Documents\LTspiceXVII\lib\cmp\standard.dio
+.tran 0 5m 0 0.01m
+.backanno
+.end

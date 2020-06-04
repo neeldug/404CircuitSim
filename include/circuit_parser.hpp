@@ -197,7 +197,6 @@ private:
 
 				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
 				schem->containsNonLinearComponents();
-				schem->nonLinearComps.push_back(diode);
 				break;
 			}
 			case (int) 'q' : {

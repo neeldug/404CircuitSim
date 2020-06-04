@@ -1,35 +1,38 @@
 #ifndef GUARD_DIODE_HPP
 #define GUARD_DIODE_HPP
+
 #include <cmath>
 
 class Circuit::Diode : public Circuit::Component
 {
 private:
 	std::string modelName = "D";
+	double *v_across = new double;
 
 public:
-
 	class ParasiticCapacitance : public Circuit::Capacitor
 	{
 	public:
-		ParasiticCapacitance(Schematic* schem){
+		ParasiticCapacitance(Schematic *schem)
+		{
 			this->schem = schem;
 		}
 		void setDiodeOwner(Diode *d);
-		void setCap(double vGuess, const double& CJ0, const double& VJ)
+		void setCap(double vGuess, const double &CJ0, const double &VJ)
 		{
 			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
 		}
-		void setNodes(Node *pos, Node *neg){
+		void setNodes(Node *pos, Node *neg)
+		{
 			this->nodes.push_back(pos);
 			this->nodes.push_back(neg);
 		}
-		virtual ~ParasiticCapacitance(){}
+		virtual ~ParasiticCapacitance() {}
 	};
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 1e-10; //also stored in value (Component base class)
+	double IS = 5e-12; //also stored in value (Component base class)
 	double RS = 10;
 	double CJ0 = 4e-12;
 	double TT = 0;
@@ -39,16 +42,11 @@ public:
 	const double GMIN = 1e-20;
 	const double V_T = 25e-3;
 	Diode() = default;
-<<<<<<< HEAD
-
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0, schem)
-=======
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.1, schem)
->>>>>>> b21652bdd7e88a93c674375010b46c1c0f78e5b3
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.0, schem)
 	{
 		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
-		para_cap->setNodes( this->getPosNode(),this->getNegNode() );
+		para_cap->setNodes(this->getPosNode(), this->getNegNode());
 	}
 	void assignModel(std::vector<std::string> params)
 	{
@@ -68,15 +66,13 @@ public:
 
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
-		//i_prev = para_cap->getCurrentSource( param,timestep );
-		//return i_prev;
-		i_prev = 0.0;
-		return 0;
+		i_prev = IS * (exp(*v_across / V_T) - 1);
+		return i_prev;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev) + getVoltage()*GMIN + getVoltage()*(value);// + getVoltage() * getConductance(param, timestep));
+		return i_prev;
 	}
 	std::string getModelName()
 	{
@@ -88,37 +84,29 @@ public:
 	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		double vPrev = getVoltage();
-		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
-		double capConductance = para_cap->getConductance(param, timestep);
-		return value;//+capConductance;
-	}
-	void setConductance( ParamTable *param, double timestep, double vGuess ){
-		double shockley;
-		shockley= IS * (exp(vGuess / V_T) - 1);
-		if( vGuess!=0 && !std::isnan(shockley)){
-			value = shockley/vGuess;
-		}
-		else{
-			value = 0;
-		}
-		// double vGuess = getVoltage();
-		// para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		// double capConductance = para_cap->getConductance(param, timestep);
+
 		double vGuess = 0.7;
 		double vNew;
 		double V_POS = this->getPosNode()->voltage;
-		while (true) {
-			std::cerr << "	" << V_POS << " " << vGuess << " " << RS*IS << '\n';
-			vNew = V_T * log(((V_POS - vGuess)/(RS*IS)) + 1);
-			double error = vGuess - vNew;
+		while (true)
+		{
+			// std::cerr << "	" << V_POS << " " << vGuess << " " << RS*IS << '\n';
+			vNew = V_T * log(((V_POS - vGuess) / (RS * IS)) + 1);
+			double error = std::pow(vGuess - vNew, 2);
+			if (error < 1e-12 || std::isnan(vNew))
+				break;
+			// std::cerr << error << std::endl;
 			vGuess = vNew;
 		}
-		double iNew = IS*(exp(vNew/V_T)-1);
-		std::cerr << iNew/vNew;
-		return (iNew/vNew);
-		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
-		// return (GMIN)+capConductance;
+		if (std::isnan(vNew))
+		{
+			*v_across = 0.0;
+			return std::numeric_limits<double>::min();
+		}
+
+		double iNew = IS * (exp(vNew / V_T) - 1);
+		*v_across = vNew;
+		return (iNew / vNew);
 	}
 };
 #endif

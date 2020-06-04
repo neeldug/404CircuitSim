@@ -62,13 +62,13 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
-	bool nonLinear = true;
+	bool nonLinear = false;
 
-	std::vector<Diode* > nonLinearComps;
 	void containsNonLinearComponents()
 	{
 		nonLinear = true;
 	}
+	
 	void out(ParamTable *param) const
 	{
 		for_each(nodes.begin(), nodes.end(), [&](const auto node) {
@@ -253,11 +253,7 @@ Circuit::Schematic::~Schematic()
 				  [](ParamTable *&t) {
 					  delete t;
 				  });
-	// std::for_each(nodes.begin(), nodes.end(), [](auto kv){
-	// 	delete kv.second;
-	// });
 
-	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
 		delete comps.begin()->second;
