@@ -6,8 +6,6 @@ class Circuit::Diode : public Circuit::Component
 {
 private:
 	std::string modelName = "D";
-	const double GMIN = 1e-20;
-	const double V_T = 25e-3;
 
 public:
 
@@ -38,9 +36,11 @@ public:
 	double BV = 100;
 	double IBV = 0.1e-10;
 	double VJ = 1;
+	const double GMIN = 1e-20;
+	const double V_T = 25e-3;
 	Diode() = default;
 
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 1000, schem)
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0, schem)
 	{
 		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
@@ -72,7 +72,7 @@ public:
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev) + getVoltage()*GMIN + getVoltage()*(1/value);// + getVoltage() * getConductance(param, timestep));
+		return (i_prev) + getVoltage()*GMIN + getVoltage()*(value);// + getVoltage() * getConductance(param, timestep));
 	}
 	std::string getModelName()
 	{
@@ -87,14 +87,16 @@ public:
 		double vPrev = getVoltage();
 		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
 		double capConductance = para_cap->getConductance(param, timestep);
-		return 1/value;//+capConductance;
+		return value;//+capConductance;
 	}
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;
 		shockley= IS * (exp(vGuess / V_T) - 1);
 		if( vGuess!=0 && !std::isnan(shockley)){
-			value = 1000;
-			//value = shockley/vGuess;
+			value = shockley/vGuess;
+		}
+		else{
+			value = 0;
 		}
 	}
 };
