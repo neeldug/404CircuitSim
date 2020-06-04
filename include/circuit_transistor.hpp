@@ -17,14 +17,14 @@ public:
 
 
 	TType transistorType;
-	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, IS, schem ){
+	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, 0.1, schem ){
 		if( modelName == "NPN" ){
 			transistorType = NPN;
 		}
 		if( modelName == "PNP" ){
 			transistorType = NPN;
 		}
-		this->modelName = modelName;
+		this->modelName = model;
 		schem->setupConnections3Node( this, nodeCollector, nodeBase, nodeEmitter );
 	}
 
