@@ -289,17 +289,40 @@ public:
 							std::cerr<<percent<<"%"<<std::endl;
 							percent++;
 						}
-						for(int i = 0; i< 1000;i++){
+						double vGuess = 1e-12;
+
+						for(int i = 0; i< 100;i++){
+							double voltageDiff = 0;
 							for(auto x : schem->nonLinearComps){
-								x->setConductance(param, tranStepTime, 1000);
+								x->setConductance(param, tranStepTime, vGuess);
+								Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+								Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
+
+								//std::cerr << conductance << std::endl;
+								//std::cerr << current << std::endl;
+								//std::cerr<<vGuess<<std::endl;
+								sparse = conductance.sparseView();
+								sparse.makeCompressed();
+								solver.analyzePattern(sparse);
+								solver.factorize(sparse);
+								voltage = solver.solve(current);
+								double vPos = (x->getPosNode()->getId()!=-1) ? voltage(x->getPosNode()->getId()) : 0;
+								double vNeg = (x->getNegNode()->getId()!=-1) ? voltage(x->getNegNode()->getId()) : 0;
+								voltageDiff = vPos - vNeg;
+								vGuess = vGuess - voltageDiff/(1/(25e-3)*x->IS*(vGuess/x->V_T));
+								if(std::isnan(vGuess)){
+									vGuess = 1e-12;
+								}
 							}
+							std::cerr<<abs(voltageDiff-vGuess)<<std::endl;
 						}
+						//std::cerr<<vGuess<<std::endl;
 
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						std::cerr << conductance << std::endl;
-						std::cerr << current << std::endl;
+						//std::cerr << conductance << std::endl;
+						//std::cerr << current << std::endl;
 
 						sparse = conductance.sparseView();
 						sparse.makeCompressed();
