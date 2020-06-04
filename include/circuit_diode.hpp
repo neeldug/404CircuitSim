@@ -40,7 +40,7 @@ public:
 	double VJ = 1;
 	Diode() = default;
 
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.0, schem)
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 1000, schem)
 	{
 		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
@@ -65,12 +65,14 @@ public:
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
 		//i_prev = para_cap->getCurrentSource( param,timestep );
-		return i_prev;
+		//return i_prev;
+		i_prev = 0.0;
+		return 0;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev) + getVoltage()*GMIN + getVoltage()*value;// + getVoltage() * getConductance(param, timestep));
+		return (i_prev) + getVoltage()*GMIN + getVoltage()*(1/value);// + getVoltage() * getConductance(param, timestep));
 	}
 	std::string getModelName()
 	{
@@ -85,7 +87,7 @@ public:
 		double vPrev = getVoltage();
 		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
 		double capConductance = para_cap->getConductance(param, timestep);
-		return (GMIN) + value;//+capConductance;
+		return 1/value;//+capConductance;
 	}
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;

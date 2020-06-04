@@ -241,8 +241,8 @@ public:
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						// std::cerr << conductance << std::endl;
-						// std::cerr << current << std::endl;
+						std::cerr << conductance << std::endl;
+						std::cerr << current << std::endl;
 
 						sparse = conductance.sparseView();
 						sparse.makeCompressed();
@@ -274,7 +274,11 @@ public:
 					const int NUM_NODES = schem->nodes.size() - 1;
 					int percent = 0;
 					Eigen::VectorXd voltageOld(NUM_NODES);
-					Circuit::Math::init_vector(voltageOld);
+					Eigen::VectorXd voltage(NUM_NODES);
+					Eigen::VectorXd current(NUM_NODES);
+					Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+					Eigen::SparseMatrix<double> sparse;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
@@ -282,15 +286,32 @@ public:
 							percent++;
 						}
 						for(int i = 0; i< 1000;i++){
-							schem->nonLinearComps[0]->setConductance(param, tranStepTime, 1000);
+							for(auto x : schem->nonLinearComps){
+								x->setConductance(param, tranStepTime, 1000);
+							}
 						}
-						
+
+						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
+
+						std::cerr << conductance << std::endl;
+						std::cerr << current << std::endl;
+
+						sparse = conductance.sparseView();
+						sparse.makeCompressed();
+						solver.analyzePattern(sparse);
+						solver.factorize(sparse);
+						voltage = solver.solve(current);
+
+						// std::cerr << voltage << std::endl;
+
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{
-								node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+								node_pair.second->voltage = voltage[node_pair.second->getId()];
 							}
 						});
+
 						if (format == SPACE)
 						{
 							spicePrint(param, t, tranStepTime);
