@@ -32,7 +32,7 @@ public:
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
 	double IS = 1e-10; //also stored in value (Component base class)
-	double RS = 0;
+	double RS = 10;
 	double CJ0 = 4e-12;
 	double TT = 0;
 	double BV = 100;
@@ -86,11 +86,23 @@ public:
 	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		double vGuess = getVoltage();
-		para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		double capConductance = para_cap->getConductance(param, timestep);
+		// double vGuess = getVoltage();
+		// para_cap->setCap(vGuess, this->CJ0, this->VJ);
+		// double capConductance = para_cap->getConductance(param, timestep);
+		double vGuess = 0.7;
+		double vNew;
+		double V_POS = this->getPosNode()->voltage;
+		while (true) {
+			std::cerr << "	" << V_POS << " " << vGuess << " " << RS*IS << '\n';
+			vNew = V_T * log(((V_POS - vGuess)/(RS*IS)) + 1);
+			double error = vGuess - vNew;
+			vGuess = vNew;
+		}
+		double iNew = IS*(exp(vNew/V_T)-1);
+		std::cerr << iNew/vNew;
+		return (iNew/vNew);
 		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
-		return (GMIN)+capConductance;
+		// return (GMIN)+capConductance;
 	}
 
 };

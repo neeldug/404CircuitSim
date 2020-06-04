@@ -1,23 +1,17 @@
 #include <iostream>
 #include <fstream>
-#include <circuit.hpp>
+#include <cmath>
 
-#include <filesystem>
-namespace fs = std::filesystem;
 int main()
 {
-	std::ifstream netlist;
-	netlist.open("test/SpiceNetlists/resistorNetwork.cir");
-	if (netlist.fail())
-	{
-		std::cerr << "File Not Found! " << fs::current_path()<<" out"<< std::endl;
-		return 1;
+	double init = 0.7;
+	double vPos;
+	std::cin >> vPos;
+	double vNew;
+	for (size_t i = 0; i < 100; i++) {
+		vNew = 25e-3 * log(((vPos - init)/(1e-9)) + 1);
+		std::cerr << vNew << '\n';
+		init = vNew;
+		/* code */
 	}
-	Circuit::Schematic *schem = Circuit::Parser::parse(netlist);
-	for (auto sims : schem->sims)
-	{
-		sims->run(std::cout, Circuit::Simulator::OutputFormat::CSV);
-	}
-	netlist.close();
-	delete schem;
 }

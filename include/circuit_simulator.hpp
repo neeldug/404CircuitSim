@@ -223,7 +223,7 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear)
+				if (!schem->nonLinear && true)
 				{
 
 					const int NUM_NODES = schem->nodes.size() - 1;
@@ -243,7 +243,7 @@ public:
 						solver.analyzePattern(sparse);
 						solver.factorize(sparse);
 						voltage = solver.solve(current);
-
+						std::cerr << "Voltage : " << voltage << '\n';
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{
@@ -276,22 +276,23 @@ public:
 							std::cerr << a << "%" << std::endl;
 							a++;
 						}
-						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
-						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
-						// std::cerr<<lm.info();
-						std::cerr<<"\n\n\n\n";
-						lm.parameters.maxfev = 10000;
-						lm.parameters.xtol = 1e-8;
+						// ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
+						// Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
+						// Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
+						// // std::cerr<<lm.info();
+						// std::cerr<<"\n\n\n\n";
+						// lm.parameters.maxfev = 10000;
+						// lm.parameters.xtol = 1e-8;
+						//
+						// int ret = lm.minimize(voltageOld);
+						//
+						// for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+						// 	if (node_pair.second->getId() != -1)
+						// 	{
+						// 		node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+						// 	}
+						// });
 
-						int ret = lm.minimize(voltageOld);
-
-						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-							if (node_pair.second->getId() != -1)
-							{
-								node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-							}
-						});
 
 						if (format == SPACE)
 						{
