@@ -15,4 +15,4 @@ else
     exit
 fi
 
-cmake --build .
+cmake --build . 

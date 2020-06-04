@@ -30,6 +30,8 @@ private:
 		}
 		std::string unitSuffix = value.substr(suffixPos, std::string::npos);
 		int mult;
+		// std::cerr<<(int)unitSuffix[0]<<" "<<unitSuffix<<std::endl;
+
 		if (unitSuffix == "p"){
 			mult = -12;
 		}
@@ -193,7 +195,9 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				//Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
+				schem->containsNonLinearComponents();
+				
+				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
 				break;
 			}
 			case (int) 'q' : {
@@ -206,6 +210,7 @@ private:
 				std::string modelName = params[4];
 
 				Circuit::Transistor* tran = new Circuit::Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
+				schem->containsNonLinearComponents();
 				break;
 			}
 			case (int) 'm' : {

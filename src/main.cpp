@@ -3,6 +3,7 @@
 #include <circuit.hpp>
 #include <filesystem>
 #include <regex>
+#include <getopt.h>
 
 using flagString = std::pair<std::string, std::string>;
 using flagBool = std::pair<std::string, bool>;
@@ -11,6 +12,7 @@ std::map<std::string, std::string> inputFlags = {
     flagString("-p", ""),    //plot output
     flagString("-o", "out"), //name output folder
 };
+// NOTE - maybe add a mode for plotting
 std::map<std::string, bool> inputlessFlags = {
     flagBool("-s", false), //dump spice file
     flagBool("-n", false), //print nodes and attached components names
@@ -47,7 +49,7 @@ int main(int argc, char const *argv[])
     for (Circuit::Simulator *sim : schem->sims)
     {
         std::filesystem::create_directory(inputFlags["-o"]);
-        std::ofstream out(inputFlags["-o"] + "/" + schem->title + sim->simulationTypeMap[sim->type]);
+        std::ofstream out(inputFlags["-o"] + "/" + schem->title + sim->simulationTypeMap[sim->type] + ".csv");
         // REVIEW - output format could be a flag
         sim->run(out, Circuit::Simulator::OutputFormat::CSV);
         out.close();

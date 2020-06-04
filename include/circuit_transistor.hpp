@@ -21,10 +21,10 @@ public:
 		if( modelName == "NPN" ){
 			transistorType = NPN;
 		}
-		if( modelName == "PNP" ){
+		if( model == "PNP" ){
 			transistorType = NPN;
 		}
-		this->modelName = model;
+		modelName = model;
 		schem->setupConnections3Node( this, nodeCollector, nodeBase, nodeEmitter );
 	}
 

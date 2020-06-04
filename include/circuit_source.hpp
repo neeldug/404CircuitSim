@@ -4,8 +4,6 @@
 class Circuit::Source : public Circuit::Component
 {
 protected:
-	std::string name;
-
 	double DC = 0;
 	double smallSignalAmp = 0;
 
@@ -48,8 +46,9 @@ class Circuit::Current : public Circuit::Source
 	friend class Capacitor;
 private:
 	//Note to be used by 
-	Current(){
+	Current(Schematic* schem){
 		this->DC = 0;
+		this->schem = schem;
 	}
 public:
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
@@ -74,8 +73,9 @@ class Circuit::Voltage : public Circuit::Source
 {
 	friend class Inductor;
 private:
-	Voltage(){
+	Voltage(Schematic* schem){
 		DC = 0;
+		this->schem = schem;
 	}
 public:
 	Voltage(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)

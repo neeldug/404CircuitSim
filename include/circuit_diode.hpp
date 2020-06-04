@@ -14,28 +14,36 @@ public:
 	class ParasiticCapacitance : public Circuit::Capacitor
 	{
 	public:
-		ParasiticCapacitance() = default;
+		ParasiticCapacitance(Schematic* schem){
+			this->schem = schem;
+		}
 		void setDiodeOwner(Diode *d);
 		void setCap(double vGuess, const double& CJ0, const double& VJ)
 		{
 			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
 		}
+		void setNodes(Node *pos, Node *neg){
+			this->nodes.push_back(pos);
+			this->nodes.push_back(neg);
+		}
+		virtual ~ParasiticCapacitance(){}
 	};
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 0.1; //also stored in value (Component base class)
-	double RS = 16;
-	double CJ0 = 2e-12;
-	double TT = 12e-9;
+	double IS = 1e-10; //also stored in value (Component base class)
+	double RS = 0;
+	double CJ0 = 4e-12;
+	double TT = 0;
 	double BV = 100;
-	double IBV = 0.1e-12;
-	double VJ = 0.7;
+	double IBV = 0.1e-10;
+	double VJ = 1;
 	Diode() = default;
 	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.1, schem)
 	{
-		para_cap = new ParasiticCapacitance();
+		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
+		para_cap->setNodes( this->getPosNode(),this->getNegNode() );
 	}
 	void assignModel(std::vector<std::string> params)
 	{
@@ -52,15 +60,18 @@ public:
 
 		value = IS;
 	}
-	double getCurrentSource(ParamTable *param, double time, double timestep, double vGuess)
+
+	double getCurrentSource(ParamTable *param, double timestep)
 	{
+		double vGuess = getVoltage();
 		double shockley;
 		double exponentialBreakdown;
 		shockley = IS * (exp(vGuess / V_T) - 1);
-		exponentialBreakdown = -IS * (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T;
+		exponentialBreakdown = -IS * ( (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T );
 		i_prev = (shockley + exponentialBreakdown);
-		return (shockley + exponentialBreakdown);
+		return (shockley + exponentialBreakdown)+para_cap->getCurrentSource( param,timestep );
 	}
+
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
 		return (i_prev + getVoltage() * getConductance(param, timestep));
@@ -75,12 +86,11 @@ public:
 	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		return GMIN;
-	}
-	double getConductance(ParamTable *param, double timestep, double vGuess) const
-	{
+		double vGuess = getVoltage();
 		para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		return GMIN;
+		double capConductance = para_cap->getConductance(param, timestep);
+		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
+		return (GMIN)+capConductance;
 	}
 
 };
