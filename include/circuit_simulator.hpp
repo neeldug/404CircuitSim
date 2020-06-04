@@ -3,6 +3,23 @@
 #include <sstream>
 #include <Eigen/Dense>
 
+void progressBar(double progress)
+{
+	int barwidth = 100;
+	int pos = barwidth * progress;
+	std::cerr << "\rProgress: [";
+	for (int i = 0; i < barwidth; i++)
+	{
+		if (i < pos)
+			std::cerr << "=";
+		else if (i == pos)
+			std::cerr << ">";
+		else
+			std::cerr << " ";
+	}
+	std::cerr << "]" << int(progress * 100) + 1 << "%";
+}
+
 class Circuit::Simulator
 {
 private:
@@ -189,24 +206,13 @@ public:
 				else
 				{
 					Eigen::VectorXd voltageOld(NUM_NODES);
+					Circuit::Math::init_vector(voltageOld);
 					Eigen::VectorXd voltageNew(NUM_NODES);
-					Eigen::VectorXd voltageError(NUM_NODES);
-					int a = 1;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Circuit::Math::init_vector(voltageOld);
-
-						if ((t / tranStopTime) / (0.01 * a) >= 1)
+						progressBar(t / tranStopTime);
+						while (true)
 						{
-							std::cerr << a << "%" << std::endl;
-							a++;
-						}
-
-						bool error = true;
-						double errorVal;
-						while (error)
-						{
-
 							Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 							Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
@@ -215,16 +221,13 @@ public:
 							solver.analyzePattern(sparse);
 							solver.factorize(sparse);
 							voltageNew = solver.solve(current);
-							voltageError = (voltageNew - voltageOld);
 
-							errorVal = std::sqrt(voltageError.squaredNorm());
-							// errorVal = voltageNew.squaredNorm()-(voltageNew.dot(voltageOld));
-
-							// std::cerr << errorVal << std::endl;
-
-							error = errorVal > 0.05;
-							voltageOld += voltageError;
-							// error = Circuit::Math::MSE(voltageOld, voltageNew);
+							if (Circuit::Math::MSE(voltageNew, voltageOld))
+							{
+								break;
+							}
+							
+							voltageOld = voltageNew;
 
 							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 								if (node_pair.second->getId() != -1)
@@ -242,6 +245,7 @@ public:
 							csvPrint(param, t, tranStepTime);
 						}
 					}
+					std::cerr << std::endl;
 				}
 			}
 			if (format == SPACE)

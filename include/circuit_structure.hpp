@@ -254,7 +254,7 @@ Circuit::Schematic::~Schematic()
 	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
-		std::cerr<<comps.begin()->first<<std::endl;
+		// std::cerr<<comps.begin()->first<<std::endl;
 		delete comps.begin()->second;
 	}
 

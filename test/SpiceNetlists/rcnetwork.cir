@@ -2,6 +2,6 @@
 R2 N002 N001 1k
 C1 N002 0 1u
 V1 N001 0 5
-.tran 0 10n 0 0.01n
+.tran 0 1m 0 0.01m
 .backanno
 .end
