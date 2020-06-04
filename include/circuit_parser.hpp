@@ -195,9 +195,9 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				schem->containsNonLinearComponents();
-				
 				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
+				schem->containsNonLinearComponents();
+				schem->nonLinearComps.push_back(diode);
 				break;
 			}
 			case (int) 'q' : {

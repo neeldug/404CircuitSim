@@ -64,31 +64,13 @@ public:
 	
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
-		double vGuess = getVoltageGuess();
-		double shockley;
-		double exponentialBreakdown;
-		shockley = IS * (exp(vGuess / V_T) - 1);
-		exponentialBreakdown = -IS * ( (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T );
-		i_prev = (shockley + exponentialBreakdown);
-		if(vGuess>0){
-			if(std::isfinite(shockley)){
-				i_prev = shockley;
-				return shockley;
-			}
-			if(!std::isnan(shockley)){
-				i_prev=0;
-				return 1e-20;
-			}
-		}
-		i_prev = 0;
-		return 0.0;
-		
-		return (shockley + exponentialBreakdown);//+para_cap->getCurrentSource( param,timestep );
+		//i_prev = para_cap->getCurrentSource( param,timestep );
+		return i_prev;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev);// + getVoltage() * getConductance(param, timestep));
+		return (i_prev) + getVoltage()*GMIN + getVoltage()*value;// + getVoltage() * getConductance(param, timestep));
 	}
 	std::string getModelName()
 	{
@@ -101,12 +83,17 @@ public:
 	double getConductance(ParamTable *param, double timestep) const override
 	{
 		double vPrev = getVoltage();
-		double vGuess = getVoltageGuess();
-		para_cap->setCap(vPrev, this->CJ0, this->VJ);
+		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
 		double capConductance = para_cap->getConductance(param, timestep);
-		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
-		return (GMIN);//+capConductance;
+		return (GMIN) + value;//+capConductance;
 	}
-
+	void setConductance( ParamTable *param, double timestep, double vGuess ){
+		double shockley;
+		shockley= IS * (exp(vGuess / V_T) - 1);
+		if( vGuess!=0 && !std::isnan(shockley)){
+			value = 1000;
+			//value = shockley/vGuess;
+		}
+	}
 };
 #endif

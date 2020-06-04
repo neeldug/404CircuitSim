@@ -110,7 +110,6 @@ public:
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
     }
-
     double getConductance(ParamTable *param, double time = 0) const override
     {
         return 1.0 / getValue(param);

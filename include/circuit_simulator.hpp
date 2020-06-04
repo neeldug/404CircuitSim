@@ -272,52 +272,17 @@ public:
 				else
 				{
 					const int NUM_NODES = schem->nodes.size() - 1;
-					std::cerr<<NUM_NODES<<std::endl;
 					int percent = 0;
 					Eigen::VectorXd voltageOld(NUM_NODES);
 					Circuit::Math::init_vector(voltageOld);
-					Eigen::VectorXd diff(NUM_NODES);
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
 							std::cerr<<percent<<"%"<<std::endl;
 							percent++;
 						}
-						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
-						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						Eigen::MatrixXd jaq(NUM_NODES,NUM_NODES);
-						numDiff.df(voltageOld, jaq);
 						for(int i = 0; i< 1000;i++){
-							bool breakflag = false;
-							Eigen::VectorXd funcResult(NUM_NODES);
-							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-								if (node_pair.second->getId() != -1)
-								{
-									node_pair.second->voltageGuess = voltageOld[node_pair.second->getId()];
-								}
-							});
-							functor(voltageOld, funcResult);
-							Eigen::MatrixXd inverse = jaq.transpose().inverse();
-							auto gradFuncResult = (inverse)*funcResult;
-							for(int x =0; x< NUM_NODES;x++){
-								if(std::isnan(gradFuncResult(x))){
-									breakflag = true;
-									break;
-								}
-							}
-							if(!breakflag){
-								voltageOld = voltageOld - gradFuncResult;
-								diff = gradFuncResult;
-							}
-							else{
-								voltageOld = voltageOld - diff;
-							}
-							
-							for(int x =0; x< NUM_NODES;x++){
-								if(diff(x)==0){
-									diff(x)=1e-12;
-								}
-							}
+							schem->nonLinearComps[0]->setConductance(param, tranStepTime, 1000);
 						}
 						
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {

@@ -63,6 +63,8 @@ public:
 	std::vector<Simulator *> sims = {};
 
 	bool nonLinear = true;
+
+	std::vector<Diode* > nonLinearComps;
 	void containsNonLinearComponents()
 	{
 		nonLinear = true;
