@@ -91,6 +91,7 @@ private:
 
 public:
 	double voltage;
+	double voltageGuess = 0;
 	std::vector<Component *> comps;
 	Node(const std::string &name, Schematic *schem) : name(name)
 	{
@@ -150,6 +151,9 @@ public:
 	virtual double getVoltage() const
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
+	}
+	virtual double getVoltageGuess() const{
+		return getPosNode()->voltageGuess - getNegNode()->voltageGuess;
 	}
 	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
 	{

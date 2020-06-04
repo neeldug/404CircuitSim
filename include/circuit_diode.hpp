@@ -6,7 +6,7 @@ class Circuit::Diode : public Circuit::Component
 {
 private:
 	std::string modelName = "D";
-	const double GMIN = 1e-10;
+	const double GMIN = 1e-20;
 	const double V_T = 25e-3;
 
 public:
@@ -64,18 +64,31 @@ public:
 	
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
-		double vGuess = getVoltage();
+		double vGuess = getVoltageGuess();
 		double shockley;
 		double exponentialBreakdown;
 		shockley = IS * (exp(vGuess / V_T) - 1);
 		exponentialBreakdown = -IS * ( (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T );
 		i_prev = (shockley + exponentialBreakdown);
-		return (shockley + exponentialBreakdown)+para_cap->getCurrentSource( param,timestep );
+		if(vGuess>0){
+			if(std::isfinite(shockley)){
+				i_prev = shockley;
+				return shockley;
+			}
+			if(!std::isnan(shockley)){
+				i_prev=0;
+				return 1e-20;
+			}
+		}
+		i_prev = 0;
+		return 0.0;
+		
+		return (shockley + exponentialBreakdown);//+para_cap->getCurrentSource( param,timestep );
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev + getVoltage() * getConductance(param, timestep));
+		return (i_prev);// + getVoltage() * getConductance(param, timestep));
 	}
 	std::string getModelName()
 	{
@@ -87,11 +100,12 @@ public:
 	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		double vGuess = getVoltage();
-		para_cap->setCap(vGuess, this->CJ0, this->VJ);
+		double vPrev = getVoltage();
+		double vGuess = getVoltageGuess();
+		para_cap->setCap(vPrev, this->CJ0, this->VJ);
 		double capConductance = para_cap->getConductance(param, timestep);
 		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
-		return (GMIN)+capConductance;
+		return (GMIN);//+capConductance;
 	}
 
 };

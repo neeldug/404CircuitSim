@@ -287,9 +287,15 @@ public:
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
 						Eigen::MatrixXd jaq(NUM_NODES,NUM_NODES);
 						numDiff.df(voltageOld, jaq);
-						for(int i = 0; i< 100;i++){
+						for(int i = 0; i< 1000;i++){
 							bool breakflag = false;
 							Eigen::VectorXd funcResult(NUM_NODES);
+							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+								if (node_pair.second->getId() != -1)
+								{
+									node_pair.second->voltageGuess = voltageOld[node_pair.second->getId()];
+								}
+							});
 							functor(voltageOld, funcResult);
 							Eigen::MatrixXd inverse = jaq.transpose().inverse();
 							auto gradFuncResult = (inverse)*funcResult;
@@ -302,7 +308,6 @@ public:
 							if(!breakflag){
 								voltageOld = voltageOld - gradFuncResult;
 								diff = gradFuncResult;
-
 							}
 							else{
 								voltageOld = voltageOld - diff;
