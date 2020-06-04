@@ -30,7 +30,7 @@ public:
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
 	double IS = 1e-10; //also stored in value (Component base class)
-	double RS = 0;
+	double RS = 10;
 	double CJ0 = 4e-12;
 	double TT = 0;
 	double BV = 100;
@@ -39,12 +39,16 @@ public:
 	const double GMIN = 1e-20;
 	const double V_T = 25e-3;
 	Diode() = default;
+<<<<<<< HEAD
 
 	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0, schem)
+=======
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.1, schem)
+>>>>>>> b21652bdd7e88a93c674375010b46c1c0f78e5b3
 	{
 		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
-		para_cap->setNodes( this->getPosNode(),this->getNegNode() ); 
+		para_cap->setNodes( this->getPosNode(),this->getNegNode() );
 	}
 	void assignModel(std::vector<std::string> params)
 	{
@@ -61,7 +65,7 @@ public:
 
 		value = IS;
 	}
-	
+
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
 		//i_prev = para_cap->getCurrentSource( param,timestep );
@@ -98,6 +102,23 @@ public:
 		else{
 			value = 0;
 		}
+		// double vGuess = getVoltage();
+		// para_cap->setCap(vGuess, this->CJ0, this->VJ);
+		// double capConductance = para_cap->getConductance(param, timestep);
+		double vGuess = 0.7;
+		double vNew;
+		double V_POS = this->getPosNode()->voltage;
+		while (true) {
+			std::cerr << "	" << V_POS << " " << vGuess << " " << RS*IS << '\n';
+			vNew = V_T * log(((V_POS - vGuess)/(RS*IS)) + 1);
+			double error = vGuess - vNew;
+			vGuess = vNew;
+		}
+		double iNew = IS*(exp(vNew/V_T)-1);
+		std::cerr << iNew/vNew;
+		return (iNew/vNew);
+		// std::cerr<<"Cap conductance "<<capConductance<<std::endl;
+		// return (GMIN)+capConductance;
 	}
 };
 #endif

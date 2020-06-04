@@ -17,8 +17,8 @@ public:
 
 
 	TType transistorType;
-	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, 0.0, schem ){
-		if( model == "NPN" ){
+	Transistor( std::string name, std::string nodeCollector, std::string nodeBase, std::string nodeEmitter, std::string model, Schematic* schem) : Component( name, 0.1, schem ){
+		if( modelName == "NPN" ){
 			transistorType = NPN;
 		}
 		if( model == "PNP" ){

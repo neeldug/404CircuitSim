@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <circuit.hpp>
+#include <cmath>
 
-#include <filesystem>
-namespace fs = std::filesystem;
 int main()
 {
 	std::ifstream netlist;

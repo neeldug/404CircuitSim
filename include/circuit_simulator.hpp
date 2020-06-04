@@ -185,7 +185,7 @@ public:
 						solver.analyzePattern(sparse);
 						solver.factorize(sparse);
 						voltage = solver.solve(current);
-
+						std::cerr << "Voltage : " << voltage << '\n';
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{
@@ -233,6 +233,7 @@ public:
 							}
 							std::cerr<<abs(voltageDiff-vGuess)<<std::endl;
 						}
+<<<<<<< HEAD
 
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
@@ -251,6 +252,25 @@ public:
 								node_pair.second->voltage = voltage[node_pair.second->getId()];
 							}
 						});
+=======
+						// ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
+						// Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
+						// Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
+						// // std::cerr<<lm.info();
+						// std::cerr<<"\n\n\n\n";
+						// lm.parameters.maxfev = 10000;
+						// lm.parameters.xtol = 1e-8;
+						//
+						// int ret = lm.minimize(voltageOld);
+						//
+						// for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+						// 	if (node_pair.second->getId() != -1)
+						// 	{
+						// 		node_pair.second->voltage = voltageOld[node_pair.second->getId()];
+						// 	}
+						// });
+
+>>>>>>> b21652bdd7e88a93c674375010b46c1c0f78e5b3
 
 						if (format == SPACE)
 						{
