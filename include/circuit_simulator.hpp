@@ -205,37 +205,47 @@ public:
 				}
 				else
 				{
+					const int NUM_NODES = schem->nodes.size() - 1;
+					int percent = 0;
 					Eigen::VectorXd voltageOld(NUM_NODES);
-					Circuit::Math::init_vector(voltageOld);
-					Eigen::VectorXd voltageNew(NUM_NODES);
+					Eigen::VectorXd voltage(NUM_NODES);
+					Eigen::VectorXd current(NUM_NODES);
+					Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+					Eigen::SparseMatrix<double> sparse;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						progressBar(t / tranStopTime);
-						while (true)
-						{
-							Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-							Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-							sparse = conductance.sparseView();
-							sparse.makeCompressed();
-							solver.analyzePattern(sparse);
-							solver.factorize(sparse);
-							voltageNew = solver.solve(current);
-
-							if (Circuit::Math::MSE(voltageNew, voltageOld))
-							{
-								break;
-							}
-							
-							voltageOld = voltageNew;
-
-							for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
-								if (node_pair.second->getId() != -1)
-								{
-									node_pair.second->voltage = voltageOld[node_pair.second->getId()];
-								}
-							});
+						if( (t/tranStopTime)/(0.01 *percent)>=1){
+							std::cerr<<percent<<"%"<<std::endl;
+							percent++;
 						}
+						for(int i = 0; i< 1000;i++){
+							for(auto x : schem->nonLinearComps){
+								x->setConductance(param, tranStepTime, 1000);
+							}
+						}
+
+						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
+						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
+
+						std::cerr << conductance << std::endl;
+						std::cerr << current << std::endl;
+
+						sparse = conductance.sparseView();
+						sparse.makeCompressed();
+						solver.analyzePattern(sparse);
+						solver.factorize(sparse);
+						voltage = solver.solve(current);
+
+						// std::cerr << voltage << std::endl;
+
+						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
+							if (node_pair.second->getId() != -1)
+							{
+								node_pair.second->voltage = voltage[node_pair.second->getId()];
+							}
+						});
+
 						if (format == SPACE)
 						{
 							spicePrint(param, t, tranStepTime);

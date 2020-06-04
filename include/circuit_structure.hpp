@@ -62,7 +62,9 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
-	bool nonLinear = false;
+	bool nonLinear = true;
+
+	std::vector<Diode* > nonLinearComps;
 	void containsNonLinearComponents()
 	{
 		nonLinear = true;
@@ -91,6 +93,7 @@ private:
 
 public:
 	double voltage;
+	double voltageGuess = 0;
 	std::vector<Component *> comps;
 	Node(const std::string &name, Schematic *schem) : name(name)
 	{
@@ -150,6 +153,9 @@ public:
 	virtual double getVoltage() const
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
+	}
+	virtual double getVoltageGuess() const{
+		return getPosNode()->voltageGuess - getNegNode()->voltageGuess;
 	}
 	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
 	{
@@ -254,7 +260,6 @@ Circuit::Schematic::~Schematic()
 	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
-		// std::cerr<<comps.begin()->first<<std::endl;
 		delete comps.begin()->second;
 	}
 

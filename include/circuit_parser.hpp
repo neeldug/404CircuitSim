@@ -195,9 +195,9 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				schem->containsNonLinearComponents();
-				
 				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
+				schem->containsNonLinearComponents();
+				schem->nonLinearComps.push_back(diode);
 				break;
 			}
 			case (int) 'q' : {
@@ -284,7 +284,6 @@ public:
 		}
 		bool endStatement = false;
 		while( std::getline( inputStream, inputLine )){
-			// std::cerr<<inputLine<<std::endl;
 			if( inputLine == ".END" || inputLine == ".end" ){
 				endStatement = true;
 				break;
