@@ -29,7 +29,7 @@ public:
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 1e-11; //also stored in value (Component base class)
+	double IS = 1e-14; //also stored in value (Component base class)
 	double RS = 0;
 	double CJ0 = 0;
 	double TT = 0;
@@ -106,8 +106,8 @@ public:
 	}
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;
-		shockley= IS * (exp(vGuess / V_T) - 1);
-		if( vGuess!=0 && !std::isnan(shockley)&&vGuess>0.7){
+		shockley= IS * (exp(vGuess / (V_T)) - 1);
+		if( vGuess!=0 && !std::isnan(shockley)&&vGuess>0){
 			i_prev=shockley;
 			value=shockley/vGuess;
 		}

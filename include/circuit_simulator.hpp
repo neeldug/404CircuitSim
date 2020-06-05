@@ -58,7 +58,7 @@ struct ConductanceFunc : Functor<double>
 		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 		for(int i = 0; i<vDiff.size();i++){
-			schem->nonLinearComps[i]->setConductance(param, timestep, voltage(0));
+			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
@@ -71,7 +71,7 @@ struct ConductanceFunc : Functor<double>
 		for(int i = 0; i<vDiff.size();i++){
 			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
 			double vNeg = (schem->nonLinearComps[i]->getNegNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getNegNode()->getId()) : 0;
-			fvec(i) = vPos - vNeg-vDiff(i);
+			fvec(i) = vPos - vNeg - vDiff(i);
 		}
 
 		return 0;
@@ -347,7 +347,6 @@ public:
 							auto err = vec2vec(vErrVec);
 							auto stillNan = vec2vec(inverseJaq*vErrVec);
 							auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
-							std::cerr<<"";
 							
 							
 							std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
