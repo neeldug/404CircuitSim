@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     std::cerr << "s = " << s << '\n';
     std::cerr << "n = " << n << '\n';
-    std::cerr << "o = " << o << '\n';
-    std::cerr << "p = " << p << '\n';
+    std::cerr << "i = " << outputFilePath << '\n';
+    std::cerr << "o = " << inputFilePath << '\n';
     return 0;
 }
