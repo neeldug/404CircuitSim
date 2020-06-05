@@ -4,9 +4,10 @@
 int main(int argc, char *argv[])
 {
     int c;
+    std::string inputFilePath = "default";
+    std::string outputFilePath = "default";
     bool s,n = false;
-    std::string o,p;
-    while ((c = getopt(argc, argv, "sno:p:")) != -1)
+    while ((c = getopt(argc, argv, "sni:o:")) != -1)
     {
         switch (c)
         {
@@ -16,11 +17,11 @@ int main(int argc, char *argv[])
         case 'n':
             n = true;
             break;
-        case 'o':
-            o = optarg;
+        case 'i':
+            inputFilePath = optarg;
             break;
-        case 'p':
-            p = optarg;
+        case 'o':
+            outputFilePath = optarg;
             break;
         default:
             abort();
