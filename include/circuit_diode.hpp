@@ -29,9 +29,9 @@ public:
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 1e-10; //also stored in value (Component base class)
+	double IS = 1e-11; //also stored in value (Component base class)
 	double RS = 0;
-	double CJ0 = 4e-12;
+	double CJ0 = 0;
 	double TT = 0;
 	double BV = 100;
 	double IBV = 0.1e-10;
@@ -64,15 +64,17 @@ public:
 	
 	double getCurrentSource(ParamTable *param, double timestep)
 	{
-		//i_prev = para_cap->getCurrentSource( param,timestep );
-		//return i_prev;
-		i_prev = 0.0;
-		return 0;
+		double capacitorCurrent = para_cap->getCurrentSource( param,timestep );
+		if(std::isnan(capacitorCurrent)){
+			capacitorCurrent = 0;
+		}
+		double current = capacitorCurrent;
+		return capacitorCurrent;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev) + getVoltage()*GMIN + getVoltage()*(value);// + getVoltage() * getConductance(param, timestep));
+		return getVoltage()*parralelAdd(1.0/100.0,(GMIN+value));// + getVoltage() * getConductance(param, timestep));
 	}
 	std::string getModelName()
 	{
@@ -82,21 +84,36 @@ public:
 	{
 		delete para_cap;
 	}
+	double parralelAdd(const double& a, const double& b) const{
+		double result = 1.0/a + 1.0/b;
+		result = 1/result;
+		if(std::isnan(result)){
+			return 0;
+		}
+		if(!std::isfinite(result)){
+			return 1e30;
+		}
+		else{
+			return result;
+		}
+	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
 		double vPrev = getVoltage();
 		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
 		double capConductance = para_cap->getConductance(param, timestep);
-		return value;//+capConductance;
+		return parralelAdd(1.0/100.0,(GMIN+value));//+capConductance;
 	}
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;
 		shockley= IS * (exp(vGuess / V_T) - 1);
-		if( vGuess!=0 && !std::isnan(shockley)){
-			value = shockley/vGuess;
+		if( vGuess!=0 && !std::isnan(shockley)&&vGuess>0.7){
+			i_prev=shockley;
+			value=shockley/vGuess;
 		}
 		else{
-			value = 0;
+			i_prev = 0;
+			value=0;
 		}
 	}
 };

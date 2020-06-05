@@ -42,35 +42,58 @@ struct ConductanceFunc : Functor<double>
 	Circuit::Schematic* schem;
 	Circuit::ParamTable* param;
 	double timestep;
-	ConductanceFunc(Circuit::Schematic * schem, Circuit::ParamTable *param, double time, double timestep, int NUM_NODES): Functor<double>(NUM_NODES, NUM_NODES) {
+	int NUM_NODES = 0;
+	ConductanceFunc(Circuit::Schematic * schem, Circuit::ParamTable *param, double time, double timestep, int NUM_NODES ): Functor<double>(schem->nonLinearComps.size(), schem->nonLinearComps.size()) {
 		this->schem = schem;
 		this->param = param;
 		this->timestep = timestep;
 		this->time = time;
+		this->NUM_NODES = NUM_NODES;
 	}
-	// Implementation of the objective function
-	// void multiply(Eigen::MatrixXd& conductance ,Eigen::VectorXd& voltage, Eigen::VectorXd& result ){
-	// 	int NUM_NODES = voltage.size();
-	// 	for(int v = 0; v < NUM_NODES; v++){
-	// 		for(int m = 0; m <  conductance.cols(); m++){
-				
-	// 		}
-	// 	}
-	// }
-	int operator()(const Eigen::VectorXd &voltage, Eigen::VectorXd &fvec) const {
-		const int NUM_NODES = schem->nodes.size() - 1;
-		std::map<int, Circuit::Node*> saveVolts;
-		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 
+	int operator()(const Eigen::VectorXd &vDiff, Eigen::VectorXd &fvec) const {
+		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
+		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseMatrix<double> sparse;
+		for(int i = 0; i<vDiff.size();i++){
+			schem->nonLinearComps[i]->setConductance(param, timestep, voltage(0));
+		}
+		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
 
-		// minimize Ax-b
-		fvec = conductance*voltage - current;
-		// fvec = voltage - conductance.inverse()*current;	
-		//std::cerr<<a<<",("<<current.transpose()<<")"<<std::endl;
+		sparse = conductance.sparseView();
+		sparse.makeCompressed();
+		solver.analyzePattern(sparse);
+		solver.factorize(sparse);
+		voltage = solver.solve(current);
+		for(int i = 0; i<vDiff.size();i++){
+			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
+			double vNeg = (schem->nonLinearComps[i]->getNegNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getNegNode()->getId()) : 0;
+			fvec(i) = vPos - vNeg-vDiff(i);
+		}
+
 		return 0;
+	}
+	void getVoltageVector(const Eigen::VectorXd& vDiff, Eigen::VectorXd &fvec){
+		Eigen::VectorXd current(NUM_NODES);
+		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseMatrix<double> sparse;
+		
+		for(int i = 0; i<vDiff.size();i++){
+			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
+		}
+
+		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
+		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+
+		sparse = conductance.sparseView();
+		sparse.makeCompressed();
+		solver.analyzePattern(sparse);
+		solver.factorize(sparse);
+		fvec = solver.solve(current);
 	}
 };
 
@@ -177,7 +200,24 @@ public:
 		this->tranSaveStart = tranSaveStart;
 		this->tranStepTime = tranStepTime;
 	}
+	std::vector<double> vec2vec(const Eigen::VectorXd& vecy){
+		std::vector<double> result;
+		for(int i =0; i<vecy.size();i++){
+			result.push_back(vecy(0));
+		}
+		return result;
+	}
 
+	std::vector<std::vector<double>> m2m(const Eigen::MatrixXd& mec, int NUM_V_GUESS){
+		std::vector<std::vector<double>> result;
+		for(int y=0;y<NUM_V_GUESS;y++){
+			result.push_back(std::vector<double>());
+			for(int x=0;x<NUM_V_GUESS;x++){
+				result[y].push_back(mec(y,x));
+			}
+		}
+		return result;
+	}
 	void run(std::ostream &dst, OutputFormat format)
 	{
 		for (ParamTable *param : schem->tables)
@@ -271,61 +311,50 @@ public:
 				}
 				else
 				{
+
 					const int NUM_NODES = schem->nodes.size() - 1;
-					int percent = 0;
-					Eigen::VectorXd voltageOld(NUM_NODES);
+					const int NUM_V_GUESS = schem->nonLinearComps.size();
 					Eigen::VectorXd voltage(NUM_NODES);
-					Eigen::VectorXd current(NUM_NODES);
-					Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-					Eigen::SparseMatrix<double> sparse;
+					Eigen::VectorXd vGuess(NUM_V_GUESS);
+					Circuit::Math::init_vector(vGuess, 0);
+					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
-							std::cerr<<percent<<"%"<<std::endl;
+							//std::cerr<<percent<<"%"<<std::endl;
 							percent++;
 						}
-						double vGuess = 1e-12;
-
-						for(int i = 0; i< 100;i++){
-							double voltageDiff = 0;
-							for(auto x : schem->nonLinearComps){
-								x->setConductance(param, tranStepTime, vGuess);
-								Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-								Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-								//std::cerr << conductance << std::endl;
-								//std::cerr << current << std::endl;
-								//std::cerr<<vGuess<<std::endl;
-								sparse = conductance.sparseView();
-								sparse.makeCompressed();
-								solver.analyzePattern(sparse);
-								solver.factorize(sparse);
-								voltage = solver.solve(current);
-								double vPos = (x->getPosNode()->getId()!=-1) ? voltage(x->getPosNode()->getId()) : 0;
-								double vNeg = (x->getNegNode()->getId()!=-1) ? voltage(x->getNegNode()->getId()) : 0;
-								voltageDiff = vPos - vNeg;
-								vGuess = vGuess - voltageDiff/(1/(25e-3)*x->IS*(vGuess/x->V_T));
-								if(std::isnan(vGuess)){
-									vGuess = 1e-12;
+						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
+						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
+						for(int i = 0; i< 50;i++){
+							Eigen::MatrixXd jaq(NUM_V_GUESS,NUM_V_GUESS);
+							numDiff.df(vGuess, jaq);
+							Eigen::VectorXd vErrVec(NUM_V_GUESS);
+							functor(vGuess,vErrVec);
+							Eigen::MatrixXd inverseJaq =jaq.transpose().inverse(); 
+							for(int x=0;x<NUM_V_GUESS;x++){
+								for(int y=0;y<NUM_V_GUESS;y++){
+									if(std::isnan(inverseJaq(x,y))){
+										inverseJaq(x,y) = 1e-200;
+									}
+									if(!std::isfinite(inverseJaq(x,y))){
+										inverseJaq(x,y) = 1e200;
+									}
 								}
 							}
-							std::cerr<<abs(voltageDiff-vGuess)<<std::endl;
+							vGuess = vGuess - (inverseJaq*vErrVec);
+							auto answer = vec2vec(vGuess);
+							auto err = vec2vec(vErrVec);
+							auto stillNan = vec2vec(inverseJaq*vErrVec);
+							auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
+							std::cerr<<"";
+							
+							
+							std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 						}
-						//std::cerr<<vGuess<<std::endl;
 
-						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
-						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-						//std::cerr << conductance << std::endl;
-						//std::cerr << current << std::endl;
-
-						sparse = conductance.sparseView();
-						sparse.makeCompressed();
-						solver.analyzePattern(sparse);
-						solver.factorize(sparse);
-						voltage = solver.solve(current);
-
+						functor.getVoltageVector(vGuess, voltage);
+						std::vector<double> answer = vec2vec(vGuess);
 						// std::cerr << voltage << std::endl;
 
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
@@ -334,7 +363,6 @@ public:
 								node_pair.second->voltage = voltage[node_pair.second->getId()];
 							}
 						});
-
 						if (format == SPACE)
 						{
 							spicePrint(param, t, tranStepTime);
