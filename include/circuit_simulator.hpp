@@ -343,6 +343,7 @@ public:
 					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
+						
 						Circuit::Math::init_vector(vGuess, 0);
 
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
@@ -351,42 +352,43 @@ public:
 						}
 						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
+						if(schem->itType == Circuit::Schematic::IterationType::Levenberg){
+							Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
+							lm.parameters.maxfev = 1000;
+							lm.parameters.xtol = 1.0e-10;
 
-						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
-						lm.parameters.maxfev = 1000;
-						lm.parameters.xtol = 1.0e-10;
-
-						int ret = lm.minimize(vGuess);
-						/*
-						for(int i = 0; i< 1000;i++){
-							Eigen::MatrixXd jaq(NUM_V_GUESS,NUM_V_GUESS);
-							numDiff.df(vGuess, jaq);
-							Eigen::VectorXd vErrVec(NUM_V_GUESS);
-							functor(vGuess,vErrVec);
-							Eigen::MatrixXd inverseJaq = jaq.transpose().inverse(); 
-							for(int x=0;x<NUM_V_GUESS;x++){
-								for(int y=0;y<NUM_V_GUESS;y++){
-									if(std::isnan(inverseJaq(x,y))){
-										inverseJaq(x,y) = 1e-200;
-									}
-									if(!std::isfinite(inverseJaq(x,y))){
-										inverseJaq(x,y) = 1e200;
+							int ret = lm.minimize(vGuess);
+						}
+						if(schem->itType == Circuit::Schematic::IterationType::Newton){
+							for(int i = 0; i< 1000;i++){
+								Eigen::MatrixXd jaq(NUM_V_GUESS,NUM_V_GUESS);
+								numDiff.df(vGuess, jaq);
+								Eigen::VectorXd vErrVec(NUM_V_GUESS);
+								functor(vGuess,vErrVec);
+								Eigen::MatrixXd inverseJaq = jaq.transpose().inverse(); 
+								for(int x=0;x<NUM_V_GUESS;x++){
+									for(int y=0;y<NUM_V_GUESS;y++){
+										if(std::isnan(inverseJaq(x,y))){
+											inverseJaq(x,y) = 1e-200;
+										}
+										if(!std::isfinite(inverseJaq(x,y))){
+											inverseJaq(x,y) = 1e200;
+										}
 									}
 								}
+								vGuess = vGuess - 0.005*(inverseJaq*vErrVec);
+								auto answer = vec2vec(vGuess);
+								auto err = vec2vec(vErrVec);
+								auto stillNan = vec2vec(inverseJaq*vErrVec);
+								auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
+								
+								
+								//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 							}
-							vGuess = vGuess - 0.005*(inverseJaq*vErrVec);
-							auto answer = vec2vec(vGuess);
-							auto err = vec2vec(vErrVec);
-							auto stillNan = vec2vec(inverseJaq*vErrVec);
-							auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
-							
-							
-							//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 						}
-						*/
 						Eigen::VectorXd vErrVec(NUM_V_GUESS);
-						functor.getVdif( vGuess, vErrVec );
-						functor.getVoltageVector(vErrVec, voltage);
+						//functor.getVdif( vGuess, vErrVec );
+						functor.getVoltageVector(vGuess, voltage);
 						std::vector<double> answer = vec2vec(vGuess);
 						// std::cerr << voltage << std::endl;
 						std::cerr<<t<<","<<vGuess[0]<<","<<vGuess[1]<<std::endl;

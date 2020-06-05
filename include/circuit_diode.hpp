@@ -6,7 +6,7 @@ class Circuit::Diode : public Circuit::Component
 {
 private:
 	std::string modelName = "D";
-
+	double inst_conductance = 0;
 public:
 
 	class ParasiticCapacitance : public Circuit::Capacitor
@@ -69,12 +69,12 @@ public:
 			capacitorCurrent = 0;
 		}
 		double current = capacitorCurrent;
-		return 0;//capacitorCurrent;
+		return capacitorCurrent;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return getVoltage()*parralelAdd(1.0/100.0,(GMIN+value));// + getVoltage() * getConductance(param, timestep));
+		return getVoltage()*parralelAdd(1.0/100.0,(GMIN+inst_conductance)) + getVoltage() * para_cap->getConductance(param, timestep);
 	}
 	std::string getModelName()
 	{
@@ -102,18 +102,18 @@ public:
 		double vPrev = getVoltage();
 		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
 		double capConductance = para_cap->getConductance(param, timestep);
-		return parralelAdd(1.0/100.0,(GMIN+value));//+capConductance;
+		return parralelAdd(1.0/100.0,(GMIN+inst_conductance));//+capConductance;
 	}
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;
 		shockley= IS * (exp(vGuess / (V_T)) - 1);
 		if( vGuess!=0 && !std::isnan(shockley)){
 			i_prev=shockley;
-			value=shockley/vGuess;
+			inst_conductance=shockley/vGuess;
 		}
 		else{
 			i_prev = 0;
-			value=0;
+			inst_conductance=0;
 		}
 	}
 };

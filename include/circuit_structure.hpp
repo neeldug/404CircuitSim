@@ -53,6 +53,10 @@ private:
 	void setupConnectionNode(Circuit::Component *linear, const std::string &node);
 
 public:
+	enum IterationType{
+		Newton, Levenberg
+	};
+	IterationType itType = Levenberg;
 	Schematic();
 	std::function<int()> id;
 	std::string title;
