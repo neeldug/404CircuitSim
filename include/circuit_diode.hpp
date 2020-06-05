@@ -33,14 +33,14 @@ public:
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 1e-14; //also stored in value (Component base class)
-	double RS = 1;
+	double IS = 1e-10; //also stored in value (Component base class)
+	double RS = 10;
 	double CJ0 = 4e-12;
 	double TT = 0;
 	double BV = 100;
 	double IBV = 0.1e-10;
 	double VJ = 1;
-	const double GMIN = 1e-15;
+	const double GMIN = 4e-20;
 	const double V_T = 25e-3;
 	Diode() = default;
 	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0.0, schem)
@@ -69,11 +69,11 @@ public:
 	{
 		if (*isnan)
 		{
-			i_prev = *v_across * GMIN + para_cap->getCurrentSource(param, timestep);
+			i_prev = IS + *v_across * GMIN;// + para_cap->getCurrentSource(param, timestep);
 		}
 		else
 		{
-			i_prev = IS * (exp(*v_across / V_T) - 1) + para_cap->getCurrentSource(param, timestep);
+			i_prev = IS * (exp(*v_across / V_T) - 1); //+ para_cap->getCurrentSource(param, timestep);
 		}
 		return i_prev;
 	}
@@ -109,10 +109,11 @@ public:
 		}
 		if (std::isnan(vNew))
 		{
-			*v_across = ((V_POS / RS) + IS) / ((1 / RS) + GMIN);
+			*v_across = 0;
 			*isnan = true;
 			para_cap->setCap(*v_across, CJ0, VJ);
-			iNew = *v_across * GMIN;
+			iNew = IS + *v_across * GMIN;
+			return GMIN;
 		}
 		else
 		{
@@ -121,8 +122,7 @@ public:
 			para_cap->setCap(*v_across, CJ0, VJ);
 			iNew = IS * (exp(vNew / V_T) - 1) + *v_across * GMIN;
 		}
-
-		return (iNew / *v_across) + para_cap->getConductance(param, timestep);
+		return (iNew / *v_across); //+ para_cap->getConductance(param, timestep);
 	}
 };
 #endif
