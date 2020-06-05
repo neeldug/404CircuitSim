@@ -15,7 +15,7 @@ int main()
 	}
 	Circuit::Schematic *schem = Circuit::Parser::parse(netlist);
 	schem->nonLinear = true;
-	std::cerr<<"Time,Verr"<<std::endl;
+	std::cerr<<"Time,Vx,Vy"<<std::endl;
 	for (auto sims : schem->sims)
 	{
 		sims->run(std::cout, Circuit::Simulator::OutputFormat::CSV);

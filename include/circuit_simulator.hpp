@@ -76,6 +76,32 @@ struct ConductanceFunc : Functor<double>
 
 		return 0;
 	}
+	int getVdif(const Eigen::VectorXd &vDiff, Eigen::VectorXd &fvec) const {
+
+		Eigen::VectorXd voltage(NUM_NODES);
+		Eigen::VectorXd current(NUM_NODES);
+		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseMatrix<double> sparse;
+		for(int i = 0; i<vDiff.size();i++){
+			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
+		}
+		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
+		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+
+		sparse = conductance.sparseView();
+		sparse.makeCompressed();
+		solver.analyzePattern(sparse);
+		solver.factorize(sparse);
+		voltage = solver.solve(current);
+		for(int i = 0; i<vDiff.size();i++){
+			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
+			double vNeg = (schem->nonLinearComps[i]->getNegNode()->getId()!=-1) ? voltage(schem->nonLinearComps[i]->getNegNode()->getId()) : 0;
+			fvec(i) = vPos - vNeg;
+		}
+
+		return 0;
+	}
 	void getVoltageVector(const Eigen::VectorXd& vDiff, Eigen::VectorXd &fvec){
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
@@ -290,8 +316,6 @@ public:
 						solver.factorize(sparse);
 						voltage = solver.solve(current);
 
-						// std::cerr << voltage << std::endl;
-
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{
@@ -316,22 +340,30 @@ public:
 					const int NUM_V_GUESS = schem->nonLinearComps.size();
 					Eigen::VectorXd voltage(NUM_NODES);
 					Eigen::VectorXd vGuess(NUM_V_GUESS);
-					Circuit::Math::init_vector(vGuess, 0);
 					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
+						Circuit::Math::init_vector(vGuess, 0);
+
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
 							//std::cerr<<percent<<"%"<<std::endl;
 							percent++;
 						}
 						ConductanceFunc functor(schem, param, t,tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						for(int i = 0; i< 50;i++){
+
+						Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>,double> lm(numDiff);
+						lm.parameters.maxfev = 1000;
+						lm.parameters.xtol = 1.0e-10;
+
+						int ret = lm.minimize(vGuess);
+						/*
+						for(int i = 0; i< 1000;i++){
 							Eigen::MatrixXd jaq(NUM_V_GUESS,NUM_V_GUESS);
 							numDiff.df(vGuess, jaq);
 							Eigen::VectorXd vErrVec(NUM_V_GUESS);
 							functor(vGuess,vErrVec);
-							Eigen::MatrixXd inverseJaq =jaq.transpose().inverse(); 
+							Eigen::MatrixXd inverseJaq = jaq.transpose().inverse(); 
 							for(int x=0;x<NUM_V_GUESS;x++){
 								for(int y=0;y<NUM_V_GUESS;y++){
 									if(std::isnan(inverseJaq(x,y))){
@@ -342,20 +374,22 @@ public:
 									}
 								}
 							}
-							vGuess = vGuess - (inverseJaq*vErrVec);
+							vGuess = vGuess - 0.005*(inverseJaq*vErrVec);
 							auto answer = vec2vec(vGuess);
 							auto err = vec2vec(vErrVec);
 							auto stillNan = vec2vec(inverseJaq*vErrVec);
 							auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
 							
 							
-							std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
+							//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 						}
-
-						functor.getVoltageVector(vGuess, voltage);
+						*/
+						Eigen::VectorXd vErrVec(NUM_V_GUESS);
+						functor.getVdif( vGuess, vErrVec );
+						functor.getVoltageVector(vErrVec, voltage);
 						std::vector<double> answer = vec2vec(vGuess);
 						// std::cerr << voltage << std::endl;
-
+						std::cerr<<t<<","<<vGuess[0]<<","<<vGuess[1]<<std::endl;
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{

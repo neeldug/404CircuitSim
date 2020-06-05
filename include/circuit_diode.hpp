@@ -36,7 +36,7 @@ public:
 	double BV = 100;
 	double IBV = 0.1e-10;
 	double VJ = 1;
-	const double GMIN = 1e-20;
+	const double GMIN = 1e-5;
 	const double V_T = 25e-3;
 	Diode() = default;
 
@@ -69,7 +69,7 @@ public:
 			capacitorCurrent = 0;
 		}
 		double current = capacitorCurrent;
-		return capacitorCurrent;
+		return 0;//capacitorCurrent;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep) const override
@@ -107,7 +107,7 @@ public:
 	void setConductance( ParamTable *param, double timestep, double vGuess ){
 		double shockley;
 		shockley= IS * (exp(vGuess / (V_T)) - 1);
-		if( vGuess!=0 && !std::isnan(shockley)&&vGuess>0){
+		if( vGuess!=0 && !std::isnan(shockley)){
 			i_prev=shockley;
 			value=shockley/vGuess;
 		}
