@@ -3,6 +3,8 @@ V1 N001 0 SINE(0 5 1k)
 D1 N001 N002 D
 C1 N002 0 10n
 R1 N002 0 1k
+D2 N002 N003 D
+R2 N003 0 1k
 .model D D
 .tran 0 5m 0 0.001m
 .backanno
