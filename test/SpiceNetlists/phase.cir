@@ -7,7 +7,6 @@ D3 0 N003 D
 D4 N003 N002 D
 C1 N002 0 1n
 .model D D
-.lib C:\users\jjl119\My Documents\LTspiceXVII\lib\cmp\standard.dio
 .tran 0 3m 0 0.001m
 .backanno
 .end
