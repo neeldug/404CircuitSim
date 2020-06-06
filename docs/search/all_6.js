@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['node_10',['Node',['../d5/d1e/a00103.html',1,'Circuit']]]
+  ['lc_10',['LC',['../dc/dee/a00053.html',1,'Circuit']]]
 ];

@@ -75,32 +75,32 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define GUARD_DIODE_HPP</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="../../d3/de7/a00039.html">    5</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../d3/de7/a00039.html">Circuit::Diode</a> : <span class="keyword">public</span> <a class="code" href="../../df/d98/a00107.html">Circuit::Component</a></div>
+<div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="../../d6/d97/a00045.html">    5</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../d6/d97/a00045.html">Circuit::Diode</a> : <span class="keyword">public</span> <a class="code" href="../../d3/d00/a00113.html">Circuit::Component</a></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;{</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    std::string modelName = <span class="stringliteral">&quot;D&quot;</span>;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keywordtype">double</span> inst_conductance = 0;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="../../d6/d42/a00043.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="../../d6/d42/a00043.html">ParasiticCapacitance</a> : <span class="keyword">public</span> <a class="code" href="../../d2/d79/a00051.html">Circuit::Capacitor</a></div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="../../d2/dee/a00049.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="../../d2/dee/a00049.html">ParasiticCapacitance</a> : <span class="keyword">public</span> <a class="code" href="../../d1/d22/a00057.html">Circuit::Capacitor</a></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="../../d6/d42/a00043.html">ParasiticCapacitance</a>(<a class="code" href="../../da/d74/a00099.html">Schematic</a>* schem){</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="../../d2/dee/a00049.html">ParasiticCapacitance</a>(<a class="code" href="../../d3/d32/a00105.html">Schematic</a>* schem){</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            this-&gt;schem = schem;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordtype">void</span> setDiodeOwner(<a class="code" href="../../d3/de7/a00039.html">Diode</a> *d);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordtype">void</span> setDiodeOwner(<a class="code" href="../../d6/d97/a00045.html">Diode</a> *d);</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordtype">void</span> setCap(<span class="keywordtype">double</span> vGuess, <span class="keyword">const</span> <span class="keywordtype">double</span>&amp; CJ0, <span class="keyword">const</span> <span class="keywordtype">double</span>&amp; VJ)</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        {</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            this-&gt;value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        }</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">void</span> setNodes(<a class="code" href="../../d5/d1e/a00103.html">Node</a> *pos, <a class="code" href="../../d5/d1e/a00103.html">Node</a> *neg){</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">void</span> setNodes(<a class="code" href="../../dd/d42/a00109.html">Node</a> *pos, <a class="code" href="../../dd/d42/a00109.html">Node</a> *neg){</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            this-&gt;nodes.push_back(pos);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            this-&gt;nodes.push_back(neg);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="../../d6/d42/a00043.html">ParasiticCapacitance</a>(){}</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="../../d2/dee/a00049.html">ParasiticCapacitance</a>(){}</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    };</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="../../d6/d42/a00043.html">ParasiticCapacitance</a> *para_cap;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="../../d2/dee/a00049.html">ParasiticCapacitance</a> *para_cap;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">//REVIEW will probably have to make these doubles and might make this a nested class</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">double</span> IS = 1e-14; <span class="comment">//also stored in value (Component base class)</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">double</span> RS = 0;</div>
@@ -111,11 +111,11 @@ $(function() {
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">double</span> VJ = 1;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> GMIN = 1e-5;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> V_T = 25e-3;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="../../d3/de7/a00039.html">Diode</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="../../d6/d97/a00045.html">Diode</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="../../d3/de7/a00039.html">Diode</a>(std::string name, std::string nodeA, std::string nodeB, std::string model, <a class="code" href="../../da/d74/a00099.html">Schematic</a> *schem) : Circuit::<a class="code" href="../../df/d98/a00107.html">Component</a>(name, 0, schem)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="../../d6/d97/a00045.html">Diode</a>(std::string name, std::string nodeA, std::string nodeB, std::string model, <a class="code" href="../../d3/d32/a00105.html">Schematic</a> *schem) : Circuit::<a class="code" href="../../d3/d00/a00113.html">Component</a>(name, 0, schem)</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        para_cap = <span class="keyword">new</span> <a class="code" href="../../d6/d42/a00043.html">ParasiticCapacitance</a>(schem);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        para_cap = <span class="keyword">new</span> <a class="code" href="../../d2/dee/a00049.html">ParasiticCapacitance</a>(schem);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        schem-&gt;setupConnections2Node(<span class="keyword">this</span>, nodeA, nodeB);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        para_cap-&gt;setNodes( this-&gt;getPosNode(),this-&gt;getNegNode() ); </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
@@ -192,12 +192,12 @@ $(function() {
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;};</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aa00103_html"><div class="ttname"><a href="../../d5/d1e/a00103.html">Circuit::Node</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:92</div></div>
-<div class="ttc" id="aa00099_html"><div class="ttname"><a href="../../da/d74/a00099.html">Circuit::Schematic</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:41</div></div>
-<div class="ttc" id="aa00039_html"><div class="ttname"><a href="../../d3/de7/a00039.html">Circuit::Diode</a></div><div class="ttdef"><b>Definition:</b> circuit_diode.hpp:6</div></div>
-<div class="ttc" id="aa00043_html"><div class="ttname"><a href="../../d6/d42/a00043.html">Circuit::Diode::ParasiticCapacitance</a></div><div class="ttdef"><b>Definition:</b> circuit_diode.hpp:13</div></div>
-<div class="ttc" id="aa00107_html"><div class="ttname"><a href="../../df/d98/a00107.html">Circuit::Component</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:130</div></div>
-<div class="ttc" id="aa00051_html"><div class="ttname"><a href="../../d2/d79/a00051.html">Circuit::Capacitor</a></div><div class="ttdef"><b>Definition:</b> circuit_linear.hpp:21</div></div>
+<div class="ttc" id="aa00049_html"><div class="ttname"><a href="../../d2/dee/a00049.html">Circuit::Diode::ParasiticCapacitance</a></div><div class="ttdef"><b>Definition:</b> circuit_diode.hpp:13</div></div>
+<div class="ttc" id="aa00045_html"><div class="ttname"><a href="../../d6/d97/a00045.html">Circuit::Diode</a></div><div class="ttdef"><b>Definition:</b> circuit_diode.hpp:6</div></div>
+<div class="ttc" id="aa00109_html"><div class="ttname"><a href="../../dd/d42/a00109.html">Circuit::Node</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:92</div></div>
+<div class="ttc" id="aa00113_html"><div class="ttname"><a href="../../d3/d00/a00113.html">Circuit::Component</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:130</div></div>
+<div class="ttc" id="aa00105_html"><div class="ttname"><a href="../../d3/d32/a00105.html">Circuit::Schematic</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:41</div></div>
+<div class="ttc" id="aa00057_html"><div class="ttname"><a href="../../d1/d22/a00057.html">Circuit::Capacitor</a></div><div class="ttdef"><b>Definition:</b> circuit_linear.hpp:21</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

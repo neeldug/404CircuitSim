@@ -81,7 +81,7 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;unsupported/Eigen/NumericalDiff&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar, <span class="keywordtype">int</span> NX = Eigen::Dynamic, <span class="keywordtype">int</span> NY = Eigen::Dynamic&gt;</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="../../d0/d89/a00071.html">   11</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d0/d89/a00071.html">Functor</a></div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="../../d1/d09/a00077.html">   11</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d1/d09/a00077.html">Functor</a></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">// Information that tells the caller the numeric type (eg. double) and size (input / output dim)</span></div>
@@ -100,23 +100,23 @@ $(function() {
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">int</span> m_inputs, m_values;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">// Two constructors:</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<a class="code" href="../../d0/d89/a00071.html">Functor</a>() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<a class="code" href="../../d0/d89/a00071.html">Functor</a>(<span class="keywordtype">int</span> inputs, <span class="keywordtype">int</span> values) : m_inputs(inputs), m_values(values) {}</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<a class="code" href="../../d1/d09/a00077.html">Functor</a>() : m_inputs(InputsAtCompileTime), m_values(ValuesAtCompileTime) {}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<a class="code" href="../../d1/d09/a00077.html">Functor</a>(<span class="keywordtype">int</span> inputs, <span class="keywordtype">int</span> values) : m_inputs(inputs), m_values(values) {}</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">// Get methods for users to determine function input and output dimensions</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keywordtype">int</span> inputs()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_inputs; }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keywordtype">int</span> values()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_values; }</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="../../d9/da5/a00075.html">   38</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d9/da5/a00075.html">ConductanceFunc</a> : <a class="code" href="../../d0/d89/a00071.html">Functor</a>&lt;double&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="../../d8/d53/a00081.html">   38</a></span>&#160;<span class="keyword">struct </span><a class="code" href="../../d8/d53/a00081.html">ConductanceFunc</a> : <a class="code" href="../../d1/d09/a00077.html">Functor</a>&lt;double&gt;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">// Simple constructor</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">double</span> time = 0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="../../da/d74/a00099.html">Circuit::Schematic</a>* schem;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="../../d9/d77/a00095.html">Circuit::ParamTable</a>* param;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="../../d3/d32/a00105.html">Circuit::Schematic</a>* schem;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="../../d4/d3a/a00101.html">Circuit::ParamTable</a>* param;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">double</span> timestep;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">int</span> NUM_NODES = 0;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="../../d9/da5/a00075.html">ConductanceFunc</a>(<a class="code" href="../../da/d74/a00099.html">Circuit::Schematic</a> * schem, <a class="code" href="../../d9/d77/a00095.html">Circuit::ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep, <span class="keywordtype">int</span> NUM_NODES ): <a class="code" href="../../d0/d89/a00071.html">Functor&lt;double&gt;</a>(schem-&gt;nonLinearComps.size(), schem-&gt;nonLinearComps.size()) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="../../d8/d53/a00081.html">ConductanceFunc</a>(<a class="code" href="../../d3/d32/a00105.html">Circuit::Schematic</a> * schem, <a class="code" href="../../d4/d3a/a00101.html">Circuit::ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep, <span class="keywordtype">int</span> NUM_NODES ): <a class="code" href="../../d1/d09/a00077.html">Functor&lt;double&gt;</a>(schem-&gt;nonLinearComps.size(), schem-&gt;nonLinearComps.size()) {</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        this-&gt;schem = schem;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        this-&gt;param = param;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        this-&gt;timestep = timestep;</div>
@@ -197,10 +197,10 @@ $(function() {
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="../../d1/d51/a00079.html">  127</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../d1/d51/a00079.html">Circuit::Simulator</a></div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="../../df/d13/a00085.html">  127</a></span>&#160;<span class="keyword">class </span><a class="code" href="../../df/d13/a00085.html">Circuit::Simulator</a></div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;{</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <a class="code" href="../../da/d74/a00099.html">Schematic</a> *schem;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <a class="code" href="../../d3/d32/a00105.html">Schematic</a> *schem;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordtype">double</span> tranStopTime;</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordtype">double</span> tranSaveStart;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">double</span> tranStepTime;</div>
@@ -235,7 +235,7 @@ $(function() {
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        }</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        csvStream &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    }</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">void</span> spicePrint(<a class="code" href="../../d9/d77/a00095.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">void</span> spicePrint(<a class="code" href="../../d4/d3a/a00101.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    {</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        spiceStream &lt;&lt; time &lt;&lt; <span class="stringliteral">&quot;\t&quot;</span>;</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> node_pair : schem-&gt;nodes)</div>
@@ -248,7 +248,7 @@ $(function() {
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        spiceStream &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    }</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> csvPrint(<a class="code" href="../../d9/d77/a00095.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> csvPrint(<a class="code" href="../../d4/d3a/a00101.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    {</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        csvStream &lt;&lt; time &lt;&lt; <span class="stringliteral">&quot;,&quot;</span>;</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> node_pair : schem-&gt;nodes)</div>
@@ -288,8 +288,8 @@ $(function() {
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keyword">const</span> SimulationType type;</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <a class="code" href="../../d1/d51/a00079.html">Simulator</a>(<a class="code" href="../../da/d74/a00099.html">Schematic</a> *schem, SimulationType type) : type(type), schem(schem) {}</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <a class="code" href="../../d1/d51/a00079.html">Simulator</a>(<a class="code" href="../../da/d74/a00099.html">Schematic</a> *schem, SimulationType type, <span class="keywordtype">double</span> tranStopTime, <span class="keywordtype">double</span> tranSaveStart = 0, <span class="keywordtype">double</span> tranStepTime = 0) : <a class="code" href="../../d1/d51/a00079.html">Simulator</a>(schem, type)</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    <a class="code" href="../../df/d13/a00085.html">Simulator</a>(<a class="code" href="../../d3/d32/a00105.html">Schematic</a> *schem, SimulationType type) : type(type), schem(schem) {}</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <a class="code" href="../../df/d13/a00085.html">Simulator</a>(<a class="code" href="../../d3/d32/a00105.html">Schematic</a> *schem, SimulationType type, <span class="keywordtype">double</span> tranStopTime, <span class="keywordtype">double</span> tranSaveStart = 0, <span class="keywordtype">double</span> tranStepTime = 0) : <a class="code" href="../../df/d13/a00085.html">Simulator</a>(schem, type)</div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    {</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        <span class="keywordflow">if</span> (tranStepTime == 0)</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        {</div>
@@ -319,7 +319,7 @@ $(function() {
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    }</div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordtype">void</span> run(std::ostream &amp;dst, OutputFormat format)</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    {</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">for</span> (<a class="code" href="../../d9/d77/a00095.html">ParamTable</a> *param : schem-&gt;tables)</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">for</span> (<a class="code" href="../../d4/d3a/a00101.html">ParamTable</a> *param : schem-&gt;tables)</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        {</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="keywordflow">if</span> (type == OP)</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            {</div>
@@ -423,7 +423,7 @@ $(function() {
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                            <span class="comment">//std::cerr&lt;&lt;percent&lt;&lt;&quot;%&quot;&lt;&lt;std::endl;</span></div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                            percent++;</div>
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                        }</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                        <a class="code" href="../../d9/da5/a00075.html">ConductanceFunc</a> functor(schem, param, t,tranStepTime, NUM_NODES);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                        <a class="code" href="../../d8/d53/a00081.html">ConductanceFunc</a> functor(schem, param, t,tranStepTime, NUM_NODES);</div>
 <div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        Eigen::NumericalDiff&lt;ConductanceFunc&gt; numDiff(functor);</div>
 <div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                        <span class="keywordflow">if</span>(schem-&gt;itType == Circuit::Schematic::IterationType::Levenberg){</div>
 <div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                            Eigen::LevenbergMarquardt&lt;Eigen::NumericalDiff&lt;ConductanceFunc&gt;,<span class="keywordtype">double</span>&gt; lm(numDiff);</div>
@@ -495,11 +495,11 @@ $(function() {
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;};</div>
 <div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aa00099_html"><div class="ttname"><a href="../../da/d74/a00099.html">Circuit::Schematic</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:41</div></div>
-<div class="ttc" id="aa00079_html"><div class="ttname"><a href="../../d1/d51/a00079.html">Circuit::Simulator</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:128</div></div>
-<div class="ttc" id="aa00095_html"><div class="ttname"><a href="../../d9/d77/a00095.html">Circuit::ParamTable</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:36</div></div>
-<div class="ttc" id="aa00075_html"><div class="ttname"><a href="../../d9/da5/a00075.html">ConductanceFunc</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:39</div></div>
-<div class="ttc" id="aa00071_html"><div class="ttname"><a href="../../d0/d89/a00071.html">Functor</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:12</div></div>
+<div class="ttc" id="aa00101_html"><div class="ttname"><a href="../../d4/d3a/a00101.html">Circuit::ParamTable</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:36</div></div>
+<div class="ttc" id="aa00081_html"><div class="ttname"><a href="../../d8/d53/a00081.html">ConductanceFunc</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:39</div></div>
+<div class="ttc" id="aa00105_html"><div class="ttname"><a href="../../d3/d32/a00105.html">Circuit::Schematic</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:41</div></div>
+<div class="ttc" id="aa00077_html"><div class="ttname"><a href="../../d1/d09/a00077.html">Functor</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:12</div></div>
+<div class="ttc" id="aa00085_html"><div class="ttname"><a href="../../df/d13/a00085.html">Circuit::Simulator</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:128</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

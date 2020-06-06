@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['math_9',['Math',['../d1/d6f/a00063.html',1,'Circuit']]]
+  ['inductor_9',['Inductor',['../d4/de8/a00061.html',1,'Circuit']]]
 ];

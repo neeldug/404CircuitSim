@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>404 Circuit Simulator: Main Page</title>
+<title>404 Circuit Simulator: 404 Circuit Simulator</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,11 +62,221 @@ $(function() {
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">404 Circuit Simulator Documentation</div>  </div>
+<div class="title">404 Circuit Simulator </div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="md_README"></a> </p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Table of Contents</h1>
+<ol type="1">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#folder-structure">Folder Structure</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#technical-documentation">Technical Documentation</a></li>
+<li><a href="#authors">Authors</a></li>
+</ol>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Introduction</h1>
+<p>TODO - Add Project Introduction Aim and Motivation (Probably at the end)</p>
+<h1><a class="anchor" id="autotoc_md3"></a>
+Folder Structure</h1>
+<div class="fragment"><div class="line">├── bin</div>
+<div class="line">├── build</div>
+<div class="line">│   └── build.sh</div>
+<div class="line">├── CMakeLists.txt</div>
+<div class="line">├── include</div>
+<div class="line">│   ├── circuit_diode.hpp</div>
+<div class="line">│   ├── circuit.hpp</div>
+<div class="line">│   ├── circuit_linear.hpp</div>
+<div class="line">│   ├── circuit_math.hpp</div>
+<div class="line">│   ├── circuit_mosfet.hpp</div>
+<div class="line">│   ├── circuit_parser.hpp</div>
+<div class="line">│   ├── circuit_source.hpp</div>
+<div class="line">│   ├── circuit_structure.hpp</div>
+<div class="line">│   ├── circuit_transistor.hpp</div>
+<div class="line">│   └── symbolic.hpp</div>
+<div class="line">├── lib</div>
+<div class="line">│   └── symbolic</div>
+<div class="line">├── src</div>
+<div class="line">│   ├── main.cpp</div>
+<div class="line">│   ├── math</div>
+<div class="line">│   │   └── math.cpp</div>
+<div class="line">│   └── parser</div>
+<div class="line">│       └── parser.cpp</div>
+<div class="line">├── test</div>
+<div class="line">│   ├── parser_test.cpp</div>
+<div class="line">│   ├── SpiceNetlists</div>
+<div class="line">│   │   └── test.cir</div>
+<div class="line">│   └── test_math.cpp</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+Getting Started</h1>
+<p>TODO - Add Getting Started Steps (Probably Last Thing) also add command line option etc</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Technical Documentation</h1>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Project Specification</h2>
+<ul>
+<li>Input Format: The circuit simulator should read an input file that defines the circuit and the simulation. The format of the input file is compatible with SPICE, but you only need to support a subset of the features of SPICE, which are described in <a href="spec.pdf">this document</a>.</li>
+<li>Output Format: The output format will be a ?? (TODO)</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md7"></a>
+API Documentation</h2>
+<p>The API of the Circuit Simulator is a header only library, where each header file defines one or more classes that are used in the cpp files. All classes are namespaced under circuit to avoid conflicts.</p>
+<h3><a class="anchor" id="autotoc_md8"></a>
+Classes</h3>
+<div class="fragment"><div class="line">- Circuit::Schematic       # circuit abstraction</div>
+<div class="line">- Circuit::Node            # circuit node abstraction</div>
+<div class="line">- Circuit::Parser          # controls input</div>
+<div class="line">- Circuit::Simulator       # controls output</div>
+<div class="line">- Circuit::Math            # provides math functions</div>
+<div class="line"> </div>
+<div class="line">- Circuit::Component       # component abstraction</div>
+<div class="line">- Circuit::Resistor        # resistor abstraction</div>
+<div class="line">- Circuit::Capacitor       # capacitor abstraction</div>
+<div class="line">- Circuit::Inductor        # inductor abstraction</div>
+<div class="line">- Circuit::Diode           # diode abstraction</div>
+<div class="line">- Circuit::Transistor      # transistor abstraction</div>
+<div class="line">- Circuit::Mosfet          # mosfet abstraction</div>
+<div class="line"> </div>
+<div class="line">- Circuit::Source          # power source abstraction</div>
+<div class="line">- Circuit::Voltage         # voltage source abstraction</div>
+<div class="line">- Circuit::Current         # current source abstraction</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md9"></a>
+Circuit::Schematic</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   Schematic();</div>
+<div class="line">   std::function&lt;int()&gt; id;</div>
+<div class="line">   std::string title;</div>
+<div class="line">   std::map&lt;std::string, Node *&gt; nodes;</div>
+<div class="line">   std::map&lt;std::string, Component *&gt; comps;</div>
+<div class="line">   std::vector&lt;Simulation *&gt; sims;</div>
+<div class="line">   void out() const;</div>
+<div class="line">   void setupConnections2Node( Circuit::Component *linear, const std::string&amp; nodeA, const std::string&amp; nodeB );</div>
+<div class="line">   void setupConnections3Node( Circuit::Component *linear, const std::string&amp; nodeA, const std::string&amp; nodeB, const std::string&amp; nodeC );</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
+Circuit::Node</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   Node(const std::string &amp;name, Circuit::Schematic * schem);</div>
+<div class="line">   double voltage;</div>
+<div class="line">   std::vector&lt;Component *&gt; comps;</div>
+<div class="line">   void print() const;</div>
+<div class="line">   std::string getName() const;</div>
+<div class="line">   int getId() const;</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md11"></a>
+Circuit::Parser</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   static Circuit::Schematic* parse( std::istream&amp; inputStream );</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md12"></a>
+Circuit::Simulator</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   static enum SimulationType;</div>
+<div class="line">   Simulator( Circuit::Schematic *schem, SimulationType type );</div>
+<div class="line">   const SimulationType type;</div>
+<div class="line">   void run();</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md13"></a>
+Circuit::Math</h3>
+<div class="fragment"><div class="line"> {c++}</div>
+<div class="line"> </div>
+<div class="line">TODO - Add Math definitions</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md14"></a>
+Circuit::Component</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   std::string name;</div>
+<div class="line">   std::vector&lt;Node *&gt; nodes;</div>
+<div class="line">   virtual double conductance(ParamTable *param) const</div>
+<div class="line">   Node* getPosNode() const</div>
+<div class="line">   Node* getNegNode() const</div>
+<div class="line">   double current() const</div>
+<div class="line">   void print() const</div>
+<div class="line">   virtual double getValue(ParamTable *param) const</div>
+<div class="line">   virtual bool isSource() const</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md15"></a>
+Circuit::Resistor</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   Resistor(const std::string &amp;name, double value, const std::string &amp;nodeA, const std::string &amp;nodeB, Schematic* schem)</div>
+<div class="line">   double conductance() const override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md16"></a>
+Circuit::Capacitor</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   double DC_init;</div>
+<div class="line">   Capacitor(const std::string &amp;name, double value, const std::string &amp;nodeA, const std::string &amp;nodeB, Schematic* schem)</div>
+<div class="line">   Capacitor(const std::string &amp;name, double value, const std::string &amp;nodeA, const std::string &amp;nodeB, Schematic* schem, double DC_init)</div>
+<div class="line">   double conductance() const override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md17"></a>
+Circuit::Inductor</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   double I_init;</div>
+<div class="line">   Inductor(const std::string &amp;name, double value, const std::string &amp;nodeA, const std::string &amp;nodeB, Schematic* schem)</div>
+<div class="line">   Inductor(const std::string &amp;name, double value, const std::string &amp;nodeA, const std::string &amp;nodeB, Schematic *schem, double I_init)</div>
+<div class="line">   double conductance() const override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md18"></a>
+Circuit::Diode</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   double IS=0.1;</div>
+<div class="line">   double RS=16;</div>
+<div class="line">   double CJO=2e-12;</div>
+<div class="line">   double TT=12e-9;</div>
+<div class="line">   double BV=100;</div>
+<div class="line">   double IBV=0.1e-12;</div>
+<div class="line">   Diode( const std::string &amp;name, const std::string &amp;nodeA, const std::string &amp;nodeB, const std::string &amp;model, Schematic* schem)</div>
+<div class="line">   void assignModel( std::vector&lt;std::string&gt; params )</div>
+<div class="line">   double conductance() const override</div>
+<div class="line">   std::string getModelName()</div>
+<div class="line">   virtual double getValue() override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md19"></a>
+Circuit::Transistor</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   double BF=100;</div>
+<div class="line">   double IS=1e-16;</div>
+<div class="line">   double VAF=std::numeric_limits&lt;double&gt;::max();</div>
+<div class="line">   bool model_CE_resistance = false;</div>
+<div class="line">   TType transistorType;</div>
+<div class="line">   Transistor( const std::string &amp;name, const std::string &amp;nodeCollector, const std::string &amp;nodeBase, const std::string &amp;nodeEmitter, const std::string &amp;model, Schematic* schem)</div>
+<div class="line">   void assignModel( std::vector&lt;std::string&gt; params )</div>
+<div class="line">   double conductance() const override</div>
+<div class="line">   std::string getModelName()</div>
+<div class="line">   virtual double getValue() override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md20"></a>
+Circuit::Source</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   double getSourceOutput( ParamTable* param, double t )</div>
+<div class="line">   virtual bool isSource() const override</div>
+<div class="line">   virtual bool isCurrent() const = 0;</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md21"></a>
+Circuit::Voltage</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   Voltage( const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, double smallSignalAmp, double SINE_DC_offset ,double SINE_amplitude, double SINE_frequency, Schematic* schem )</div>
+<div class="line">   Voltage( const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, Schematic *schem )</div>
+<div class="line">   bool isCurrent() const override</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md22"></a>
+Circuit::Current</h3>
+<div class="fragment"><div class="line">{c++}</div>
+<div class="line"> </div>
+<div class="line">   Current( const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic* schem )</div>
+<div class="line">   Current( const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, Schematic *schem )</div>
+<div class="line">   bool isCurrent() const override</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md23"></a>
+Authors</h1>
+<ul>
+<li><a href="https://github.com/jjlehner">Jonah Lehner</a></li>
+<li><a href="https://github.com/SamtheSaint">Samuel Adekunle</a></li>
+<li><a href="https://github.com/neeldug">Neel Dugar</a> </li>
+</ul>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

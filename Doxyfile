@@ -14,7 +14,7 @@ PROJECT_BRIEF          = "A CLI clone of SPICE circuit solver"
 
 PROJECT_LOGO           =
 
-OUTPUT_DIRECTORY       = ""
+OUTPUT_DIRECTORY       =
 
 CREATE_SUBDIRS         = YES
 
@@ -214,13 +214,16 @@ WARN_LOGFILE           =
 #-Configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = "include/"
+INPUT                  = "include"
+
+INPUT                  += "README.md"
+INPUT                  += "srs.md"
+
 
 INPUT_ENCODING         = UTF-8
 
 
-FILE_PATTERNS          = circuit*.hpp \
-                         *.md \
+FILE_PATTERNS          = circuit*.hpp
 
 RECURSIVE              = NO
 
@@ -256,7 +259,7 @@ FILTER_SOURCE_FILES    = NO
 
 FILTER_SOURCE_PATTERNS =
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = "README.md"
 
 #---------------------------------------------------------------------------
 #-Configuration options related to source browsing
@@ -306,7 +309,7 @@ IGNORE_PREFIX          =
 
 GENERATE_HTML          = YES
 
-HTML_OUTPUT            = html
+HTML_OUTPUT            = docs
 
 HTML_FILE_EXTENSION    = .html
 

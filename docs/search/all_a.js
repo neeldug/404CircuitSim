@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['transistor_18',['Transistor',['../dd/d6d/a00111.html',1,'Circuit']]]
+  ['resistor_16',['Resistor',['../de/de1/a00065.html',1,'Circuit']]]
 ];
