@@ -53,6 +53,10 @@ private:
 	void setupConnectionNode(Circuit::Component *linear, const std::string &node);
 
 public:
+	enum IterationType{
+		Newton, Levenberg
+	};
+	IterationType itType = Levenberg;
 	Schematic();
 	std::function<int()> id;
 	std::string title;
@@ -62,6 +66,13 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
+	bool nonLinear = true;
+
+	std::vector<Diode* > nonLinearComps;
+	void containsNonLinearComponents()
+	{
+		nonLinear = true;
+	}
 	void out(ParamTable *param) const
 	{
 		for_each(nodes.begin(), nodes.end(), [&](const auto node) {
@@ -86,6 +97,7 @@ private:
 
 public:
 	double voltage;
+	double voltageGuess = 0;
 	std::vector<Component *> comps;
 	Node(const std::string &name, Schematic *schem) : name(name)
 	{
@@ -120,13 +132,13 @@ protected:
 	double i_prev = 0.0;
 	double value;
 	Schematic *schem;
-	Component()=default;
+	Component() = default;
 	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
 	bool variableDefined = false;
 	std::string variableName;
 
 public:
-	std::string name;
+	std::string name = "not_named";
 	std::vector<Node *> nodes;
 	virtual double getConductance(ParamTable *param, double timestep) const
 	{
@@ -146,6 +158,9 @@ public:
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
 	}
+	virtual double getVoltageGuess() const{
+		return getPosNode()->voltageGuess - getNegNode()->voltageGuess;
+	}
 	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
 	{
 		return getVoltage() * getConductance(param, time);
@@ -157,12 +172,21 @@ public:
 	}
 	virtual ~Component()
 	{
-		this->schem->comps.erase(name);
+		if (this->schem->comps.find(name) != this->schem->comps.end())
+		{
+			this->schem->comps.erase(name);
+		}
+
 		for (Node *n : nodes)
 		{
-			n->comps.erase(std::find(n->comps.begin(), n->comps.end(), this));
-			if (n->comps.size() == 0)
+			std::vector<Circuit::Component *>::iterator it = std::find(n->comps.begin(), n->comps.end(), this);
+			if (it != n->comps.end())
+			{	
+				n->comps.erase(it);
+			}
+			if (n->comps.size() == 0){
 				delete n;
+			}
 		}
 	}
 

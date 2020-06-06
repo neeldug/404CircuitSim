@@ -1,4 +1,4 @@
-* C:\users\jjl119\My Documents\LTspiceXVII\Draft1.asc
+* example.cir
 V1 N001 N004 1
 V2 N002 N004 AC 2
 V3 N003 N004 SINE(3 4 5)

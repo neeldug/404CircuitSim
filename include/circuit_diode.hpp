@@ -6,36 +6,45 @@ class Circuit::Diode : public Circuit::Component
 {
 private:
 	std::string modelName = "D";
-	const double GMIN = 1e-10;
-	const double V_T = 25e-3;
-
+	double inst_conductance = 0;
 public:
-	
+
 	class ParasiticCapacitance : public Circuit::Capacitor
 	{
 	public:
-		ParasiticCapacitance() = default;
+		ParasiticCapacitance(Schematic* schem){
+			this->schem = schem;
+		}
 		void setDiodeOwner(Diode *d);
 		void setCap(double vGuess, const double& CJ0, const double& VJ)
 		{
 			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
 		}
+		void setNodes(Node *pos, Node *neg){
+			this->nodes.push_back(pos);
+			this->nodes.push_back(neg);
+		}
+		virtual ~ParasiticCapacitance(){}
 	};
 
 	ParasiticCapacitance *para_cap;
 	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 0.1; //also stored in value (Component base class)
-	double RS = 16;
-	double CJ0 = 2e-12;
-	double TT = 12e-9;
+	double IS = 1e-14; //also stored in value (Component base class)
+	double RS = 0;
+	double CJ0 = 0;
+	double TT = 0;
 	double BV = 100;
-	double IBV = 0.1e-12;
-	double VJ = 0.7;
+	double IBV = 0.1e-10;
+	double VJ = 1;
+	const double GMIN = 1e-5;
+	const double V_T = 25e-3;
 	Diode() = default;
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, IS, schem)
+
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0, schem)
 	{
-		para_cap = new ParasiticCapacitance();
+		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);
+		para_cap->setNodes( this->getPosNode(),this->getNegNode() ); 
 	}
 	void assignModel(std::vector<std::string> params)
 	{
@@ -52,18 +61,20 @@ public:
 
 		value = IS;
 	}
-	double getCurrentSource(ParamTable *param, double time, double timestep, double vGuess)
+	
+	double getCurrentSource(ParamTable *param, double timestep)
 	{
-		double shockley;
-		double exponentialBreakdown;
-		shockley = IS * (exp(vGuess / V_T) - 1);
-		exponentialBreakdown = -IS * (exp(-(BV + vGuess) / V_T) - 1) + BV / V_T;
-		i_prev = (shockley + exponentialBreakdown);
-		return (shockley + exponentialBreakdown);
+		double capacitorCurrent = para_cap->getCurrentSource( param,timestep );
+		if(std::isnan(capacitorCurrent)){
+			capacitorCurrent = 0;
+		}
+		double current = capacitorCurrent;
+		return capacitorCurrent;
 	}
+
 	double getCurrent(ParamTable *param, double time, double timestep) const override
 	{
-		return (i_prev + getVoltage() * getConductance(param, timestep));
+		return getVoltage()*parralelAdd(1.0/100.0,(GMIN+inst_conductance)) + getVoltage() * para_cap->getConductance(param, timestep);
 	}
 	std::string getModelName()
 	{
@@ -73,15 +84,37 @@ public:
 	{
 		delete para_cap;
 	}
+	double parralelAdd(const double& a, const double& b) const{
+		double result = 1.0/a + 1.0/b;
+		result = 1/result;
+		if(std::isnan(result)){
+			return 0;
+		}
+		if(!std::isfinite(result)){
+			return 1e30;
+		}
+		else{
+			return result;
+		}
+	}
 	double getConductance(ParamTable *param, double timestep) const override
 	{
-		return GMIN;
+		double vPrev = getVoltage();
+		para_cap->setCap(vPrev, this->CJ0, this->VJ); 
+		double capConductance = para_cap->getConductance(param, timestep);
+		return parralelAdd(1.0/100.0,(GMIN+inst_conductance));//+capConductance;
 	}
-	double getConductance(ParamTable *param, double timestep, double vGuess) const
-	{
-		para_cap->setCap(vGuess, this->CJ0, this->VJ);
-		return GMIN;
+	void setConductance( ParamTable *param, double timestep, double vGuess ){
+		double shockley;
+		shockley= IS * (exp(vGuess / (V_T)) - 1);
+		if( vGuess!=0 && !std::isnan(shockley)){
+			i_prev=shockley;
+			inst_conductance=shockley/vGuess;
+		}
+		else{
+			i_prev = 0;
+			inst_conductance=0;
+		}
 	}
-
 };
 #endif

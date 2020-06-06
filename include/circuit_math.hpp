@@ -4,14 +4,6 @@
 class Circuit::Math
 {
 private:
-    static void init_vector(Eigen::VectorXd &vec, double val = 0.0)
-    {
-        for (size_t i = 0; i < vec.rows(); i++)
-        {
-            vec[i] = val;
-        }
-    }
-
     static void init_matrix(Eigen::MatrixXd &mat, double val = 0.0)
     {
         for (size_t i = 0; i < mat.rows(); i++)
@@ -48,7 +40,7 @@ private:
     static void handleVoltageSource(Eigen::MatrixXd &conductance, Eigen::VectorXd &current, int posId, int negId, double val)
     {
         Eigen::VectorXd new_conductance(current.rows());
-        for (int i = 0; i < current.rows() - 1; i++)
+        for (int i = 0; i < current.rows(); i++)
         {
             new_conductance[i] = 0;
         }
@@ -75,7 +67,7 @@ private:
         }
         else
         {
-            assert(negId != -1 && "Both terminal cannot be connected to ground");
+            assert(negId != -1 && "Both terminals cannot be connected to ground");
             new_conductance(negId) = -1.0;
             current[negId] = val;
             conductance.row(negId) = new_conductance;
@@ -95,6 +87,28 @@ public:
     static void getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &current, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t, double step);
     static void getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd &conductance, Circuit::ParamTable *param);
     static void getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t, double step);
+    static void init_vector(Eigen::VectorXd &vec, double val = 0.0)
+    {
+        for (size_t i = 0; i < vec.rows(); i++)
+        {
+            vec[i] = val;
+        }
+    }
+    static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y)
+    {
+        // double sum = 0;
+        // assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
+        // size_t size = X.rows();
+        // for (size_t i = 0; i < size; i++)
+        // {
+        //     sum += abs(X[i] - Y[i]);
+        // }
+        // double res = sum / (double)size;
+        // return res;
+        double dist;
+        dist = (X - Y).norm();
+        return dist;
+    }
 };
 
 void Circuit::Math::getCurrentOP(Circuit::Schematic *schem, Eigen::VectorXd &current, Eigen::MatrixXd &conductance, Circuit::ParamTable *param)
@@ -136,6 +150,10 @@ void Circuit::Math::getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &c
         {
             handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getCurrentSource(param, step));
         }
+        else if (Circuit::Diode *source = dynamic_cast<Circuit::Diode *>(comp.second))
+        {
+            handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getCurrentSource(param, step));
+        }
     });
 
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp) {
@@ -158,7 +176,6 @@ void Circuit::Math::getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd 
             {
                 return;
             }
-
             double value = comp_pair.second->getConductance(param, -1);
             handleConductanceMatrixTwoNodes(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), value);
         }
@@ -172,7 +189,8 @@ void Circuit::Math::getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixX
     std::for_each(schem->comps.begin(), schem->comps.end(), [&](std::pair<std::string, Circuit::Component *> comp_pair) {
         if (!comp_pair.second->isSource())
         {
-            if(t==0){
+            if (t == 0)
+            {
                 step = 0;
             }
             double value = comp_pair.second->getConductance(param, step);
