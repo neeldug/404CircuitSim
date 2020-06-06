@@ -14,7 +14,7 @@ PROJECT_BRIEF          = "A CLI clone of SPICE circuit solver"
 
 PROJECT_LOGO           =
 
-OUTPUT_DIRECTORY       = "doc"
+OUTPUT_DIRECTORY       = ""
 
 CREATE_SUBDIRS         = YES
 
@@ -431,7 +431,7 @@ EXTRA_SEARCH_MAPPINGS  =
 #-Configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 LATEX_OUTPUT           = latex
 
