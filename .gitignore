@@ -2,6 +2,7 @@ bin/*
 build/*
 out/*
 env/*
+doc/*
 !build.sh
 .vscode
 test/CMakeLists.txt
