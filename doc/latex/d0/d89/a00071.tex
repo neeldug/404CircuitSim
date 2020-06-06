@@ -1,0 +1,48 @@
+\hypertarget{a00071}{}\doxysection{Functor$<$ \+\_\+\+Scalar, NX, NY $>$ Struct Template Reference}
+\label{a00071}\index{Functor$<$ \_Scalar, NX, NY $>$@{Functor$<$ \_Scalar, NX, NY $>$}}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00071_a105dea24d7d611c7b81482f7bde78263}\label{a00071_a105dea24d7d611c7b81482f7bde78263}} 
+enum \{ {\bfseries Inputs\+At\+Compile\+Time} = NX, 
+{\bfseries Values\+At\+Compile\+Time} = NY
+ \}
+\item 
+\mbox{\Hypertarget{a00071_a9690bcfe4a9698846510bcc449194c6a}\label{a00071_a9690bcfe4a9698846510bcc449194c6a}} 
+typedef \+\_\+\+Scalar {\bfseries Scalar}
+\item 
+\mbox{\Hypertarget{a00071_a2ca96c10c4cc9e5675bacdece3a2fc2f}\label{a00071_a2ca96c10c4cc9e5675bacdece3a2fc2f}} 
+typedef Eigen\+::\+Matrix$<$ Scalar, Inputs\+At\+Compile\+Time, 1 $>$ {\bfseries Input\+Type}
+\item 
+\mbox{\Hypertarget{a00071_af12649ca2bf886db4b17fce52dce039d}\label{a00071_af12649ca2bf886db4b17fce52dce039d}} 
+typedef Eigen\+::\+Matrix$<$ Scalar, Values\+At\+Compile\+Time, 1 $>$ {\bfseries Value\+Type}
+\item 
+\mbox{\Hypertarget{a00071_af10cf1e76d256879b187978e2b3eea73}\label{a00071_af10cf1e76d256879b187978e2b3eea73}} 
+typedef Eigen\+::\+Matrix$<$ Scalar, Values\+At\+Compile\+Time, Inputs\+At\+Compile\+Time $>$ {\bfseries Jacobian\+Type}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00071_ada6edcd519e01af4db5524432104af5b}\label{a00071_ada6edcd519e01af4db5524432104af5b}} 
+{\bfseries Functor} (int inputs, int values)
+\item 
+\mbox{\Hypertarget{a00071_a98d1cf500f408428413a688f072b93ed}\label{a00071_a98d1cf500f408428413a688f072b93ed}} 
+int {\bfseries inputs} () const
+\item 
+\mbox{\Hypertarget{a00071_af869ac9e668e12e78a7e82a219263e31}\label{a00071_af869ac9e668e12e78a7e82a219263e31}} 
+int {\bfseries values} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00071_a86b97d099c68afa31fb6bce8e1c73392}\label{a00071_a86b97d099c68afa31fb6bce8e1c73392}} 
+int {\bfseries m\+\_\+inputs}
+\item 
+\mbox{\Hypertarget{a00071_a43ff0ecbd037627beca75d0994159e7e}\label{a00071_a43ff0ecbd037627beca75d0994159e7e}} 
+int {\bfseries m\+\_\+values}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/circuit\+\_\+simulator.\+hpp\end{DoxyCompactItemize}

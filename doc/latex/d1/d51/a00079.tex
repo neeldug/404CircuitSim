@@ -1,0 +1,70 @@
+\hypertarget{a00079}{}\doxysection{Circuit\+::Simulator Class Reference}
+\label{a00079}\index{Circuit::Simulator@{Circuit::Simulator}}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00079_ac8906c8367294a6382c0ae94e3b94c16}\label{a00079_ac8906c8367294a6382c0ae94e3b94c16}} 
+enum {\bfseries Simulation\+Type} \{ {\bfseries OP}, 
+{\bfseries T\+R\+AN}, 
+{\bfseries DC}, 
+{\bfseries S\+M\+A\+L\+L\+\_\+\+S\+I\+G\+N\+AL}
+ \}
+\item 
+\mbox{\Hypertarget{a00079_a89350b0bbb7751f11cfa7e777f625234}\label{a00079_a89350b0bbb7751f11cfa7e777f625234}} 
+enum {\bfseries Output\+Format} \{ {\bfseries C\+SV}, 
+{\bfseries S\+P\+A\+CE}
+ \}
+\item 
+\mbox{\Hypertarget{a00079_a4cc41d57da635b917e50a6ea795b754a}\label{a00079_a4cc41d57da635b917e50a6ea795b754a}} 
+using {\bfseries enum\+Pair} = std\+::pair$<$ Simulation\+Type, std\+::string $>$
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00079_af85b70ae2822ece3b99976ad03409890}\label{a00079_af85b70ae2822ece3b99976ad03409890}} 
+{\bfseries Simulator} (\mbox{\hyperlink{a00099}{Schematic}} $\ast$schem, Simulation\+Type type)
+\item 
+\mbox{\Hypertarget{a00079_ad0475035d72938c3a06c21199423c87d}\label{a00079_ad0475035d72938c3a06c21199423c87d}} 
+{\bfseries Simulator} (\mbox{\hyperlink{a00099}{Schematic}} $\ast$schem, Simulation\+Type type, double tran\+Stop\+Time, double tran\+Save\+Start=0, double tran\+Step\+Time=0)
+\item 
+\mbox{\Hypertarget{a00079_a0673426a9f4cb27c3288a7c11a5bb2bc}\label{a00079_a0673426a9f4cb27c3288a7c11a5bb2bc}} 
+std\+::vector$<$ double $>$ {\bfseries vec2vec} (const Eigen\+::\+Vector\+Xd \&vecy)
+\item 
+\mbox{\Hypertarget{a00079_ad99178ad12f27edad87d0c9b8fd63cdb}\label{a00079_ad99178ad12f27edad87d0c9b8fd63cdb}} 
+std\+::vector$<$ std\+::vector$<$ double $>$ $>$ {\bfseries m2m} (const Eigen\+::\+Matrix\+Xd \&mec, int N\+U\+M\+\_\+\+V\+\_\+\+G\+U\+E\+SS)
+\item 
+\mbox{\Hypertarget{a00079_a256b4c3ac439c575e47edd7d338a20f3}\label{a00079_a256b4c3ac439c575e47edd7d338a20f3}} 
+void {\bfseries run} (std\+::ostream \&dst, Output\+Format format)
+\end{DoxyCompactItemize}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+std\+::map$<$ Simulation\+Type, std\+::string $>$ {\bfseries simulation\+Type\+Map}
+\item 
+\mbox{\Hypertarget{a00079_a282a8fb5f0264e20e845359bb3955fec}\label{a00079_a282a8fb5f0264e20e845359bb3955fec}} 
+const Simulation\+Type {\bfseries type}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{a00079_a284642b0c67c9ee4f60706a073ab9128}\label{a00079_a284642b0c67c9ee4f60706a073ab9128}} 
+\index{Circuit::Simulator@{Circuit::Simulator}!simulationTypeMap@{simulationTypeMap}}
+\index{simulationTypeMap@{simulationTypeMap}!Circuit::Simulator@{Circuit::Simulator}}
+\doxysubsubsection{\texorpdfstring{simulationTypeMap}{simulationTypeMap}}
+{\footnotesize\ttfamily std\+::map$<$Simulation\+Type, std\+::string$>$ Circuit\+::\+Simulator\+::simulation\+Type\+Map}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{= \{}
+\DoxyCodeLine{        enumPair(OP, \textcolor{stringliteral}{"OP"}),}
+\DoxyCodeLine{        enumPair(TRAN, \textcolor{stringliteral}{"TRAN"}),}
+\DoxyCodeLine{        enumPair(DC, \textcolor{stringliteral}{"DC"}),}
+\DoxyCodeLine{        enumPair(SMALL\_SIGNAL, \textcolor{stringliteral}{"SMALL\_SIGNAL"}),}
+\DoxyCodeLine{    \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/circuit\+\_\+simulator.\+hpp\end{DoxyCompactItemize}

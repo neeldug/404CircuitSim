@@ -1,0 +1,69 @@
+\hypertarget{a00099}{}\doxysection{Circuit\+::Schematic Class Reference}
+\label{a00099}\index{Circuit::Schematic@{Circuit::Schematic}}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00099_a7685a12ba165fda38434519995a2cf1e}\label{a00099_a7685a12ba165fda38434519995a2cf1e}} 
+enum {\bfseries Iteration\+Type} \{ {\bfseries Newton}, 
+{\bfseries Levenberg}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00099_aa7638deafd74cad9fb24df4515fe1046}\label{a00099_aa7638deafd74cad9fb24df4515fe1046}} 
+void {\bfseries contains\+Non\+Linear\+Components} ()
+\item 
+\mbox{\Hypertarget{a00099_a24fa72940493b8d24de153edd27d0537}\label{a00099_a24fa72940493b8d24de153edd27d0537}} 
+void {\bfseries out} (\mbox{\hyperlink{a00095}{Param\+Table}} $\ast$param) const
+\item 
+\mbox{\Hypertarget{a00099_a32f14817803629cdd7d77998658c920e}\label{a00099_a32f14817803629cdd7d77998658c920e}} 
+void {\bfseries setup\+Connections2\+Node} (\mbox{\hyperlink{a00107}{Circuit\+::\+Component}} $\ast$linear, const std\+::string \&nodeA, const std\+::string \&nodeB)
+\item 
+\mbox{\Hypertarget{a00099_a7460e5544b0ab47c28d34659b90084ef}\label{a00099_a7460e5544b0ab47c28d34659b90084ef}} 
+void {\bfseries setup\+Connections3\+Node} (\mbox{\hyperlink{a00107}{Circuit\+::\+Component}} $\ast$linear, const std\+::string \&nodeA, const std\+::string \&nodeB, const std\+::string \&nodeC)
+\end{DoxyCompactItemize}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00099_a3f69de49e7ad075cc9dd00b7f0c65901}\label{a00099_a3f69de49e7ad075cc9dd00b7f0c65901}} 
+Iteration\+Type {\bfseries it\+Type} = Levenberg
+\item 
+\mbox{\Hypertarget{a00099_acefc7c442ea0a498b4bed2ff81730734}\label{a00099_acefc7c442ea0a498b4bed2ff81730734}} 
+std\+::function$<$ int()$>$ {\bfseries id}
+\item 
+\mbox{\Hypertarget{a00099_a9e11c3aec908a5d88501b1e24e5e0df3}\label{a00099_a9e11c3aec908a5d88501b1e24e5e0df3}} 
+std\+::string {\bfseries title}
+\item 
+\mbox{\Hypertarget{a00099_a75073de09162d715a93b5a22211cfb13}\label{a00099_a75073de09162d715a93b5a22211cfb13}} 
+std\+::map$<$ std\+::string, \mbox{\hyperlink{a00103}{Node}} $\ast$ $>$ {\bfseries nodes}
+\item 
+\mbox{\Hypertarget{a00099_a54df1972692c999d9b69068a29f27d15}\label{a00099_a54df1972692c999d9b69068a29f27d15}} 
+std\+::map$<$ std\+::string, \mbox{\hyperlink{a00107}{Component}} $\ast$ $>$ {\bfseries comps}
+\item 
+\mbox{\Hypertarget{a00099_af022e571ffc7cedbeba0bdfd5164ae86}\label{a00099_af022e571ffc7cedbeba0bdfd5164ae86}} 
+std\+::vector$<$ std\+::string $>$ {\bfseries commands}
+\item 
+\mbox{\Hypertarget{a00099_add603387a995ee0a19aeef8163419457}\label{a00099_add603387a995ee0a19aeef8163419457}} 
+std\+::vector$<$ std\+::string $>$ {\bfseries simulation\+Commands}
+\item 
+\mbox{\Hypertarget{a00099_a85956d57fe00f3ecec4db00316875225}\label{a00099_a85956d57fe00f3ecec4db00316875225}} 
+std\+::vector$<$ \mbox{\hyperlink{a00079}{Simulator}} $\ast$ $>$ {\bfseries sims} = \{\}
+\item 
+\mbox{\Hypertarget{a00099_ac17b23b9d2fbee694aad10b4a541abc4}\label{a00099_ac17b23b9d2fbee694aad10b4a541abc4}} 
+bool {\bfseries non\+Linear} = true
+\item 
+\mbox{\Hypertarget{a00099_ad859e6ab3d62fa092b5853bfb7446bac}\label{a00099_ad859e6ab3d62fa092b5853bfb7446bac}} 
+std\+::vector$<$ \mbox{\hyperlink{a00039}{Diode}} $\ast$ $>$ {\bfseries non\+Linear\+Comps}
+\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{a00099_a4ba4278eee9a6776d60f4aa6b42c3a76}\label{a00099_a4ba4278eee9a6776d60f4aa6b42c3a76}} 
+class {\bfseries Simulator}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/circuit\+\_\+structure.\+hpp\end{DoxyCompactItemize}
