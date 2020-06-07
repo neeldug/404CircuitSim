@@ -35,10 +35,6 @@ public:
 		return true;
 	}
 	virtual bool isCurrent() const = 0;
-	virtual void print(ParamTable *param) const override
-	{
-		fprintf(stderr, "DC - %f | Small signal Amp - %f | ( %f + %f * sin( %f t ) ) \n", DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency);
-	}
 };
 
 class Circuit::Current : public Circuit::Source
