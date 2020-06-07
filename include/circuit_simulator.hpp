@@ -202,6 +202,8 @@ public:
 		SMALL_SIGNAL
 	};
 
+	const SimulationType type;
+
 	enum OutputFormat
 	{
 		CSV,
@@ -217,8 +219,6 @@ public:
 		enumPair(SMALL_SIGNAL, "SMALL_SIGNAL"),
 	};
 
-	const SimulationType type;
-
 	Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
 	Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart = 0, double tranStepTime = 0) : Simulator(schem, type)
 	{
@@ -230,31 +230,19 @@ public:
 		this->tranSaveStart = tranSaveStart;
 		this->tranStepTime = tranStepTime;
 	}
-	std::vector<double> vec2vec(const Eigen::VectorXd &vecy)
-	{
-		std::vector<double> result;
-		for (size_t i = 0; i < vecy.size(); i++)
-		{
-			result.push_back(vecy(0));
-		}
-		return result;
-	}
 
-	std::vector<std::vector<double>> m2m(const Eigen::MatrixXd &mec, int NUM_V_GUESS)
-	{
-		std::vector<std::vector<double>> result;
-		for (size_t y = 0; y < NUM_V_GUESS; y++)
-		{
-			result.push_back(std::vector<double>());
-			for (size_t x = 0; x < NUM_V_GUESS; x++)
-			{
-				result[y].push_back(mec(y, x));
-			}
-		}
-		return result;
-	}
 	void run(std::ostream &dst, OutputFormat format)
 	{
+		const unsigned int NUM_NODES = schem->nodes.size() - 1;
+		const unsigned int NUM_V_GUESS = schem->nonLinearComps.size();
+
+		Eigen::VectorXd voltage(NUM_NODES);
+		Eigen::VectorXd vGuess(NUM_V_GUESS);
+		Eigen::VectorXd current(NUM_NODES);
+		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
+		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseMatrix<double> sparse;
+
 		for (ParamTable *param : schem->tables)
 		{
 			for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
@@ -265,16 +253,9 @@ public:
 			});
 			if (type == OP)
 			{
-				const int NUM_NODES = schem->nodes.size() - 1;
-				Eigen::VectorXd voltage(NUM_NODES);
-				Eigen::VectorXd current(NUM_NODES);
-				Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-				Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-
 				Circuit::Math::getConductanceOP(schem, conductance, param);
 				Circuit::Math::getCurrentOP(schem, current, conductance, param);
-
-				Eigen::SparseMatrix<double> sparse = conductance.sparseView();
+				sparse = conductance.sparseView();
 				sparse.makeCompressed();
 				solver.analyzePattern(sparse);
 				solver.factorize(sparse);
@@ -307,29 +288,15 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear || true)
+				if (!schem->nonLinear)
 				{
-
-					const int NUM_NODES = schem->nodes.size() - 1;
-					Eigen::VectorXd voltage(NUM_NODES);
-					Eigen::VectorXd current(NUM_NODES);
-					Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 					Eigen::SparseMatrix<double> sparse;
 
-					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						if ((t / tranStopTime) / (0.01 * percent) >= 1)
-						{
-							std::cerr << percent << "%" << std::endl;
-							percent++;
-						}
+						Math::progressBar(t / tranStopTime);
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
-
-						// std::cerr << conductance << std::endl;
-						// std::cerr << current << std::endl;
 
 						sparse = conductance.sparseView();
 						sparse.makeCompressed();
@@ -364,44 +331,32 @@ public:
 				}
 				else
 				{
-
-					const int NUM_NODES = schem->nodes.size() - 1;
-					const int NUM_V_GUESS = schem->nonLinearComps.size();
-					Eigen::VectorXd voltage(NUM_NODES);
-					Eigen::VectorXd vGuess(NUM_V_GUESS);
-					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-
-						Circuit::Math::init_vector(vGuess, 0);
-
-						if ((t / tranStopTime) / (0.01 * percent) >= 1)
-						{
-							//std::cerr<<percent<<"%"<<std::endl;
-							percent++;
-						}
+						Math::progressBar(t / tranStepTime);
+						Math::init_vector(vGuess);
 						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
-						if (schem->itType == Circuit::Schematic::IterationType::Levenberg)
+
+						switch (schem->itType)
 						{
+						case Schematic::IterationType::Levenberg:
 							Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
 							lm.parameters.maxfev = 1000;
 							lm.parameters.xtol = 1.0e-10;
-
 							int ret = lm.minimize(vGuess);
-						}
-						if (schem->itType == Circuit::Schematic::IterationType::Newton)
-						{
-							for (int i = 0; i < 1000; i++)
+							break;
+						case Schematic::IterationType::Newton:
+							for (size_t i = 0; i < 1000; i++)
 							{
 								Eigen::MatrixXd jaq(NUM_V_GUESS, NUM_V_GUESS);
 								numDiff.df(vGuess, jaq);
 								Eigen::VectorXd vErrVec(NUM_V_GUESS);
 								functor(vGuess, vErrVec);
 								Eigen::MatrixXd inverseJaq = jaq.transpose().inverse();
-								for (int x = 0; x < NUM_V_GUESS; x++)
+								for (size_t x = 0; x < NUM_V_GUESS; x++)
 								{
-									for (int y = 0; y < NUM_V_GUESS; y++)
+									for (size_t y = 0; y < NUM_V_GUESS; y++)
 									{
 										if (std::isnan(inverseJaq(x, y)))
 										{
@@ -414,20 +369,12 @@ public:
 									}
 								}
 								vGuess = vGuess - 0.005 * (inverseJaq * vErrVec);
-								auto answer = vec2vec(vGuess);
-								auto err = vec2vec(vErrVec);
-								auto stillNan = vec2vec(inverseJaq * vErrVec);
-								auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
-
-								//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 							}
+							break;
 						}
+
 						Eigen::VectorXd vErrVec(NUM_V_GUESS);
-						//functor.getVdif( vGuess, vErrVec );
 						functor.getVoltageVector(vGuess, voltage);
-						std::vector<double> answer = vec2vec(vGuess);
-						// std::cerr << voltage << std::endl;
-						std::cerr << t << "," << vGuess[0] << "," << vGuess[1] << std::endl;
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
 							{
@@ -456,4 +403,5 @@ public:
 		}
 	}
 };
+
 #endif
