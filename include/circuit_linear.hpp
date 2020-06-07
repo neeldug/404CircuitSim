@@ -24,13 +24,10 @@ class Circuit::Capacitor : public Circuit::LC
 {
 protected:
     Capacitor() = default;
-    Current *opReplace;
     double DC_init;
+    Current *opReplace = nullptr;
+
 public:
-    Current *getOpReplace()
-    {
-        return opReplace;
-    }
     Capacitor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init = 0) : LC(name, variableName, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
@@ -43,7 +40,10 @@ public:
         opReplace = new Current(schem);
         this->DC_init = DC_init;
     }
-
+    Current *getOpReplace()
+    {
+        return opReplace;
+    }
     virtual double getConductance(ParamTable *param, double timestep) const override
     {
         double min_conductance = 1e-13;
@@ -71,13 +71,10 @@ public:
 class Circuit::Inductor : public Circuit::LC
 {
 protected:
-    Voltage *opReplace;
     double I_init;
+    Voltage *opReplace = nullptr;
+
 public:
-    Voltage *getOpReplace()
-    {
-        return opReplace;
-    }
     Inductor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init = 0) : LC(name, variableName, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
@@ -89,7 +86,10 @@ public:
         opReplace = new Voltage(schem);
         this->I_init = I_init;
     }
-
+    Voltage *getOpReplace()
+    {
+        return opReplace;
+    }
     double getConductance(ParamTable *param, double timestep) const override
     {
         double min_conductance = 1e-13;
