@@ -7,6 +7,7 @@ class Circuit::LC : public Circuit::Component
 {
 protected:
     LC()=default;
+    LC(const std::string &name, std::string variableName, Circuit::Schematic *schem) : Component(name, variableName, schem) {}
     LC(const std::string &name, double value, Circuit::Schematic *schem) : Component(name, value, schem) {}
 public:
     virtual double getCurrentSource(ParamTable *param, double timestep) = 0;
@@ -27,13 +28,16 @@ public:
     double DC_init;
     Current *opReplace;
 
-    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : LC(name, value, schem)
+    Capacitor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init = 0) : LC(name, variableName, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Current(schem);
+        this->DC_init = DC_init;
     }
-    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init) : Capacitor(name, value, nodeA, nodeB, schem)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init=0) : LC(name, value, schem)
     {
+        schem->setupConnections2Node(this, nodeA, nodeB);
+        opReplace = new Current(schem);
         this->DC_init = DC_init;
     }
 
@@ -66,14 +70,17 @@ public:
     //NOTE I_init is initial current in inductor
     double I_init;
     Voltage *opReplace;
-    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : LC(name, value, schem)
+    Inductor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init = 0) : LC(name, variableName, schem)
     {
         //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Voltage(schem);
     }
-    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init) : Inductor(name, value, nodeA, nodeB, schem)
+    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init = 0) : LC(name, value, schem)
     {
+        //REVIEW move node connections into compoment constructor
+        schem->setupConnections2Node(this, nodeA, nodeB);
+        opReplace = new Voltage(schem);
         this->I_init = I_init;
     }
 
@@ -106,6 +113,10 @@ public:
 class Circuit::Resistor : public Component
 {
 public:
+    Resistor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, variableName, schem)
+    {
+        schem->setupConnections2Node(this, nodeA, nodeB);
+    }
     Resistor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem) : Component(name, value, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);

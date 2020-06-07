@@ -141,8 +141,19 @@ private:
 				assert( params.size() >= 4 && "Resistor - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				double value = parseVal( params[3] );
-				Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
+				
+				if(params[3][0] == '{'){
+					//Variable defined
+					std::string variableName = params[3];
+					variableName.pop_back();
+					variableName = variableName.substr(1,variableName.size()-1);
+					Circuit::Resistor *r = new Circuit::Resistor( name, variableName, nodeA, nodeB, schem );
+				}
+				else{				
+					double value = parseVal( params[3] );
+					Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
+				}
+
 				break;
 			}
 			case (int) 'c' : {
@@ -150,14 +161,22 @@ private:
 				assert( params.size() >= 4 && "Capacitor - too few params");
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				double value = parseVal(params[3]);
+				double V_init = 0.0;
 				if( params.size() >= 5 ){
-					double DC_init = stod( params[4] );
-					Circuit::Capacitor *r = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, DC_init );
+					V_init = parseVal( params[4] );
 				}
-				else{
-					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem );
+				if(params[3][0] == '{'){
+					//Variable defined
+					std::string variableName = params[3];
+					variableName.pop_back();
+					variableName = variableName.substr(1,variableName.size()-1);
+					Circuit::Capacitor *c = new Circuit::Capacitor( name, variableName, nodeA, nodeB, schem, V_init );
 				}
+				else{				
+					double value = parseVal( params[3] );
+					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, V_init );
+				}
+
 				break;
 			}
 			case (int) 'l' : {
@@ -166,12 +185,21 @@ private:
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
 				double value = parseVal( params[3] );
+				double I_init = 0.0;
 				if( params.size() >= 5 ){
-					double I_init = stod( params[4] );
-					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
+					I_init = parseVal( params[4] );
 				}
-				else{
-					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem );
+				if(params[3][0] == '{'){
+					//Variable defined
+					std::string variableName = params[3];
+					variableName.pop_back();
+					variableName = variableName.substr(1,variableName.size()-1);
+					Circuit::Inductor *l = new Circuit::Inductor( name, variableName, nodeA, nodeB, schem, I_init );
+
+				}
+				else{				
+					double value = parseVal( params[3] );
+					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
 				}
 
 				break;
@@ -238,7 +266,8 @@ private:
 		}
 
 	}
-	static void parseCommand( const std::string& cmd, Circuit::Schematic* schem ){
+
+	static void parseCommand( const std::string& cmd, Circuit::Schematic* schem, std::map<std::string, std::vector<double>> *tableGenerator ){
 		schem->simulationCommands.push_back( cmd );
 		std::stringstream ss( cmd );
 		std::vector<std::string> params;
@@ -249,7 +278,51 @@ private:
 
 		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
 		if( params[0] == ".STEP" ){
-			// std::cerr<<"step"<<std::endl;
+			if(params[1] == "OCT" ){
+				std::string variableName = params[3];
+				double startVal = parseVal(params[4]);
+				double endVal = parseVal(params[5]);
+				double pointsPerOctave = parseVal(params[6]);
+				double num_octaves = (log2((endVal/startVal)));
+				std::vector<double> v(pointsPerOctave * num_octaves);
+				std::generate(v.begin(), v.end(), [startVal, pointsPerOctave, n=0] () mutable { 
+					return startVal*pow(2,n++/pointsPerOctave); 
+				});
+				(*tableGenerator)[variableName] = v;
+			}
+			else if(params[1] == "DEC" ){
+				std::string variableName = params[3];
+				double startVal = parseVal(params[4]);
+				double endVal = parseVal(params[5]);
+				double pointsPerDecade = parseVal(params[6]);
+				double num_decades = (log10((endVal/startVal)));
+				std::vector<double> v(pointsPerDecade * num_decades);
+				std::generate(v.begin(), v.end(), [startVal, pointsPerDecade, n=0] () mutable { 
+					return startVal*pow(10,n++/pointsPerDecade); 
+				});
+				(*tableGenerator)[variableName] = v;
+			}
+			else if(params[3] == "LIST" ){
+				std::string variableName = params[2];
+				std::vector<double> v;
+				std::for_each(params.begin()+4, params.end(),[&v](const std::string &a){
+					double val = parseVal(a);
+					v.push_back(val);
+				});
+				(*tableGenerator)[variableName] = v;
+			}
+			else{
+				std::string variableName = params[2];
+				double startVal = parseVal(params[3]);
+				double endVal = parseVal(params[4]);
+				double increment = parseVal(params[5]);
+				assert(endVal > startVal && "End value smaller than start value");
+				std::vector<double> v((endVal - startVal)/increment);
+				std::generate(v.begin(), v.end(), [startVal, increment, n=0] () mutable { 
+					return startVal+increment*n++;
+				});
+				(*tableGenerator)[variableName] = v;
+			}
 		}
 		else if( params[0] == ".TRAN"){
 			// std::cerr<<"tran"<<std::endl;
@@ -267,6 +340,40 @@ private:
 		}
 		
 	}
+	using TableIt = std::map<std::string, std::vector<double>>::const_iterator;
+	static std::vector<ParamTable *> buildParam(TableIt it,const TableIt end){
+		std::vector<ParamTable *> tables;
+		//REVIEW Need to change auto
+		std::for_each( it->second.begin(), it->second.end(), [&tables, &it, &end](const auto& x){
+			if(it==std::prev(end,1)){
+				ParamTable* p = new ParamTable();
+				p->lookup[it->first] = x;
+				tables.push_back(p);
+			}
+			else{
+				std::vector<ParamTable *> toAdd = buildParam(std::next(it,1),end);
+				std::for_each( toAdd.begin(), toAdd.end(), [&it, &x](auto& a){
+					a->lookup[it->first] = x;
+				});
+				tables.insert(tables.end(), toAdd.begin(), toAdd.end());
+			}
+		});
+		return tables;
+
+	}
+	static std::vector<ParamTable *> paramGenerator(std::map<std::string, std::vector<double>> values){
+		TableIt varOne = values.begin();
+		const TableIt varEnd = values.end();
+		std::vector<double>::const_iterator begin = varOne->second.begin();
+		std::vector<double>::const_iterator end = varOne->second.end();
+		std::vector<ParamTable *> tables;
+
+		std::vector<ParamTable *> recursiveAdd = buildParam(varOne, varEnd);
+		tables.insert(tables.end(), recursiveAdd.begin(), recursiveAdd.end());
+		
+		std::cerr<<"";
+		return tables;
+	}
 public:
 	
 	static Circuit::Schematic* parse( std::istream& inputStream ){
@@ -277,7 +384,7 @@ public:
 
 
 		std::string inputLine;
-
+		std::map<std::string, std::vector<double>> tableGenerator;
 		Circuit::Schematic *schem = new Schematic();
 		if( std::getline( inputStream, inputLine ) ){
 			schem->title = inputLine;
@@ -292,9 +399,10 @@ public:
 				addComponent( inputLine, schem );
 			}
 			if( inputLine[0] == '.'){
-				parseCommand(inputLine, schem);
+				parseCommand(inputLine, schem, &tableGenerator);
 			}
 		}
+		schem->tables = paramGenerator(tableGenerator);
 		assert( endStatement && "No end statement present in netlist");
 		return schem;
 	}
