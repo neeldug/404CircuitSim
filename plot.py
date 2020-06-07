@@ -4,6 +4,7 @@ import argparse
 import plotly.graph_objs as go
 import os
 
+
 parser = argparse.ArgumentParser(description="Add Options to Control Plot")
 parser.add_argument("file_name", metavar="FILE", type=str, nargs=1,
                     help="Path of file to plot")
@@ -19,36 +20,47 @@ if __name__ == '__main__':
     args = parser.parse_args()
     sep = ',' if args.mode is None or args.mode[0].lower() == 'csv' else '\t'
 
-    df = pd.read_csv(args.file_name[0], sep=sep,
-                     engine='python').dropna(axis=1, how='all')
+    file_name = args.file_name[0]
+    plots = dict()
+    stepVars = None
 
-    if args.column_names:
-        print(df.columns.values[1:])
-        exit(0)
-    else:
-        column_names = df.columns.values if not args.include else [
-            "Time", *args.include]
-        df_vals = pd.melt(
-            df, id_vars=column_names[0], value_vars=column_names[1:])
-        # fig = px.line(df_vals, x="Time", y="value", color='variable')
-        fig = go.Figure(data=px.line(df_vals, x="Time",
-                                     y="value", color='variable'))
-        fig.update_layout(title_text="Scale",
-                          updatemenus=[
-                              dict(
-                                  buttons=list([
-                                      dict(label="X Linear",
-                                           method="relayout",
-                                           args=[{"xaxis.type": "linear"}]),
-                                      dict(label="X Log",
-                                           method="relayout",
-                                           args=[{"xaxis.type": "log"}]),
-                                      dict(label="Y Linear",
-                                           method="relayout",
-                                           args=[{"yaxis.type": "linear"}]),
-                                      dict(label="Y Log",
-                                           method="relayout",
-                                           args=[{"yaxis.type": "log"}]),
-                                  ]),
-                              )])
-        fig.show()
+    with open(file_name, mode='r') as f:
+        heading = f.readline().rstrip().split(sep)
+        column_names = heading if not args.include else ["Time", *args.include]
+
+        if args.column_names:
+            print(heading[1:])
+            exit(0)
+
+        df = pd.DataFrame(columns=heading)
+        i = 0
+        while True:
+            line = f.readline().rstrip()
+            if len(line) == 0:
+                break
+            if line[0] == 'S':
+                stepVars = line.split(sep)
+                stepVars = sep.join(stepVars[2:-2])
+                plots[stepVars] = df
+                df = pd.DataFrame(columns=heading)
+                i = 0
+                continue
+            df.loc[i] = line.split(sep)
+            i += 1
+        if stepVars is None:
+            plots['sam'] = df
+
+    fig = go.Figure()
+    for key, df in plots.items():
+        for col in column_names[1:]:
+            fig.add_scatter(x=df["Time"], y=df[col])
+        
+
+    x_linear = dict(label="X Linear", method="relayout", args=[{"xaxis.type": "linear"}])
+    y_linear = dict(label="Y Linear",method="relayout",args=[{"yaxis.type": "linear"}])
+    x_log = dict(label="X Log", method="relayout",args=[{"xaxis.type": "log"}])
+    y_log = dict(label="Y Log", method="relayout",args=[{"yaxis.type": "log"}])
+    buttons = list([x_linear,y_linear,x_log,y_log])
+    
+    fig.update_layout(title_text="Scale", updatemenus=[dict(buttons=buttons)])
+    fig.show()
