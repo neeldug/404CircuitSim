@@ -10,19 +10,6 @@
 #include <algorithm>
 #include <typeinfo>
 
-/**
- * 
- * 
- * 
- * 
- * 
- *  
- */
-
-/**
- * The Circuit Namespace.
- * This contains all the classes and structs defined in this Library.
-*/
 namespace Circuit
 {
 	class Component;
@@ -42,7 +29,7 @@ namespace Circuit
 	class LC;
 	class Diode;
 	struct ParamTable;
-}
+} // namespace Circuit
 
 struct Circuit::ParamTable
 {
@@ -53,7 +40,16 @@ class Circuit::Schematic
 {
 	friend class Simulator;
 
+public:
+	enum IterationType
+	{
+		Newton,
+		Levenberg
+	};
+
 private:
+	IterationType itType = Levenberg;
+	bool nonLinear = false;
 	std::function<int()> createIDGenerator(int &start) const
 	{
 		return [&]() {
@@ -64,10 +60,6 @@ private:
 	void setupConnectionNode(Circuit::Component *linear, const std::string &node);
 
 public:
-	enum IterationType{
-		Newton, Levenberg
-	};
-	IterationType itType = Levenberg;
 	Schematic();
 	std::vector<ParamTable *> tables;
 	std::function<int()> id;
@@ -76,25 +68,12 @@ public:
 	std::map<std::string, Component *> comps;
 	std::vector<std::string> commands;
 	std::vector<std::string> simulationCommands;
-	std::vector<Simulator *> sims = {};
-
-	bool nonLinear = false;
-
-	std::vector<Diode* > nonLinearComps;
+	std::vector<Simulator *> sims;
+	std::vector<Diode *> nonLinearComps;
 	void containsNonLinearComponents()
 	{
 		nonLinear = true;
 	}
-	void out(ParamTable *param) const
-	{
-		for_each(nodes.begin(), nodes.end(), [&](const auto node) {
-			node.second->print();
-		});
-		for_each(comps.begin(), comps.end(), [&](const auto comp) {
-			comp.second->print(param);
-		});
-	}
-
 	void setupConnections2Node(Circuit::Component *linear, const std::string &nodeA, const std::string &nodeB);
 	void setupConnections3Node(Circuit::Component *linear, const std::string &nodeA, const std::string &nodeB, const std::string &nodeC);
 	~Schematic();
@@ -109,18 +88,12 @@ private:
 
 public:
 	double voltage;
-	double voltageGuess = 0;
 	std::vector<Component *> comps;
 	Node(const std::string &name, Schematic *schem) : name(name)
 	{
 		id = schem->id();
 		voltage = 0.0;
 		this->schem = schem;
-	}
-
-	void print() const
-	{
-		std::cerr << "Node" << name << ":\t" << voltage << "V" << std::endl;
 	}
 	std::string getName() const
 	{
@@ -141,17 +114,17 @@ public:
 class Circuit::Component
 {
 protected:
-	double i_prev = 0.0;
+	double i_prev;
 	double value;
 	Schematic *schem;
 	Component() = default;
-	Component(const std::string &name, std::string variableName, Schematic *schem) : name(name), variableName(variableName), schem(schem), variableDefined(true){}
+	Component(const std::string &name, std::string variableName, Schematic *schem) : name(name), variableName(variableName), schem(schem), variableDefined(true) {}
 	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
 	bool variableDefined = false;
 	std::string variableName;
 
 public:
-	std::string name = "not_named";
+	std::string name;
 	std::vector<Node *> nodes;
 	virtual double getConductance(ParamTable *param, double timestep) const
 	{
@@ -171,18 +144,11 @@ public:
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
 	}
-	virtual double getVoltageGuess() const{
-		return getPosNode()->voltageGuess - getNegNode()->voltageGuess;
-	}
 	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
 	{
 		return getVoltage() * getConductance(param, time);
 	}
-	virtual void print(ParamTable *param) const
-	{
-		// Just printing Component Information
-		std::cerr << typeid(*this).name() << name << ":\t" << getCurrent(param) << "A " << value << std::endl;
-	}
+
 	virtual ~Component()
 	{
 		if (this->schem->comps.find(name) != this->schem->comps.end())
@@ -194,10 +160,11 @@ public:
 		{
 			std::vector<Circuit::Component *>::iterator it = std::find(n->comps.begin(), n->comps.end(), this);
 			if (it != n->comps.end())
-			{	
+			{
 				n->comps.erase(it);
 			}
-			if (n->comps.size() == 0){
+			if (n->comps.size() == 0)
+			{
 				delete n;
 			}
 		}
@@ -214,11 +181,14 @@ public:
 			return value;
 		}
 	}
-	virtual void setValue(ParamTable* param, double value){
-		if(!variableDefined){
+	virtual void setValue(ParamTable *param, double value)
+	{
+		if (!variableDefined)
+		{
 			this->value = value;
 		}
-		else{
+		else
+		{
 			param->lookup[variableName] = value;
 		}
 	}
@@ -261,12 +231,10 @@ void Circuit::Schematic::setupConnections3Node(Circuit::Component *linear, const
 	setupConnectionNode(linear, nodeC);
 }
 
-// don't need to insert ground into nodes
 Circuit::Schematic::Schematic() : id(createIDGenerator(start))
 {
 	Node *ground = new Node("0", this);
 	nodes.insert(std::pair<std::string, Node *>(ground->getName(), ground));
-	// REVIEW - remove this
 }
 
 Circuit::Schematic::~Schematic()
@@ -275,11 +243,7 @@ Circuit::Schematic::~Schematic()
 				  [](ParamTable *&t) {
 					  delete t;
 				  });
-	// std::for_each(nodes.begin(), nodes.end(), [](auto kv){
-	// 	delete kv.second;
-	// });
 
-	//NOTE David thomas approved
 	while (comps.size() != 0)
 	{
 		delete comps.begin()->second;

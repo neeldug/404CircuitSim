@@ -94,20 +94,21 @@ public:
             vec[i] = val;
         }
     }
-    static double MSE(Eigen::VectorXd X, Eigen::VectorXd Y)
+    static void progressBar(double progress)
     {
-        // double sum = 0;
-        // assert(X.rows() == Y.rows() && "Old vector size not the same as new vector size");
-        // size_t size = X.rows();
-        // for (size_t i = 0; i < size; i++)
-        // {
-        //     sum += abs(X[i] - Y[i]);
-        // }
-        // double res = sum / (double)size;
-        // return res;
-        double dist;
-        dist = (X - Y).norm();
-        return dist;
+        int barwidth = 100;
+        int pos = barwidth * progress;
+        std::cerr << "\rProgress: [";
+        for (int i = 0; i < barwidth; i++)
+        {
+            if (i < pos)
+                std::cerr << "=";
+            else if (i == pos)
+                std::cerr << ">";
+            else
+                std::cerr << " ";
+        }
+        std::cerr << "]" << int(progress * 100) + 1 << "%";
     }
 };
 

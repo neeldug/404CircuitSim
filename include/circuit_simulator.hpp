@@ -1,16 +1,15 @@
 #ifndef GUARD_CIRCUIT_SIMULATOR_HPP
 #define GUARD_CIRCUIT_SIMULATOR_HPP
+
 #include <sstream>
 #include <iostream>
 #include <Eigen/Dense>
-
 #include <unsupported/Eigen/NonLinearOptimization>
 #include <unsupported/Eigen/NumericalDiff>
 
 template <typename _Scalar, int NX = Eigen::Dynamic, int NY = Eigen::Dynamic>
 struct Functor
 {
-
 	// Information that tells the caller the numeric type (eg. double) and size (input / output dim)
 	typedef _Scalar Scalar;
 	enum
@@ -18,7 +17,6 @@ struct Functor
 		InputsAtCompileTime = NX,
 		ValuesAtCompileTime = NY
 	};
-
 	// Tell the caller the matrix sizes associated with the input, output, and jacobian
 	typedef Eigen::Matrix<Scalar, InputsAtCompileTime, 1> InputType;
 	typedef Eigen::Matrix<Scalar, ValuesAtCompileTime, 1> ValueType;
@@ -142,8 +140,6 @@ private:
 	std::stringstream spiceStream;
 	std::stringstream csvStream;
 
-	double errorThreshold = 1e-10;
-
 	void spicePrintTitle()
 	{
 		spiceStream << "Time";
@@ -169,17 +165,6 @@ private:
 			csvStream << ",I(" << comp_pair.first << ")";
 		}
 		csvStream << "\n";
-	}
-	void printStep(ParamTable *param)
-	{
-		if (param->lookup.size() == 0)
-		{
-			return;
-		}
-		for (auto x : param->lookup)
-		{
-			//spiceStream<<x
-		}
 	}
 	void spicePrint(ParamTable *param, double time, double timestep)
 	{
