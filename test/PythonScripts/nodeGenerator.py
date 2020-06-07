@@ -1,5 +1,9 @@
 # Node generating script
-num_nodes = 100
+import sys
+if (len(sys.argv) == 2):
+    num_nodes = int(sys.argv[1])
+else:
+    num_nodes = 100
 print("*Node speed test")
 print("V1 1 0 SINE(0 100 1)")
 for i in range(1,num_nodes):

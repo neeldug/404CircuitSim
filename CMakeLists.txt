@@ -20,9 +20,8 @@ target_include_directories(hayai INTERFACE lib/hayai)
 include_directories(include)
 
 # Main Executable - Simulator
-add_executable(simulator src/main.cpp)
-target_link_libraries(simulator eigen)
-target_link_libraries(simulator hayai)
+# add_executable(simulator src/main.cpp)
+# target_link_libraries(simulator eigen)
 
 # Test Executables
 add_subdirectory(test)
