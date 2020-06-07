@@ -24,10 +24,6 @@ class Circuit::Capacitor : public Circuit::LC
 {
 protected:
     Capacitor() = default;
-<<<<<<< HEAD
-    Current *opReplace = nullptr;
-=======
->>>>>>> b934e4e3b9d132e4304b9bc9b0e52911d1999dbd
     double DC_init;
     Current *opReplace = nullptr;
 
