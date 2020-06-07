@@ -9,7 +9,7 @@ private:
 	double inst_conductance = 0;
 	double IS = 1e-14; //also stored in value (Component base class)
 	double RS = 0;
-	double CJ0 = 0;
+	double CJ0 = 1e-14;
 	double TT = 0;
 	double BV = 100;
 	double IBV = 0.1e-10;

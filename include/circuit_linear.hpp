@@ -24,7 +24,7 @@ class Circuit::Capacitor : public Circuit::LC
 {
 protected:
     Capacitor() = default;
-    Current *opReplace;
+    Current *opReplace = nullptr;
     double DC_init;
 public:
     Current *getOpReplace()
@@ -64,8 +64,10 @@ public:
     }
     virtual ~Capacitor()
     {
-        delete opReplace;
-    };
+        if(opReplace){
+            delete opReplace;
+        }
+    }
 };
 
 class Circuit::Inductor : public Circuit::LC
