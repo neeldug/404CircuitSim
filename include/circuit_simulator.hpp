@@ -138,53 +138,53 @@ private:
 
 	void spicePrintTitle()
 	{
-		spiceStream << "Time\t";
+		spiceStream << "Time";
 		for (auto node_pair : schem->nodes)
 		{
-			spiceStream << "V(" << node_pair.first << ")\t";
+			spiceStream << "\tV(" << node_pair.first << ")";
 		}
 		for (auto comp_pair : schem->comps)
 		{
-			spiceStream << "I(" << comp_pair.first << ")\t";
+			spiceStream << "\tI(" << comp_pair.first << ")";
 		}
 		spiceStream << "\n";
 	}
 	void csvPrintTitle()
 	{
-		csvStream << "Time,";
+		csvStream << "Time";
 		for (auto node_pair : schem->nodes)
 		{
-			csvStream << "V(" << node_pair.first << "),";
+			csvStream << ",V(" << node_pair.first << ")";
 		}
 		for (auto comp_pair : schem->comps)
 		{
-			csvStream << "I(" << comp_pair.first << "),";
+			csvStream << ",I(" << comp_pair.first << ")";
 		}
 		csvStream << "\n";
 	}
 	void spicePrint(ParamTable *param, double time, double timestep)
 	{
-		spiceStream << time << "\t";
+		spiceStream << time;
 		for (auto node_pair : schem->nodes)
 		{
-			spiceStream << node_pair.second->voltage << "\t";
+			spiceStream <<"\t"<< node_pair.second->voltage;
 		}
 		for (auto comp_pair : schem->comps)
 		{
-			spiceStream << comp_pair.second->getCurrent(param, time, timestep) << "\t";
+			spiceStream << "\t"<<comp_pair.second->getCurrent(param, time, timestep);
 		}
 		spiceStream << "\n";
 	}
 	void csvPrint(ParamTable *param, double time, double timestep)
 	{
-		csvStream << time << ",";
+		csvStream << time;
 		for (auto node_pair : schem->nodes)
 		{
-			csvStream << node_pair.second->voltage << ",";
+			csvStream << ","<< node_pair.second->voltage;
 		}
 		for (auto comp_pair : schem->comps)
 		{
-			csvStream << comp_pair.second->getCurrent(param, time, timestep) << ",";
+			csvStream << ","<<comp_pair.second->getCurrent(param, time, timestep);
 		}
 		csvStream << "\n";
 	}
@@ -302,8 +302,13 @@ public:
 					Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 					Eigen::SparseMatrix<double> sparse;
 
+					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
+						if( (t/tranStopTime)/(0.01 *percent)>=1){
+							std::cerr<<percent<<"%"<<std::endl;
+							percent++;
+						}
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
@@ -314,7 +319,13 @@ public:
 						sparse.makeCompressed();
 						solver.analyzePattern(sparse);
 						solver.factorize(sparse);
-						voltage = solver.solve(current);
+						try {
+							voltage = solver.solve(current);
+						} catch (const std::exception& e) { 
+							std::cerr<<"error solving skipping timestep"<<std::endl; 
+							continue;
+						}
+						
 
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)

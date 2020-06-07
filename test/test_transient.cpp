@@ -20,6 +20,7 @@ int main()
 	{
 		sims->run(std::cout, Circuit::Simulator::OutputFormat::CSV);
 	}
+
 	netlist.close();
 	delete schem;
 }

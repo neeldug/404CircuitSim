@@ -42,7 +42,6 @@ class Circuit::Schematic
 	friend class Simulator;
 
 private:
-	std::vector<ParamTable *> tables;
 	std::function<int()> createIDGenerator(int &start) const
 	{
 		return [&]() {
@@ -58,6 +57,7 @@ public:
 	};
 	IterationType itType = Levenberg;
 	Schematic();
+	std::vector<ParamTable *> tables;
 	std::function<int()> id;
 	std::string title;
 	std::map<std::string, Node *> nodes;
@@ -66,7 +66,7 @@ public:
 	std::vector<std::string> simulationCommands;
 	std::vector<Simulator *> sims = {};
 
-	bool nonLinear = true;
+	bool nonLinear = false;
 
 	std::vector<Diode* > nonLinearComps;
 	void containsNonLinearComponents()
@@ -133,6 +133,7 @@ protected:
 	double value;
 	Schematic *schem;
 	Component() = default;
+	Component(const std::string &name, std::string variableName, Schematic *schem) : name(name), variableName(variableName), schem(schem), variableDefined(true){}
 	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
 	bool variableDefined = false;
 	std::string variableName;
@@ -200,7 +201,15 @@ public:
 		{
 			return value;
 		}
-	};
+	}
+	virtual void setValue(ParamTable* param, double value){
+		if(!variableDefined){
+			this->value = value;
+		}
+		else{
+			param->lookup[variableName] = value;
+		}
+	}
 	virtual bool isSource() const
 	{
 		return false;
