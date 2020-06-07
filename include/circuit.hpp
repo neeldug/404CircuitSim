@@ -3,8 +3,9 @@
 
 //REVIEW need to see how order of include is affecting the ability to compile
 //program
-#include <Dense>
-#include <Sparse>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <hayai.hpp>
 #include "circuit_structure.hpp"
 #include "circuit_source.hpp"
 #include "circuit_linear.hpp"
