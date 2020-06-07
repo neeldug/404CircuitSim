@@ -338,15 +338,15 @@ public:
 						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
 
-						switch (schem->itType)
+						if (schem->itType == Schematic::IterationType::Levenberg)
 						{
-						case Schematic::IterationType::Levenberg:
 							Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
 							lm.parameters.maxfev = 1000;
 							lm.parameters.xtol = 1.0e-10;
 							int ret = lm.minimize(vGuess);
-							break;
-						case Schematic::IterationType::Newton:
+						}
+						else if (schem->itType == Schematic::IterationType::Newton)
+						{
 							for (size_t i = 0; i < 1000; i++)
 							{
 								Eigen::MatrixXd jaq(NUM_V_GUESS, NUM_V_GUESS);
@@ -370,7 +370,11 @@ public:
 								}
 								vGuess = vGuess - 0.005 * (inverseJaq * vErrVec);
 							}
-							break;
+						}
+						else
+						{
+							std::cerr << "unknown iteration type" << std::endl;
+							std::terminate();
 						}
 
 						Eigen::VectorXd vErrVec(NUM_V_GUESS);
