@@ -292,7 +292,7 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear)
+				if (!schem->nonLinear || true)
 				{
 
 					const int NUM_NODES = schem->nodes.size() - 1;
@@ -307,8 +307,8 @@ public:
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						std::cerr << conductance << std::endl;
-						std::cerr << current << std::endl;
+						// std::cerr << conductance << std::endl;
+						// std::cerr << current << std::endl;
 
 						sparse = conductance.sparseView();
 						sparse.makeCompressed();

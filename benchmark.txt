@@ -1,0 +1,23 @@
+[==========] Running 1 benchmark..
+[ RUN      ] SimulatorFixture.run (1000 runs, 1 iteration per run)
+[     DONE ] SimulatorFixture.run (36088.051000 ms)
+[   RUNS   ]        Average time: 36088.051 us (~1159.990 us)
+                    Fastest time: 34400.943 us (-1687.108 us / -4.675 %)
+                    Slowest time: 51109.943 us (+15021.892 us / +41.626 %)
+                     Median time: 35717.943 us (1st quartile: 35412.943 us | 3rd quartile: 36506.943 us)
+                                  
+             Average performance: 27.71000 runs/s
+                Best performance: 29.06897 runs/s (+1.35897 runs/s / +4.90425 %)
+               Worst performance: 19.56566 runs/s (-8.14434 runs/s / -29.39133 %)
+              Median performance: 27.99713 runs/s (1st quartile: 28.23826 | 3rd quartile: 27.39205)
+                                  
+[ITERATIONS]        Average time: 36088.051 us (~1159.990 us)
+                    Fastest time: 34400.943 us (-1687.108 us / -4.675 %)
+                    Slowest time: 51109.943 us (+15021.892 us / +41.626 %)
+                     Median time: 35717.943 us (1st quartile: 35412.943 us | 3rd quartile: 36506.943 us)
+                                  
+             Average performance: 27.71000 iterations/s
+                Best performance: 29.06897 iterations/s (+1.35897 iterations/s / +4.90425 %)
+               Worst performance: 19.56566 iterations/s (-8.14434 iterations/s / -29.39133 %)
+              Median performance: 27.99713 iterations/s (1st quartile: 28.23826 | 3rd quartile: 27.39205)
+[==========] Ran 1 benchmark..
