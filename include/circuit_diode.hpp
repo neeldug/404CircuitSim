@@ -7,6 +7,15 @@ class Circuit::Diode : public Circuit::Component
 private:
 	std::string modelName = "D";
 	double inst_conductance = 0;
+	double IS = 1e-14; //also stored in value (Component base class)
+	double RS = 0;
+	double CJ0 = 0;
+	double TT = 0;
+	double BV = 100;
+	double IBV = 0.1e-10;
+	double VJ = 1;
+	const double GMIN = 1e-5;
+	const double V_T = 25e-3;
 public:
 
 	class ParasiticCapacitance : public Circuit::Capacitor
@@ -28,19 +37,9 @@ public:
 	};
 
 	ParasiticCapacitance *para_cap;
-	//REVIEW will probably have to make these doubles and might make this a nested class
-	double IS = 1e-14; //also stored in value (Component base class)
-	double RS = 0;
-	double CJ0 = 0;
-	double TT = 0;
-	double BV = 100;
-	double IBV = 0.1e-10;
-	double VJ = 1;
-	const double GMIN = 1e-5;
-	const double V_T = 25e-3;
 	Diode() = default;
 
-	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, 0, schem)
+	Diode(std::string name, std::string nodeA, std::string nodeB, std::string model, Schematic *schem) : Circuit::Component(name, IS, schem)
 	{
 		para_cap = new ParasiticCapacitance(schem);
 		schem->setupConnections2Node(this, nodeA, nodeB);

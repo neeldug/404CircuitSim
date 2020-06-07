@@ -6,9 +6,10 @@
 class Circuit::LC : public Circuit::Component
 {
 protected:
-    LC()=default;
+    LC() = default;
     LC(const std::string &name, std::string variableName, Circuit::Schematic *schem) : Component(name, variableName, schem) {}
     LC(const std::string &name, double value, Circuit::Schematic *schem) : Component(name, value, schem) {}
+
 public:
     virtual double getCurrentSource(ParamTable *param, double timestep) = 0;
 
@@ -18,23 +19,25 @@ public:
     }
     virtual ~LC(){};
 };
+
 class Circuit::Capacitor : public Circuit::LC
 {
 protected:
     Capacitor() = default;
-
-public:
-    //NOTE DC_init is starting DC voltage for transient analysis
-    double DC_init;
     Current *opReplace;
-
+    double DC_init;
+public:
+    Current *getOpReplace()
+    {
+        return opReplace;
+    }
     Capacitor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init = 0) : LC(name, variableName, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Current(schem);
         this->DC_init = DC_init;
     }
-    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init=0) : LC(name, value, schem)
+    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double DC_init = 0) : LC(name, value, schem)
     {
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Current(schem);
@@ -59,34 +62,34 @@ public:
         i_prev = i_pres;
         return i_pres;
     }
-    virtual ~Capacitor(){
+    virtual ~Capacitor()
+    {
         delete opReplace;
     };
 };
 
 class Circuit::Inductor : public Circuit::LC
 {
-public:
-    //NOTE I_init is initial current in inductor
-    double I_init;
+protected:
     Voltage *opReplace;
+    double I_init;
+public:
+    Voltage *getOpReplace()
+    {
+        return opReplace;
+    }
     Inductor(const std::string &name, std::string variableName, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init = 0) : LC(name, variableName, schem)
     {
-        //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Voltage(schem);
     }
     Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init = 0) : LC(name, value, schem)
     {
-        //REVIEW move node connections into compoment constructor
         schem->setupConnections2Node(this, nodeA, nodeB);
         opReplace = new Voltage(schem);
         this->I_init = I_init;
     }
 
-    //NOTE
-    //If timesetp == -1 Simiulation mode op
-    //REVIEW should probably change this
     double getConductance(ParamTable *param, double timestep) const override
     {
         double min_conductance = 1e-13;
@@ -105,7 +108,8 @@ public:
         i_prev = i_pres;
         return i_pres;
     }
-    virtual ~Inductor(){
+    virtual ~Inductor()
+    {
         delete opReplace;
     };
 };

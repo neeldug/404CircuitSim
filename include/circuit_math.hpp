@@ -108,7 +108,7 @@ public:
             else
                 std::cerr << " ";
         }
-        std::cerr << "]" << int(progress * 100) + 1 << "% (" << i+1 << "/" << n << ")";
+        std::cerr << "]" << int(progress * 100) + 1 << "% (" << i + 1 << "/" << n << ")";
     }
 };
 
@@ -122,7 +122,7 @@ void Circuit::Math::getCurrentOP(Circuit::Schematic *schem, Eigen::VectorXd &cur
         }
         else if (Circuit::Capacitor *source = dynamic_cast<Circuit::Capacitor *>(comp.second))
         {
-            handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->opReplace->getSourceOutput(param, 0));
+            handleCurrentSource(current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getOpReplace()->getSourceOutput(param, 0));
         }
     });
 
@@ -133,7 +133,7 @@ void Circuit::Math::getCurrentOP(Circuit::Schematic *schem, Eigen::VectorXd &cur
         }
         else if (Circuit::Inductor *source = dynamic_cast<Circuit::Inductor *>(comp.second))
         {
-            handleVoltageSource(conductance, current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->opReplace->getSourceOutput(param, 0));
+            handleVoltageSource(conductance, current, source->getPosNode()->getId(), source->getNegNode()->getId(), source->getOpReplace()->getSourceOutput(param, 0));
         }
     });
 }
