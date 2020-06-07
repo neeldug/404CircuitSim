@@ -8,3 +8,4 @@ test/CMakeLists.txt
 *.raw
 *.log
 *.csv
+.DS_STORE
