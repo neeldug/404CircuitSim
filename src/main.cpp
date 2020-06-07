@@ -2,67 +2,98 @@
 #include <fstream>
 #include <circuit.hpp>
 #include <filesystem>
-#include <regex>
 #include <getopt.h>
 
-/*
-MODES
- -* - SIM NETLIST "generate output file in default location with default name"
- -p - SIM NETLIST -p "plot output (NOT FOR "
- -o - SIM NETLIST -o OUT
-*/
-
-
-using flagString = std::pair<std::string, std::string>;
-using flagBool = std::pair<std::string, bool>;
-
-std::map<std::string, std::string> inputFlags = {
-    flagString("-p", ""),    //plot output
-    flagString("-o", "out"), //name output folder
-};
-// NOTE - maybe add a mode for plotting
-std::map<std::string, bool> inputlessFlags = {
-    flagBool("-s", false), //dump spice file
-    flagBool("-n", false), //print nodes and attached components names
-    flagBool("--interactive", false)};
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
-    assert(argc > 1 && "File Name required as first parameter");
-    std::string inputFileName = argv[1];
-
-    for (int i = 2; i < argc; i++)
+    int c;
+    std::map<std::string, std::string> stringFlags;
+    std::map<std::string, bool> boolFlags;
+    while ((c = getopt(argc, argv, "f:i:o:p")) != -1)
     {
-        if (inputFlags.find(std::string(argv[i])) != inputFlags.end())
+        switch (c)
         {
-            if (i + 1 < argc)
-            {
-                inputFlags[std::string(argv[i])] = argv[i + 1];
-            }
-        }
-        if (inputlessFlags.find(std::string(argv[i])) != inputlessFlags.end())
-        {
-            inputlessFlags[argv[i]] = true;
+        case 'f':
+            stringFlags["outputFormat"] = optarg;
+        case 'i':
+            stringFlags["inputFilePath"] = optarg;
+            break;
+        case 'o':
+            stringFlags["outputFolderPath"] = optarg;
+            break;
+        case 'p':
+            boolFlags["plotOutput"] = true;
+            break;
+        default:
+            std::cerr << "Unknown Flag: '" << c << "'\n";
+            exit(1);
         }
     }
+
     std::ifstream inputFile;
-    inputFile.open(inputFileName);
-    if (inputFile.fail())
+    if (!stringFlags["inputFilePath"].empty())
     {
-        std::cerr << "File: " << inputFileName << " not found!\n";
+        inputFile.open(stringFlags["inputFilePath"]);
+    }
+    else
+    {
+        std::cerr << "-i flag required to specify input netlist" << std::endl;
         exit(1);
     }
+
+    if (inputFile.fail())
+    {
+        std::cerr << "File: " << stringFlags["inputFileName"] << " was not found!\n";
+        exit(1);
+    }
+
     Circuit::Schematic *schem = Circuit::Parser::parse(inputFile);
     inputFile.close();
 
-    for (Circuit::Simulator *sim : schem->sims)
+    if (stringFlags["outputFolderPath"].empty())
     {
-        std::filesystem::create_directory(inputFlags["-o"]);
-        std::ofstream out(inputFlags["-o"] + "/" + schem->title + sim->simulationTypeMap[sim->type] + ".csv");
-        // REVIEW - output format could be a flag
-        sim->run(out, Circuit::Simulator::OutputFormat::CSV);
-        out.close();
+        stringFlags["outputFolderPath"] = "out";
     }
 
-    delete schem;
+    std::filesystem::create_directory(stringFlags["outputFolderPath"]);
+    std::ofstream out;
+    std::string outputPath;
+    Circuit::Simulator::OutputFormat outputFormat;
+
+    if (stringFlags["outputFormat"].empty() || tolower(stringFlags["outputFormat"][0]) == 'c')
+    {
+        outputFormat = Circuit::Simulator::OutputFormat::CSV;
+    }
+    else
+    {
+        outputFormat = Circuit::Simulator::OutputFormat::SPACE;
+    }
+
+    for (Circuit::Simulator *sim : schem->sims)
+    {
+        outputPath = stringFlags["outputFolderPath"] + "/" + schem->title.substr(2) + sim->simulationTypeMap[sim->type];
+        if (outputFormat == Circuit::Simulator::OutputFormat::CSV && sim->type != Circuit::Simulator::SimulationType::OP)
+        {
+            outputPath += ".csv";
+        }
+        else
+        {
+            outputPath += ".txt";
+        }
+        out.open(outputPath);
+        sim->run(out, outputFormat);
+        out.close();
+
+        if (boolFlags["plotOutput"] && sim->type != Circuit::Simulator::SimulationType::OP)
+        {
+            std::string systemCall = "env/bin/python3 plot.py '" + outputPath + "'";
+
+            if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
+            {
+                systemCall += " -m space";
+            }
+            system(systemCall.c_str());
+        }
+    }
     return 0;
 }

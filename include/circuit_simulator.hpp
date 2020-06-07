@@ -271,12 +271,12 @@ public:
 					if (node_pair.second->getId() != -1)
 					{
 						node_pair.second->voltage = voltage[node_pair.second->getId()];
-						dst << "V(" << node_pair.first << ")\t\t" << node_pair.second->voltage << "\tnode_voltage\n";
+						dst << "V(" << node_pair.first << ")\t\t" << node_pair.second->voltage << "\t\tnode_voltage\n";
 					}
 				});
 
 				for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp_pair) {
-					dst << "I(" << comp_pair.first << ")\t\t" << comp_pair.second->getCurrent(param, 0, -1) << "\tdevice_current\n";
+					dst << "I(" << comp_pair.first << ")\t\t" << comp_pair.second->getCurrent(param, 0, -1) << "\t\tdevice_current\n";
 				});
 			}
 			else if (type == TRAN)
@@ -292,7 +292,7 @@ public:
 					csvPrintTitle();
 				}
 
-				if (!schem->nonLinear)
+				if (!schem->nonLinear || true)
 				{
 
 					const int NUM_NODES = schem->nodes.size() - 1;
