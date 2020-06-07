@@ -162,12 +162,34 @@ private:
 		}
 		csvStream << "\n";
 	}
-	void printStep(ParamTable *param){
+	void spicePrintStep(ParamTable *param){
 		if( param->lookup.size() == 0 ){
 			return;
 		}
+		int n = 0;
 		for(auto x : param->lookup){
-			//spiceStream<<x
+			spiceStream<<"Step Information:";
+			for(std::pair<std::string, double> var : param->lookup){
+				csvStream<<" "<<var.first<<"="<<var.second;
+				spiceStream<<" "<<var.first<<"="<<var.second;
+			}
+			spiceStream<<" Run: "<<n<<"/"<<param->lookup.size()<<std::endl;
+			n++;
+		}
+	}
+	void csvPrintStep(ParamTable *param){
+		if( param->lookup.size() == 0 ){
+			return;
+		}
+		int n = 0;
+		for(auto x : param->lookup){
+			csvStream<<"Step Information:";
+			for(std::pair<std::string, double> var : param->lookup){
+				csvStream<<" "<<var.first<<"="<<var.second;
+				spiceStream<<" "<<var.first<<"="<<var.second;
+			}
+			csvStream<<" Run: "<<n<<"/"<<param->lookup.size()<<std::endl;
+			n++;
 		}
 	}
 	void spicePrint(ParamTable *param, double time, double timestep)
@@ -256,6 +278,17 @@ public:
 	{
 		for (ParamTable *param : schem->tables)
 		{
+			if (format == SPACE)
+			{
+				spiceStream.str("");
+				spicePrintStep(param);
+			}
+			else if (format == CSV)
+			{
+				csvStream.str("");
+				csvPrintStep(param);
+			}
+
 			if (type == OP)
 			{
 				const int NUM_NODES = schem->nodes.size() - 1;
@@ -401,15 +434,11 @@ public:
 								auto stillNan = vec2vec(inverseJaq*vErrVec);
 								auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
 
-
-								//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 							}
 						}
 						Eigen::VectorXd vErrVec(NUM_V_GUESS);
-						//functor.getVdif( vGuess, vErrVec );
 						functor.getVoltageVector(vGuess, voltage);
 						std::vector<double> answer = vec2vec(vGuess);
-						// std::cerr << voltage << std::endl;
 						std::cerr<<t<<","<<vGuess[0]<<","<<vGuess[1]<<std::endl;
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)
