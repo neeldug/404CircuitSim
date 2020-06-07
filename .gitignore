@@ -4,7 +4,7 @@ out/*
 env/*
 !build.sh
 .vscode
-# test/CMakeLists.txt
+test/CMakeLists.txt
 *.raw
 *.log
 *.csv

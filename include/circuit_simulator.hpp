@@ -444,6 +444,7 @@ public:
 						}
 					}
 				}
+				std::cerr << std::endl;
 			}
 			if (format == SPACE)
 			{
