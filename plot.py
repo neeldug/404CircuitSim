@@ -3,7 +3,7 @@ import pandas as pd
 import argparse
 import plotly.graph_objs as go
 import os
-
+from plotly.subplots import make_subplots
 
 parser = argparse.ArgumentParser(description="Add Options to Control Plot")
 parser.add_argument("file_name", metavar="FILE", type=str, nargs=1,
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                     stepVars = line.split(' ')
                     stepVars = ' '.join(stepVars[2:-2])
                     continue
-    
+
                 plots[stepVars] = df
                 df = pd.DataFrame(columns=heading)
                 i = 0
@@ -56,15 +56,21 @@ if __name__ == '__main__':
             df.loc[i] = line.split(sep)
             i += 1
 
-    fig = go.Figure()
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     if stepVars is not None:
         for key, df in plots.items():
             for col in column_names[2:]:
-                fig.add_scatter(x=df["Time"], y=df[col], name=f"{col} - {key}")
+                fig.add_trace(
+                    go.Scatter(x=df["Time"], y=df[col], name=f"{col} - {key}"),
+                    secondary_y=col[0] == 'I'
+                )
     else:
         for col in column_names[2:]:
-                fig.add_scatter(x=df["Time"], y=df[col], name=col)
+            fig.add_trace(
+                go.Scatter(x=df["Time"], y=df[col], name="col"),
+                secondary_y=col[0] == 'I'
+            )
 
     x_linear = dict(label="X Linear", method="relayout",
                     args=[{"xaxis.type": "linear"}])
@@ -77,6 +83,7 @@ if __name__ == '__main__':
     buttons = list([x_linear, y_linear, x_log, y_log])
 
     fig.update_layout(title_text="Scale", updatemenus=[dict(buttons=buttons)])
-    fig.update_xaxes(title_text="Time/s")
-    fig.update_yaxes(title_text='Voltage/V and Current/A')
+    fig.update_xaxes(title_text="<b>Time/s</b>")
+    fig.update_yaxes(title_text="<b>Voltage/V</b>", secondary_y=False)
+    fig.update_yaxes(title_text="<b>Current/A</b>", secondary_y=True)
     fig.show()
