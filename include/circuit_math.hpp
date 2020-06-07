@@ -1,4 +1,4 @@
-ars#ifndef GUARD_CIRCUIT_MATH_HPP
+#ifndef GUARD_CIRCUIT_MATH_HPP
 #define GUARD_CIRCUIT_MATH_HPP
 
 class Circuit::Math
