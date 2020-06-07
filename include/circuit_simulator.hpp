@@ -166,6 +166,44 @@ private:
 		}
 		csvStream << "\n";
 	}
+	void spicePrintStep(ParamTable *param)
+	{
+		if (param->lookup.size() == 0)
+		{
+			return;
+		}
+		int n = 0;
+		for (auto x : param->lookup)
+		{
+			spiceStream << "Step Information:";
+			for (std::pair<std::string, double> var : param->lookup)
+			{
+				csvStream << " " << var.first << "=" << var.second;
+				spiceStream << " " << var.first << "=" << var.second;
+			}
+			spiceStream << " Run: " << n << "/" << param->lookup.size() << std::endl;
+			n++;
+		}
+	}
+	void csvPrintStep(ParamTable *param)
+	{
+		if (param->lookup.size() == 0)
+		{
+			return;
+		}
+		int n = 0;
+		for (auto x : param->lookup)
+		{
+			csvStream << "Step Information:";
+			for (std::pair<std::string, double> var : param->lookup)
+			{
+				csvStream << " " << var.first << "=" << var.second;
+				spiceStream << " " << var.first << "=" << var.second;
+			}
+			csvStream << " Run: " << n << "/" << param->lookup.size() << std::endl;
+			n++;
+		}
+	}
 	void spicePrint(ParamTable *param, double time, double timestep)
 	{
 		spiceStream << time;
@@ -245,6 +283,17 @@ public:
 
 		for (ParamTable *param : schem->tables)
 		{
+			if (format == SPACE)
+			{
+				spiceStream.str("");
+				spicePrintStep(param);
+			}
+			else if (format == CSV)
+			{
+				csvStream.str("");
+				csvPrintStep(param);
+			}
+
 			for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 				if (node_pair.second->getId() != -1)
 				{
