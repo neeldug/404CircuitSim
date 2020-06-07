@@ -20,7 +20,7 @@ CREATE_SUBDIRS         = YES
 
 ALLOW_UNICODE_NAMES    = NO
 
-OUTPUT_LANGUAGE        = English French
+OUTPUT_LANGUAGE        = English
 
 OUTPUT_TEXT_DIRECTION  = None
 
