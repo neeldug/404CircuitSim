@@ -254,9 +254,6 @@ Circuit::Schematic::Schematic() : id(createIDGenerator(start))
 {
 	Node *ground = new Node("0", this);
 	nodes.insert(std::pair<std::string, Node *>(ground->getName(), ground));
-	// temp need a table to simulate
-	ParamTable *param = nullptr;
-	tables.push_back(param);
 	// REVIEW - remove this
 }
 

@@ -162,6 +162,14 @@ private:
 		}
 		csvStream << "\n";
 	}
+	void printStep(ParamTable *param){
+		if( param->lookup.size() == 0 ){
+			return;
+		}
+		for(auto x : param->lookup){
+			//spiceStream<<x
+		}
+	}
 	void spicePrint(ParamTable *param, double time, double timestep)
 	{
 		spiceStream << time;

@@ -267,7 +267,7 @@ private:
 
 	}
 
-	static void parseCommand( const std::string& cmd, Circuit::Schematic* schem, std::map<std::string, std::vector<double>> *tableGenerator ){
+	static void parseCommand( const std::string& cmd, Circuit::Schematic* schem, std::map<std::string, std::vector<double>> *tableGenerator, bool& stepped ){
 		schem->simulationCommands.push_back( cmd );
 		std::stringstream ss( cmd );
 		std::vector<std::string> params;
@@ -278,6 +278,7 @@ private:
 
 		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
 		if( params[0] == ".STEP" ){
+			stepped = true;
 			if(params[1] == "OCT" ){
 				std::string variableName = params[3];
 				double startVal = parseVal(params[4]);
@@ -390,6 +391,7 @@ public:
 			schem->title = inputLine;
 		}
 		bool endStatement = false;
+		bool stepped = false;
 		while( std::getline( inputStream, inputLine )){
 			if( inputLine == ".END" || inputLine == ".end" ){
 				endStatement = true;
@@ -399,10 +401,16 @@ public:
 				addComponent( inputLine, schem );
 			}
 			if( inputLine[0] == '.'){
-				parseCommand(inputLine, schem, &tableGenerator);
+				parseCommand(inputLine, schem, &tableGenerator, stepped);
 			}
 		}
-		schem->tables = paramGenerator(tableGenerator);
+		if(stepped){
+			schem->tables = paramGenerator(tableGenerator);
+		}
+		else{
+			ParamTable *param = new ParamTable();
+			schem->tables.push_back( param );
+		}
 		assert( endStatement && "No end statement present in netlist");
 		return schem;
 	}
