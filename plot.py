@@ -37,30 +37,46 @@ if __name__ == '__main__':
         while True:
             line = f.readline().rstrip()
             if len(line) == 0:
+                plots[stepVars] = df
                 break
             if line[0] == 'S':
-                stepVars = line.split(sep)
-                stepVars = sep.join(stepVars[2:-2])
+                if stepVars is None:
+                    stepVars = line.split(' ')
+                    stepVars = ' '.join(stepVars[2:-2])
+                    continue
+    
                 plots[stepVars] = df
                 df = pd.DataFrame(columns=heading)
                 i = 0
+
+                stepVars = line.split(' ')
+                stepVars = ' '.join(stepVars[2:-2])
                 continue
+
             df.loc[i] = line.split(sep)
             i += 1
-        if stepVars is None:
-            plots['sam'] = df
 
     fig = go.Figure()
-    for key, df in plots.items():
-        for col in column_names[1:]:
-            fig.add_scatter(x=df["Time"], y=df[col])
-        
 
-    x_linear = dict(label="X Linear", method="relayout", args=[{"xaxis.type": "linear"}])
-    y_linear = dict(label="Y Linear",method="relayout",args=[{"yaxis.type": "linear"}])
-    x_log = dict(label="X Log", method="relayout",args=[{"xaxis.type": "log"}])
-    y_log = dict(label="Y Log", method="relayout",args=[{"yaxis.type": "log"}])
-    buttons = list([x_linear,y_linear,x_log,y_log])
-    
+    if stepVars is not None:
+        for key, df in plots.items():
+            for col in column_names[2:]:
+                fig.add_scatter(x=df["Time"], y=df[col], name=f"{col} - {key}")
+    else:
+        for col in column_names[2:]:
+                fig.add_scatter(x=df["Time"], y=df[col], name=col)
+
+    x_linear = dict(label="X Linear", method="relayout",
+                    args=[{"xaxis.type": "linear"}])
+    y_linear = dict(label="Y Linear", method="relayout",
+                    args=[{"yaxis.type": "linear"}])
+    x_log = dict(label="X Log", method="relayout",
+                 args=[{"xaxis.type": "log"}])
+    y_log = dict(label="Y Log", method="relayout",
+                 args=[{"yaxis.type": "log"}])
+    buttons = list([x_linear, y_linear, x_log, y_log])
+
     fig.update_layout(title_text="Scale", updatemenus=[dict(buttons=buttons)])
+    fig.update_xaxes(title_text="Time/s")
+    fig.update_yaxes(title_text='Voltage/V and Current/A')
     fig.show()
