@@ -166,42 +166,25 @@ private:
 		}
 		csvStream << "\n";
 	}
-	void spicePrintStep(ParamTable *param)
+
+	void printStep(int n)
 	{
+		ParamTable *param = schem->tables[n];
 		if (param->lookup.size() == 0)
 		{
 			return;
 		}
-		int n = 0;
 		for (auto x : param->lookup)
 		{
 			spiceStream << "Step Information:";
-			for (std::pair<std::string, double> var : param->lookup)
-			{
-				csvStream << " " << var.first << "=" << var.second;
-				spiceStream << " " << var.first << "=" << var.second;
-			}
-			spiceStream << " Run: " << n << "/" << param->lookup.size() << std::endl;
-			n++;
-		}
-	}
-	void csvPrintStep(ParamTable *param)
-	{
-		if (param->lookup.size() == 0)
-		{
-			return;
-		}
-		int n = 0;
-		for (auto x : param->lookup)
-		{
 			csvStream << "Step Information:";
 			for (std::pair<std::string, double> var : param->lookup)
 			{
 				csvStream << " " << var.first << "=" << var.second;
 				spiceStream << " " << var.first << "=" << var.second;
 			}
-			csvStream << " Run: " << n << "/" << param->lookup.size() << std::endl;
-			n++;
+			csvStream << " Run: " << n + 1 << "/" << schem->tables.size() << std::endl;
+			spiceStream << " Run: " << n + 1 << "/" << schem->tables.size() << std::endl;
 		}
 	}
 	void spicePrint(ParamTable *param, double time, double timestep)
@@ -281,18 +264,21 @@ public:
 		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 
-		for (ParamTable *param : schem->tables)
+		if (format == SPACE)
 		{
-			if (format == SPACE)
-			{
-				spiceStream.str("");
-				spicePrintStep(param);
-			}
-			else if (format == CSV)
-			{
-				csvStream.str("");
-				csvPrintStep(param);
-			}
+			spiceStream.str("");
+			spicePrintTitle();
+		}
+		else if (format == CSV)
+		{
+			csvStream.str("");
+			csvPrintTitle();
+		}
+		ParamTable *param;
+		for (int i = 0; i < schem->tables.size(); i++)
+		{
+			param = schem->tables[i];
+			printStep(i);
 
 			for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 				if (node_pair.second->getId() != -1)
@@ -310,7 +296,7 @@ public:
 				solver.factorize(sparse);
 				voltage = solver.solve(current);
 
-				dst << "\t-----Operating Point-----\t\n\n";
+				dst << "\r\t-----Operating Point-----\t\n\n";
 
 				for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 					if (node_pair.second->getId() != -1)
@@ -326,24 +312,13 @@ public:
 			}
 			else if (type == TRAN)
 			{
-				if (format == SPACE)
-				{
-					spiceStream.str("");
-					spicePrintTitle();
-				}
-				else if (format == CSV)
-				{
-					csvStream.str("");
-					csvPrintTitle();
-				}
-
 				if (!schem->nonLinear)
 				{
 					Eigen::SparseMatrix<double> sparse;
 
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Math::progressBar(t / tranStopTime);
+						Math::progressBar(t / tranStopTime, i, schem->tables.size());
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
@@ -382,7 +357,7 @@ public:
 				{
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Math::progressBar(t / tranStepTime);
+						Math::progressBar(t / tranStepTime, i, schem->tables.size());
 						Math::init_vector(vGuess);
 						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
@@ -449,10 +424,12 @@ public:
 			if (format == SPACE)
 			{
 				dst << spiceStream.str();
+				spiceStream.str("");
 			}
 			else if (format == CSV)
 			{
 				dst << csvStream.str();
+				csvStream.str("");
 			}
 		}
 	}

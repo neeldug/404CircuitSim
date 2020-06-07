@@ -94,7 +94,7 @@ public:
             vec[i] = val;
         }
     }
-    static void progressBar(double progress)
+    static void progressBar(double progress, int i, int n)
     {
         int barwidth = 100;
         int pos = barwidth * progress;
@@ -108,7 +108,7 @@ public:
             else
                 std::cerr << " ";
         }
-        std::cerr << "]" << int(progress * 100) + 1 << "%";
+        std::cerr << "]" << int(progress * 100) + 1 << "% (" << i+1 << "/" << n << ")";
     }
 };
 

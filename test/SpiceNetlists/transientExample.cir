@@ -1,7 +1,8 @@
 * transientExample
 C1 N001 0 1m
-R1 N002 N001 100
+R1 N002 N001 {R}
 I1 0 N002 SINE(0 1 1k)
 .tran 0 5m 0 0.01m
+.step param R 90 100 1
 .backanno
 .end
