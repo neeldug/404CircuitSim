@@ -28,13 +28,21 @@ public:
 		void setDiodeOwner(Diode *d);
 		void setCap(double vGuess, const double &CJ0, const double &VJ)
 		{
-			this->value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
+			if (vGuess <= 1.0)
+			{
+				value = CJ0 / pow(1.0 - vGuess / VJ, 0.5);
+			}
+			else
+			{
+				value = 0;
+			}
 		}
 		void setNodes(Node *pos, Node *neg)
 		{
 			this->nodes.push_back(pos);
 			this->nodes.push_back(neg);
 		}
+
 		virtual ~ParasiticCapacitance() {}
 	};
 

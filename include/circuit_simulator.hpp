@@ -357,7 +357,7 @@ public:
 				{
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Math::progressBar(t / tranStepTime, i, schem->tables.size());
+						Math::progressBar(t / tranStopTime, i, schem->tables.size());
 						Math::init_vector(vGuess);
 						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
