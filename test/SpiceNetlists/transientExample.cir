@@ -1,7 +1,7 @@
-* C:\users\sam\My Documents\LTspiceXVII\Draft2.asc
+* transientExample
 C1 N001 0 1m
 R1 N002 N001 100
 I1 0 N002 SINE(0 1 1k)
-.tran 0 5m 0 0.1m
+.tran 0 5m 0 0.01m
 .backanno
 .end

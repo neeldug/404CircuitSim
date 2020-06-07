@@ -11,11 +11,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 # Add Eigen Library
 add_library(eigen INTERFACE)
 target_include_directories(eigen INTERFACE lib/Eigen)
-target_include_directories(eigen INTERFACE lib/unsupported/Eigen)
 
-#REVIEW below is a bit dodgy need for eigen unsupported though
-target_include_directories(eigen INTERFACE lib)
-#^^^^^
+# Add hayai benchmarking library
+add_library(hayai INTERFACE)
+target_include_directories(hayai INTERFACE lib/hayai)
 
 # Add Include Library
 include_directories(include)
@@ -23,6 +22,7 @@ include_directories(include)
 # Main Executable - Simulator
 add_executable(simulator src/main.cpp)
 target_link_libraries(simulator eigen)
+target_link_libraries(simulator hayai)
 
 # Test Executables
 add_subdirectory(test)

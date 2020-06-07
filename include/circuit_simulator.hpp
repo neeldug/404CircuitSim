@@ -107,7 +107,7 @@ struct ConductanceFunc : Functor<double>
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
 		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
-		
+
 		for(int i = 0; i<vDiff.size();i++){
 			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
@@ -228,7 +228,7 @@ public:
 	}
 	std::vector<double> vec2vec(const Eigen::VectorXd& vecy){
 		std::vector<double> result;
-		for(int i =0; i<vecy.size();i++){
+		for(size_t i =0; i<vecy.size();i++){
 			result.push_back(vecy(0));
 		}
 		return result;
@@ -236,9 +236,9 @@ public:
 
 	std::vector<std::vector<double>> m2m(const Eigen::MatrixXd& mec, int NUM_V_GUESS){
 		std::vector<std::vector<double>> result;
-		for(int y=0;y<NUM_V_GUESS;y++){
+		for(size_t y=0;y<NUM_V_GUESS;y++){
 			result.push_back(std::vector<double>());
-			for(int x=0;x<NUM_V_GUESS;x++){
+			for(size_t x=0;x<NUM_V_GUESS;x++){
 				result[y].push_back(mec(y,x));
 			}
 		}
@@ -354,7 +354,7 @@ public:
 					int percent = 0;
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						
+
 						Circuit::Math::init_vector(vGuess, 0);
 
 						if( (t/tranStopTime)/(0.01 *percent)>=1){
@@ -376,7 +376,7 @@ public:
 								numDiff.df(vGuess, jaq);
 								Eigen::VectorXd vErrVec(NUM_V_GUESS);
 								functor(vGuess,vErrVec);
-								Eigen::MatrixXd inverseJaq = jaq.transpose().inverse(); 
+								Eigen::MatrixXd inverseJaq = jaq.transpose().inverse();
 								for(int x=0;x<NUM_V_GUESS;x++){
 									for(int y=0;y<NUM_V_GUESS;y++){
 										if(std::isnan(inverseJaq(x,y))){
@@ -392,8 +392,8 @@ public:
 								auto err = vec2vec(vErrVec);
 								auto stillNan = vec2vec(inverseJaq*vErrVec);
 								auto inverseJaqVec = m2m(inverseJaq, NUM_V_GUESS);
-								
-								
+
+
 								//std::cerr<<fmod(t,tranStepTime)*50<<","<<vErrVec<<std::endl;
 							}
 						}
