@@ -10,10 +10,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Add Eigen Library
 add_library(eigen INTERFACE)
-target_include_directories(eigen INTERFACE lib/Eigen)
-target_include_directories(eigen INTERFACE lib/unsupported/Eigen)
+# target_include_directories(eigen INTERFACE lib/Eigen)
+# target_include_directories(eigen INTERFACE lib/unsupported/Eigen)
 
 #REVIEW below is a bit dodgy need for eigen unsupported though
+# NOTE - probably is the only thing needed
 target_include_directories(eigen INTERFACE lib)
 #^^^^^
 

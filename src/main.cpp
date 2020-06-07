@@ -3,6 +3,15 @@
 #include <circuit.hpp>
 #include <filesystem>
 #include <regex>
+#include <getopt.h>
+
+/*
+MODES
+ -* - SIM NETLIST "generate output file in default location with default name"
+ -p - SIM NETLIST -p "plot output (NOT FOR "
+ -o - SIM NETLIST -o OUT
+*/
+
 
 using flagString = std::pair<std::string, std::string>;
 using flagBool = std::pair<std::string, bool>;

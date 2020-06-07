@@ -219,7 +219,6 @@ INPUT                  = "include"
 INPUT                  += "README.md"
 INPUT                  += "srs.md"
 
-
 INPUT_ENCODING         = UTF-8
 
 
@@ -322,7 +321,7 @@ HTML_STYLESHEET        =
 
 HTML_EXTRA_STYLESHEET  =
 
-HTML_EXTRA_FILES       =
+HTML_EXTRA_FILES       = 
 
 HTML_COLORSTYLE_HUE    = 220
 
