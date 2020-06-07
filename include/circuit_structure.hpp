@@ -9,8 +9,20 @@
 #include <functional>
 #include <algorithm>
 #include <typeinfo>
-#include <iostream>
 
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ *  
+ */
+
+/**
+ * The Circuit Namespace.
+ * This contains all the classes and structs defined in this Library.
+*/
 namespace Circuit
 {
 	class Component;
@@ -30,7 +42,7 @@ namespace Circuit
 	class LC;
 	class Diode;
 	struct ParamTable;
-} // namespace Circuit
+}
 
 struct Circuit::ParamTable
 {

@@ -18,10 +18,10 @@ add_test(NAME TEST_TRANSIENT COMMAND test_transient WORKING_DIRECTORY ${CMAKE_RU
 add_test(NAME BENCHMARK COMMAND benchmark WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 
-add_executable(test_matrix_solve test_matrix_solve.cpp)
-target_link_libraries(test_matrix_solve eigen)
-add_test(NAME TEST_MATRIX_SOLVE COMMAND test_matrix_solve WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+# add_executable(test_matrix_solve test_matrix_solve.cpp)
+# target_link_libraries(test_matrix_solve eigen)
+# add_test(NAME TEST_MATRIX_SOLVE COMMAND test_matrix_solve WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-add_executable(test_parser test_parser.cpp)
-target_link_libraries(test_parser eigen)
-add_test(NAME TEST_PARSER COMMAND test_parser WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+# add_executable(test_parser test_parser.cpp)
+# target_link_libraries(test_parser eigen)
+# add_test(NAME TEST_PARSER COMMAND test_parser WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

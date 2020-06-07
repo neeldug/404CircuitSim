@@ -52,7 +52,7 @@ STRIP_FROM_INC_PATH    =
 
 SHORT_NAMES            = YES
 
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 
 JAVADOC_BANNER         = NO
 
@@ -217,7 +217,6 @@ WARN_LOGFILE           =
 INPUT                  = "include"
 
 INPUT                  += "README.md"
-INPUT                  += "srs.md"
 
 INPUT_ENCODING         = UTF-8
 
