@@ -279,7 +279,7 @@ private:
 		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
 		if( params[0] == ".STEP" ){
 			stepped = true;
-			if(params[1] == "OCT" ){
+			if(params[1] == "oct" ){
 				std::string variableName = params[3];
 				double startVal = parseVal(params[4]);
 				double endVal = parseVal(params[5]);
@@ -291,7 +291,7 @@ private:
 				});
 				(*tableGenerator)[variableName] = v;
 			}
-			else if(params[1] == "DEC" ){
+			else if(params[1] == "dec" ){
 				std::string variableName = params[3];
 				double startVal = parseVal(params[4]);
 				double endVal = parseVal(params[5]);
@@ -303,7 +303,7 @@ private:
 				});
 				(*tableGenerator)[variableName] = v;
 			}
-			else if(params[3] == "LIST" ){
+			else if(params[3] == "list" ){
 				std::string variableName = params[2];
 				std::vector<double> v;
 				std::for_each(params.begin()+4, params.end(),[&v](const std::string &a){
@@ -372,7 +372,6 @@ private:
 		std::vector<ParamTable *> recursiveAdd = buildParam(varOne, varEnd);
 		tables.insert(tables.end(), recursiveAdd.begin(), recursiveAdd.end());
 		
-		std::cerr<<"";
 		return tables;
 	}
 public:

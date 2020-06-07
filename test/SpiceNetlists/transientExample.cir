@@ -1,8 +1,7 @@
-* transientExample
-C1 N001 0 1m
-R1 N002 N001 {R}
-I1 0 N002 SINE(0 1 1k)
-.tran 0 5m 0 0.01m
-.step param R 90 105 5
+* D:\home\jjl119\Imperial\SummerProject\404CircuitSim\test\SpiceNetlists\Draft4.asc
+R1 N002 N001 1000
+C1 N002 0 10n
+V1 N001 0 5
+.tran 0 10u 0 0.01u
 .backanno
 .end
