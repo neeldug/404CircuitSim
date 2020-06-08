@@ -2,7 +2,16 @@
 #include <fstream>
 #include <circuit.hpp>
 #include <filesystem>
+#include <unistd.h>
 #include <getopt.h>
+
+std::string getParentPath()
+{
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    std::string filePath = std::string(result);
+    return std::filesystem::path(filePath).parent_path().parent_path();
+}
 
 int main(int argc, char *argv[])
 {
@@ -63,6 +72,7 @@ int main(int argc, char *argv[])
     std::filesystem::create_directory(stringFlags["outputFolderPath"]);
     std::ofstream out;
     std::string outputPath;
+    std::string parentPath = getParentPath();
     Circuit::Simulator::OutputFormat outputFormat;
 
     if (stringFlags["outputFormat"].empty() || tolower(stringFlags["outputFormat"][0]) == 'c')
@@ -89,9 +99,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::cout << argv[0] << std::endl;
-
-        std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "' ";
+        std::string systemCall = parentPath + "/env/bin/python3 " + parentPath + "/bin/plot.py" + " '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
@@ -107,7 +115,6 @@ int main(int argc, char *argv[])
         }
         if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            std::cerr << systemCall << std::endl;
             system(systemCall.c_str());
         }
     }

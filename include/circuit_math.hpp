@@ -93,7 +93,7 @@ public:
     }
     static void progressBar(double progress, int i, int n)
     {
-        int barwidth = 100;
+        int barwidth = 60;
         int pos = barwidth * progress;
         std::cerr << "\rProgress: [";
         for (int i = 0; i < barwidth; i++)
