@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
+        std::cout << argv[0] << std::endl;
+
         std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)

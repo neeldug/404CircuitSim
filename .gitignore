@@ -1,4 +1,6 @@
 bin/*
+!bin/plot.py
+!bin/plot_diff.py
 build/*
 out/*
 env/*
