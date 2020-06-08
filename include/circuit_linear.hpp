@@ -51,7 +51,7 @@ public:
 
         if (timestep <= 0)
         {
-            return min_conductance;
+            return max_conductance;
         }
         return value / timestep;
     }
@@ -99,7 +99,7 @@ public:
 
         if (timestep <= 0)
         {
-            return max_conductance;
+            return min_conductance;
         }
         return timestep / value;
     }
