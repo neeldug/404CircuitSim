@@ -9,12 +9,16 @@ int main(int argc, char *argv[])
     int c;
     std::map<std::string, std::string> stringFlags;
     std::map<std::string, bool> boolFlags;
-    while ((c = getopt(argc, argv, "f:i:o:p:")) != -1)
+    while ((c = getopt(argc, argv, "cf:i:o:p:")) != -1)
     {
         switch (c)
         {
+        case 'c':
+            boolFlags["showColumns"] = true;
+            break;
         case 'f':
             stringFlags["outputFormat"] = optarg;
+            break;
         case 'i':
             stringFlags["inputFilePath"] = optarg;
             break;
@@ -85,21 +89,23 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        if (boolFlags["plotOutput"] && sim->type != Circuit::Simulator::SimulationType::OP)
+        std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "' ";
+
+        if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
-            std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "' ";
-
-            if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
-            {
-                systemCall += "-m space ";
-            }
-            if (!stringFlags["plotOutput"].empty())
-            {
-                systemCall += "'" + stringFlags["plotOutput"] + "'";
-            }
-
+            systemCall += "-m space ";
+        }
+        if (boolFlags["showColumns"])
+        {
+            systemCall += "-c ";
+        }
+        if (!stringFlags["plotOutput"].empty())
+        {
+            systemCall += "'" + stringFlags["plotOutput"] + "'";
+        }
+        if (boolFlags["plotOutput"] || boolFlags["showColumns"] && sim->type != Circuit::Simulator::SimulationType::OP)
+        {
             std::cerr << systemCall << std::endl;
-
             system(systemCall.c_str());
         }
     }
