@@ -82,7 +82,7 @@ public:
 		return capacitorCurrent;
 	}
 
-	double getCurrent(ParamTable *param, double time, double timestep) const override
+	double getCurrent(ParamTable *param, double time, double timestep) override
 	{
 		return getVoltage() * parralelAdd(1.0 / 100.0, (GMIN + inst_conductance));// getVoltage() * para_cap->getConductance(param, timestep);
 	}

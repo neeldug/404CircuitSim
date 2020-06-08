@@ -62,7 +62,7 @@ public:
 	{
 		return true;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) override
 	{
 		return getSourceOutput(param, t);
 	}
@@ -91,32 +91,59 @@ public:
 	{
 		return false;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) override
 	{
 		double current = 0;
 		double subCurrent = 0;
-		Node *otherNode = nullptr;
+		Node *refNode = getPosNode()->getId() != -1 ? getPosNode() : getNegNode();
+		if (timestep == -2)
+		{
+			if (refNode == getPosNode() && getNegNode()->getId() != -1)
+			{
+				refNode = getNegNode();
+			}
+		}
 
-		for (Component *comp : getPosNode()->comps)
+		Node *otherNode = *std::find_if(nodes.begin(), nodes.end(), [&](Node *n) {
+			return n != refNode;
+		});
+
+		for (Component *comp : refNode->comps)
 		{
 			if (comp != this)
 			{
-				subCurrent = abs(comp->getCurrent(param, t, timestep));
-				for (Node *n : comp->nodes)
+				if (Voltage *source = dynamic_cast<Voltage *>(comp))
 				{
-					if (n != this->getPosNode())
+					if (source->getPosNode() == refNode)
 					{
-						otherNode = n;
-						break;
+						if (source->getNegNode() == otherNode)
+						{
+							std::cerr << "connecting voltage sources in parralel leads to a overdefined matrix. abort!!!" << std::endl;
+							exit(1);
+						}
+						subCurrent = comp->getCurrent(param, t, -2);
 					}
-				}
-				if (otherNode->voltage > getPosNode()->voltage)
-				{
-					current += subCurrent;
+					else
+					{
+						if (source->getPosNode() == otherNode)
+						{
+							std::cerr << "connecting voltage sources in parralel leads to a overdefined matrix. abort!!!" << std::endl;
+							exit(1);
+						}
+						subCurrent = comp->getCurrent(param, t, -1);
+					}
 				}
 				else
 				{
+					subCurrent = comp->getCurrent(param, t, -1);
+				}
+				if (refNode == comp->getPosNode())
+				{
 					current -= subCurrent;
+				}
+				else
+				{
+					current += subCurrent;
 				}
 			}
 		}

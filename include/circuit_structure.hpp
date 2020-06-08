@@ -114,7 +114,7 @@ public:
 class Circuit::Component
 {
 protected:
-	double i_prev;
+	double i_prev = 0.0; //important for opreplace to have initial value of i_prev
 	double value;
 	Schematic *schem;
 	Component() = default;
@@ -144,7 +144,7 @@ public:
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
 	}
-	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
+	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0)
 	{
 		return getVoltage() * getConductance(param, time);
 	}

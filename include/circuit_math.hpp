@@ -40,10 +40,7 @@ private:
     static void handleVoltageSource(Eigen::MatrixXd &conductance, Eigen::VectorXd &current, int posId, int negId, double val)
     {
         Eigen::VectorXd new_conductance(current.rows());
-        for (int i = 0; i < current.rows(); i++)
-        {
-            new_conductance[i] = 0;
-        }
+        init_vector(new_conductance);
 
         if (posId != -1)
         {

@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
         if (boolFlags["plotOutput"] && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            std::string systemCall = "env/bin/python3 plot.py '" + outputPath + "'";
+            std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "'";
 
             if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
             {

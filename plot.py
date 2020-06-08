@@ -69,7 +69,7 @@ if __name__ == '__main__':
     else:
         for col in column_names[2:]:
             fig.add_trace(
-                go.Scatter(x=df["Time"], y=df[col], name="col"),
+                go.Scatter(x=df["Time"], y=df[col], name=col),
                 secondary_y=col[0] == 'I'
             )
 
