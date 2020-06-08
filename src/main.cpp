@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
         {
             systemCall += "'" + stringFlags["plotOutput"] + "'";
         }
-        if (boolFlags["plotOutput"] || boolFlags["showColumns"] && sim->type != Circuit::Simulator::SimulationType::OP)
+        if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
             std::cerr << systemCall << std::endl;
             system(systemCall.c_str());
