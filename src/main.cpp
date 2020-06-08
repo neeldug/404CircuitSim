@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     int c;
     std::map<std::string, std::string> stringFlags;
     std::map<std::string, bool> boolFlags;
-    while ((c = getopt(argc, argv, "f:i:o:p")) != -1)
+    while ((c = getopt(argc, argv, "f:i:o:p:")) != -1)
     {
         switch (c)
         {
@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
             break;
         case 'p':
             boolFlags["plotOutput"] = true;
+            stringFlags["plotOutput"] = optarg;
             break;
         default:
             std::cerr << "Unknown Flag: '" << c << "'\n";
@@ -86,12 +87,19 @@ int main(int argc, char *argv[])
 
         if (boolFlags["plotOutput"] && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "'";
+            std::string systemCall = "../env/bin/python3 plot.py '" + outputPath + "' ";
 
             if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
             {
-                systemCall += " -m space";
+                systemCall += "-m space ";
             }
+            if (!stringFlags["plotOutput"].empty())
+            {
+                systemCall += "'" + stringFlags["plotOutput"] + "'";
+            }
+
+            std::cerr << systemCall << std::endl;
+
             system(systemCall.c_str());
         }
     }
