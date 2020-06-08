@@ -296,8 +296,17 @@ public:
 				solver.factorize(sparse);
 				voltage = solver.solve(current);
 
-				dst << "\t-----Operating Point-----\t\n\n";
-
+				dst << "\t-----Operating Point-----\t\n";
+				if (param->lookup.size() > 0)
+				{
+					dst << "Step Information: ";
+					for (std::pair<std::string, double> var : param->lookup)
+					{
+						dst << " " << var.first << "=" << var.second;
+					}
+					dst<< " Run: " << i + 1 << "/" << schem->tables.size() << std::endl;
+				}
+				dst << std::endl;
 				for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 					if (node_pair.second->getId() != -1)
 					{
