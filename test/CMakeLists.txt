@@ -3,9 +3,9 @@
 add_executable(test_transient test_transient.cpp)
 # # add_executable(test_eigen test_eigen.cpp)
 
-# add_executable(benchmark benchmark.cpp)
-# target_link_libraries(benchmark eigen)
-# target_link_libraries(benchmark hayai)
+add_executable(benchmark benchmark.cpp)
+target_link_libraries(benchmark eigen)
+target_link_libraries(benchmark hayai)
 # # target_link_libraries(test_math eigen)
 # # target_link_libraries(test_parser eigen)
 target_link_libraries(test_transient eigen)

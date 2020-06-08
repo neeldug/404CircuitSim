@@ -291,12 +291,12 @@ public:
 				Circuit::Math::getConductanceOP(schem, conductance, param);
 
 
-				std::cerr << conductance << std::endl;
+				// std::cerr << conductance << std::endl;
 
 				Circuit::Math::getCurrentOP(schem, current, conductance, param);
 
-				std::cerr << conductance << std::endl;
-				std::cerr << current << std::endl;
+				// std::cerr << conductance << std::endl;
+				// std::cerr << current << std::endl;
 
 				sparse = conductance.sparseView();
 				sparse.makeCompressed();
