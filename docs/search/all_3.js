@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['error_20404_20circuit_20simulator_6',['Error 404 Circuit Simulator',['../df/dc8/a00122.html',1,'']]]
+  ['functor_6',['Functor',['../da/d24/a00068.html',1,'']]],
+  ['functor_3c_20double_20_3e_7',['Functor&lt; double &gt;',['../da/d24/a00068.html',1,'']]]
 ];

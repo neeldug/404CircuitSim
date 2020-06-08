@@ -1,5 +1,5 @@
-<map id="Circuit::LC" name="Circuit::LC">
-<area shape="rect" id="node1" title=" " alt="" coords="35,171,123,197"/>
-<area shape="rect" id="node2" href="$d3/d00/a00113.html" title=" " alt="" coords="5,95,152,121"/>
-<area shape="rect" id="node3" href="$d3/d32/a00105.html" title=" " alt="" coords="9,5,149,32"/>
+<map id="Circuit::Inductor" name="Circuit::Inductor">
+<area shape="rect" id="node1" title=" " alt="" coords="16,155,141,181"/>
+<area shape="rect" id="node2" href="$d5/df9/a00044.html" title=" " alt="" coords="35,80,123,107"/>
+<area shape="rect" id="node3" href="$d0/dc2/a00104.html" title=" " alt="" coords="5,5,152,32"/>
 </map>
