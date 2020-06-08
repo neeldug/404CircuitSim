@@ -28,7 +28,7 @@ protected:
 public:
 	double getSourceOutput(ParamTable *param, double t) const
 	{
-		return ( DC + SINE_DC_offset + (SINE_amplitude) * std::sin( 2.0 * M_PI * SINE_frequency * t));
+		return (DC + SINE_DC_offset + (SINE_amplitude)*std::sin(2.0 * M_PI * SINE_frequency * t));
 	}
 	bool isSource() const override
 	{
@@ -40,12 +40,15 @@ public:
 class Circuit::Current : public Circuit::Source
 {
 	friend class Capacitor;
+
 private:
-	//Note to be used by 
-	Current(Schematic* schem){
+	//Note to be used by
+	Current(Schematic *schem)
+	{
 		this->DC = 0;
 		this->schem = schem;
 	}
+
 public:
 	Current(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{
@@ -59,7 +62,7 @@ public:
 	{
 		return true;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep=0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
 	{
 		return getSourceOutput(param, t);
 	}
@@ -68,11 +71,14 @@ public:
 class Circuit::Voltage : public Circuit::Source
 {
 	friend class Inductor;
+
 private:
-	Voltage(Schematic* schem){
+	Voltage(Schematic *schem)
+	{
 		DC = 0;
 		this->schem = schem;
 	}
+
 public:
 	Voltage(const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic *schem) : Source(name, DC, smallSignalAmp, SINE_DC_offset, SINE_amplitude, SINE_frequency, schem)
 	{
@@ -85,10 +91,36 @@ public:
 	{
 		return false;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep=0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
 	{
-		// TODO - voltage source current
-		return getValue(param);
+		double current = 0;
+		double subCurrent = 0;
+		Node *otherNode = nullptr;
+
+		for (Component *comp : getPosNode()->comps)
+		{
+			if (comp != this)
+			{
+				subCurrent = abs(comp->getCurrent(param, t, timestep));
+				for (Node *n : comp->nodes)
+				{
+					if (n != this->getPosNode())
+					{
+						otherNode = n;
+						break;
+					}
+				}
+				if (otherNode->voltage > getPosNode()->voltage)
+				{
+					current += subCurrent;
+				}
+				else
+				{
+					current -= subCurrent;
+				}
+			}
+		}
+		return current;
 	}
 };
 

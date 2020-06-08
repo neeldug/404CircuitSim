@@ -296,18 +296,18 @@ public:
 				solver.factorize(sparse);
 				voltage = solver.solve(current);
 
-				dst << "\r\t-----Operating Point-----\t\n\n";
+				dst << "\t-----Operating Point-----\t\n\n";
 
 				for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 					if (node_pair.second->getId() != -1)
 					{
 						node_pair.second->voltage = voltage[node_pair.second->getId()];
-						dst << "V(" << node_pair.first << ")\t\t" << node_pair.second->voltage << "\tnode_voltage\n";
+						dst << "V(" << node_pair.first << ")\t\t" << node_pair.second->voltage << "\t\tnode_voltage\n";
 					}
 				});
 
 				for_each(schem->comps.begin(), schem->comps.end(), [&](const auto comp_pair) {
-					dst << "I(" << comp_pair.first << ")\t\t" << comp_pair.second->getCurrent(param, 0, -1) << "\tdevice_current\n";
+					dst << "I(" << comp_pair.first << ")\t\t" << comp_pair.second->getCurrent(param, 0, -1) << "\t\tdevice_current\n";
 				});
 			}
 			else if (type == TRAN)
@@ -421,12 +421,12 @@ public:
 				}
 				std::cerr << std::endl;
 			}
-			if (format == SPACE)
+			if (format == SPACE && type != OP)
 			{
 				dst << spiceStream.str();
 				spiceStream.str("");
 			}
-			else if (format == CSV)
+			else if (format == CSV && type != OP)
 			{
 				dst << csvStream.str();
 				csvStream.str("");
