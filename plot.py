@@ -1,9 +1,9 @@
+import plotly.io as pio
 import plotly.express as px
 import pandas as pd
 import argparse
 import plotly.graph_objs as go
 import os
-
 
 parser = argparse.ArgumentParser(description="Add Options to Control Plot")
 parser.add_argument("file_name", metavar="FILE", type=str, nargs=1,
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                     stepVars = line.split(' ')
                     stepVars = ' '.join(stepVars[2:-2])
                     continue
-    
+
                 plots[stepVars] = df
                 df = pd.DataFrame(columns=heading)
                 i = 0
@@ -55,8 +55,8 @@ if __name__ == '__main__':
 
             df.loc[i] = line.split(sep)
             i += 1
-
-    fig = go.Figure()
+    layout = go.Layout(paper_bgcolor='rgba(0,0,0,0)')
+    fig = go.Figure(layout=layout)
 
     if stepVars is not None:
         for key, df in plots.items():
