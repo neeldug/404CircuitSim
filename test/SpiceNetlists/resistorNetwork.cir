@@ -7,7 +7,7 @@ R4 N002 N003 1
 R5 N003 N002 1
 V2 N003 N004 5
 R6 N004 0 1
-.step param R 1 10 2
+.step param R 1 1001 1
 .op
 .backanno
 .end

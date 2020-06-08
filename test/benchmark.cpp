@@ -13,7 +13,7 @@ public:
     }
     virtual void SetUp()
     {
-        netlist.open("test/SpiceNetlists/transientExample.cir");
+        netlist.open("test/SpiceNetlists/resistorNetwork.cir");
         this->schem = Circuit::Parser::parse(netlist);
     }
 
