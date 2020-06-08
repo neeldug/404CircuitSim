@@ -13,7 +13,7 @@ protected:
 public:
     virtual double getCurrentSource(ParamTable *param, double timestep) = 0;
 
-    double getCurrent(ParamTable *param, double time, double timestep) override
+    double getCurrent(ParamTable *param, double time, double timestep) const override
     {
         return (getVoltage()) * getConductance(param, timestep) - i_prev;
     }

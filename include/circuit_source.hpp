@@ -62,7 +62,7 @@ public:
 	{
 		return true;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
 	{
 		return getSourceOutput(param, t);
 	}
@@ -91,7 +91,7 @@ public:
 	{
 		return false;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) override
+	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
 	{
 		double current = 0;
 		double subCurrent = 0;
