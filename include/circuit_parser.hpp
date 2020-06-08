@@ -22,7 +22,7 @@ private:
 			".op"
 			".model"
 	};
-	
+
 	static double parseVal(const std::string &value ){
 		std::size_t suffixPos =  value.find_first_not_of("0.123456789");
 		if( suffixPos == std::string::npos ){
@@ -63,8 +63,8 @@ private:
 
 	template <class SourceType>
 	static SourceType* sourceFactory( const std::string& line, Schematic *schem ) {
-		static_assert(std::is_base_of<Circuit::Source, SourceType>::value, "Only derivates of source type maybe passed into this function"); 
-		
+		static_assert(std::is_base_of<Circuit::Source, SourceType>::value, "Only derivates of source type maybe passed into this function");
+
 		std::regex nameNodes(R"(^(\w+) (\w+) (\w+))");
 		std::smatch nameNodesM;
 
@@ -88,15 +88,15 @@ private:
 		std::regex ac("AC ([a-zA-Z.\\d]+)");
 		std::smatch acM;
 		if( regex_search( line, acM, ac ) ){
-			smallSignalAmp = parseVal( acM.str(1) );	
+			smallSignalAmp = parseVal( acM.str(1) );
 		}
-		
+
 		//DC value already variable safe although not implemented
 		std::regex dc("(?:^(?:(?:[a-zA-Z.\\d]+ ){3}))([a-zA-Z.\\d]+)");
 		std::smatch dcM;
 		if( regex_search( line, dcM, dc ) ){
 			if( std::isdigit(dcM.str(1)[0])){
-				DC = parseVal( dcM.str(1) );	
+				DC = parseVal( dcM.str(1) );
 			}
 		}
 
@@ -105,14 +105,14 @@ private:
 		std::smatch sineFunc;
 		if( regex_search( line, sineFunc, sine ) ){
 			if( std::isdigit(sineFunc.str(1)[0])){
-				SINE_DC_offset = parseVal( sineFunc.str(1) );	
+				SINE_DC_offset = parseVal( sineFunc.str(1) );
 			}
 			if( std::isdigit(sineFunc.str(2)[0])){
-				SINE_amplitude = parseVal( sineFunc.str(2) );	
+				SINE_amplitude = parseVal( sineFunc.str(2) );
 			}
 			if( std::isdigit(sineFunc.str(3)[0])){
 				std::string val = sineFunc.str(3);
-				SINE_frequency = parseVal( sineFunc.str(3) );	
+				SINE_frequency = parseVal( sineFunc.str(3) );
 			}
 		}
 
@@ -141,7 +141,7 @@ private:
 				assert( params.size() >= 4 && "Resistor - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-				
+
 				if(params[3][0] == '{'){
 					//Variable defined
 					std::string variableName = params[3];
@@ -149,7 +149,7 @@ private:
 					variableName = variableName.substr(1,variableName.size()-1);
 					Circuit::Resistor *r = new Circuit::Resistor( name, variableName, nodeA, nodeB, schem );
 				}
-				else{				
+				else{
 					double value = parseVal( params[3] );
 					Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
 				}
@@ -172,7 +172,7 @@ private:
 					variableName = variableName.substr(1,variableName.size()-1);
 					Circuit::Capacitor *c = new Circuit::Capacitor( name, variableName, nodeA, nodeB, schem, V_init );
 				}
-				else{				
+				else{
 					double value = parseVal( params[3] );
 					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, V_init );
 				}
@@ -197,7 +197,7 @@ private:
 					Circuit::Inductor *l = new Circuit::Inductor( name, variableName, nodeA, nodeB, schem, I_init );
 
 				}
-				else{				
+				else{
 					double value = parseVal( params[3] );
 					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
 				}
@@ -207,11 +207,11 @@ private:
 			case (int) 'v' : {
 				assert( params.size() >= 4 && "Voltage - too few params" );
 				Circuit::Voltage* volt = sourceFactory<Circuit::Voltage>( comp, schem );
-				
+
 
 				break;
 			}
-			case (int) 'i' : {	
+			case (int) 'i' : {
 				assert( params.size() >= 4 && "Voltage - too few params" );
 				Circuit::Current* curr = sourceFactory<Circuit::Current>( comp, schem );
 
@@ -276,7 +276,7 @@ private:
 			params.push_back(param);
 		}
 
-		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper); 
+		std::transform(params[0].begin()+1, params[0].end(), params[0].begin()+1, ::toupper);
 		if( params[0] == ".STEP" ){
 			stepped = true;
 			if(params[1] == "oct" ){
@@ -286,8 +286,8 @@ private:
 				double pointsPerOctave = parseVal(params[6]);
 				double num_octaves = (log2((endVal/startVal)));
 				std::vector<double> v(pointsPerOctave * num_octaves);
-				std::generate(v.begin(), v.end(), [startVal, pointsPerOctave, n=0] () mutable { 
-					return startVal*pow(2,n++/pointsPerOctave); 
+				std::generate(v.begin(), v.end(), [startVal, pointsPerOctave, n=0] () mutable {
+					return startVal*pow(2,n++/pointsPerOctave);
 				});
 				(*tableGenerator)[variableName] = v;
 			}
@@ -298,8 +298,8 @@ private:
 				double pointsPerDecade = parseVal(params[6]);
 				double num_decades = (log10((endVal/startVal)));
 				std::vector<double> v(pointsPerDecade * num_decades);
-				std::generate(v.begin(), v.end(), [startVal, pointsPerDecade, n=0] () mutable { 
-					return startVal*pow(10,n++/pointsPerDecade); 
+				std::generate(v.begin(), v.end(), [startVal, pointsPerDecade, n=0] () mutable {
+					return startVal*pow(10,n++/pointsPerDecade);
 				});
 				(*tableGenerator)[variableName] = v;
 			}
@@ -319,7 +319,7 @@ private:
 				double increment = parseVal(params[5]);
 				assert(endVal > startVal && "End value smaller than start value");
 				std::vector<double> v((endVal - startVal)/increment);
-				std::generate(v.begin(), v.end(), [startVal, increment, n=0] () mutable { 
+				std::generate(v.begin(), v.end(), [startVal, increment, n=0] () mutable {
 					return startVal+increment*n++;
 				});
 				(*tableGenerator)[variableName] = v;
@@ -331,7 +331,7 @@ private:
 			double stop = parseVal( params[2] );
 			double start = parseVal( params[3] );
 			double step = parseVal( params[4] );
-			
+
 			// std::cerr<<stop<<" "<<start<<" "<<step<<std::endl;
 			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::TRAN, stop, start, step));
 			schem->simulationCommands.push_back( cmd );
@@ -339,7 +339,7 @@ private:
 		else if( params[0] == ".OP"){
 			schem->sims.push_back(new Simulator(schem, Circuit::Simulator::SimulationType::OP));
 		}
-		
+
 	}
 	using TableIt = std::map<std::string, std::vector<double>>::const_iterator;
 	static std::vector<ParamTable *> buildParam(TableIt it,const TableIt end){
@@ -371,11 +371,11 @@ private:
 
 		std::vector<ParamTable *> recursiveAdd = buildParam(varOne, varEnd);
 		tables.insert(tables.end(), recursiveAdd.begin(), recursiveAdd.end());
-		
+
 		return tables;
 	}
 public:
-	
+
 	static Circuit::Schematic* parse( std::istream& inputStream ){
 		//NOTE
 		//Refer to

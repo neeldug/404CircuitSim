@@ -26,7 +26,7 @@ public:
     std::ifstream netlist;
     Circuit::Schematic *schem;
     static const size_t iterations = 1;
-    static const size_t runs = 1000;
+    static const size_t runs = 10;
 };
 
 BENCHMARK_F(SimulatorFixture, run, runs, iterations)
