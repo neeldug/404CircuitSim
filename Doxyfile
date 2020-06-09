@@ -10,7 +10,7 @@ PROJECT_NAME           = "404 Circuit Simulator"
 
 PROJECT_NUMBER         = "1.0.0"
 
-PROJECT_BRIEF          = "A blazingly fast CLi Circuit Simulator"
+PROJECT_BRIEF          = "A blazingly fast CLI Circuit Simulator"
 
 PROJECT_LOGO           =
 
