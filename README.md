@@ -4,8 +4,8 @@
 
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started)
-2. [Usage](#usage)
-3. [Authors](#authors)
+3. [Usage](#usage)
+4. [Authors](#authors)
 
 ## Introduction
 
