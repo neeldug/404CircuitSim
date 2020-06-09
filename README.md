@@ -12,7 +12,7 @@
 
 ## Introduction
 
-Initially we were aiming simply to fulfil the brief of creating a circuit simulator that emulates the behaviour of LT Spice, but instead having a completely command line interface. Our motivations to build this project, were to produce a cross platform compatible simulator while keeping the compute power to a minimum, to essentially remove all of the bloat in LT Spice.
+Initially we were aiming simply to fulfil the brief of creating a circuit simulator that emulates the behaviour of LT Spice, but instead having a completely command line interface. Our motivations to build this project, were to produce a cross platform compatible simulator while keeping the compute power to a minimum, to essentially remove all of the bloat in LT Spice. Our goals were to produce an LT Spice clone that would be faster, provide stronger support for standard output formats, and lastly implement our knowledge of C++ and Linear Algebra in this project.
 
 ## Getting Started
 
