@@ -62,7 +62,7 @@ public:
 	{
 		return true;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0, bool useNeg = false) const override
 	{
 		return getSourceOutput(param, t);
 	}
@@ -91,12 +91,12 @@ public:
 	{
 		return false;
 	}
-	double getCurrent(ParamTable *param, double t, double timestep = 0) const override
+	double getCurrent(ParamTable *param, double t, double timestep = 0, bool useNeg = false) const override
 	{
 		double current = 0;
 		double subCurrent = 0;
 		Node *refNode = getPosNode()->getId() != -1 ? getPosNode() : getNegNode();
-		if (timestep == -2)
+		if (useNeg)
 		{
 			if (refNode == getPosNode() && getNegNode()->getId() != -1)
 			{
@@ -121,7 +121,7 @@ public:
 							std::cerr << "connecting voltage sources in parralel leads to a overdefined matrix. abort!!!" << std::endl;
 							exit(1);
 						}
-						subCurrent = comp->getCurrent(param, t, -2);
+						subCurrent = comp->getCurrent(param, t,timestep, true);
 					}
 					else
 					{
@@ -130,13 +130,14 @@ public:
 							std::cerr << "connecting voltage sources in parralel leads to a overdefined matrix. abort!!!" << std::endl;
 							exit(1);
 						}
-						subCurrent = comp->getCurrent(param, t, -1);
+						subCurrent = comp->getCurrent(param, t, timestep);
 					}
 				}
 				else
 				{
-					subCurrent = comp->getCurrent(param, t, -1);
+					subCurrent = comp->getCurrent(param, t, timestep);
 				}
+
 				if (refNode == comp->getPosNode())
 				{
 					current -= subCurrent;

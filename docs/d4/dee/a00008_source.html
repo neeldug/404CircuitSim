@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -86,7 +86,7 @@ $(function() {
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">double</span> getCurrentSource(<a class="code" href="../../d1/dc1/a00092.html">ParamTable</a> *param, <span class="keywordtype">double</span> timestep) = 0;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">double</span> getCurrent(<a class="code" href="../../d1/dc1/a00092.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">double</span> getCurrent(<a class="code" href="../../d1/dc1/a00092.html">ParamTable</a> *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep, <span class="keywordtype">bool</span> useNeg = <span class="keyword">false</span>)<span class="keyword"> const override</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordflow">return</span> (getVoltage()) * getConductance(param, timestep) - i_prev;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    }</div>
@@ -124,7 +124,7 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">if</span> (timestep &lt;= 0)</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keywordflow">return</span> min_conductance;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keywordflow">return</span> max_conductance;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        }</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">return</span> value / timestep;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
@@ -172,7 +172,7 @@ $(function() {
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordflow">if</span> (timestep &lt;= 0)</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordflow">return</span> max_conductance;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordflow">return</span> min_conductance;</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        }</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordflow">return</span> timestep / value;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>

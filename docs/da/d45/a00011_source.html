@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -166,10 +166,10 @@ $(function() {
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> progressBar(<span class="keywordtype">double</span> progress, <span class="keywordtype">int</span> i, <span class="keywordtype">int</span> n)</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordtype">int</span> barwidth = 100;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">int</span> pos = barwidth * progress;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordtype">size_t</span> barwidth = 40;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">size_t</span> pos = barwidth * progress;</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;\rProgress: [&quot;</span>;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; barwidth; i++)</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; barwidth; i++)</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        {</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="keywordflow">if</span> (i &lt; pos)</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                std::cerr &lt;&lt; <span class="stringliteral">&quot;=&quot;</span>;</div>

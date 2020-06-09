@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lc_9',['LC',['../d5/df9/a00044.html',1,'Circuit']]]
+  ['math_9',['Math',['../d9/d73/a00060.html',1,'Circuit']]]
 ];

@@ -144,7 +144,7 @@ public:
 	{
 		return getPosNode()->voltage - getNegNode()->voltage;
 	}
-	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0) const
+	virtual double getCurrent(ParamTable *param, double time = 0, double timestep = 0, bool useNeg = false) const
 	{
 		return getVoltage() * getConductance(param, time);
 	}

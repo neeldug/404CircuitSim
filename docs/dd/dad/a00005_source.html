@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -155,7 +155,7 @@ $(function() {
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> capacitorCurrent;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">double</span> getCurrent(ParamTable *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">double</span> getCurrent(ParamTable *param, <span class="keywordtype">double</span> time, <span class="keywordtype">double</span> timestep, <span class="keywordtype">bool</span> useNeg = <span class="keyword">false</span>)<span class="keyword"> const override</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">return</span> getVoltage() * parralelAdd(1.0 / 100.0, (GMIN + inst_conductance));<span class="comment">// getVoltage() * para_cap-&gt;getConductance(param, timestep);</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>

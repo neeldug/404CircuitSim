@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -104,9 +104,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a41fdae2964bd741a8719b7851f6cf64b"><td class="memItemLeft" align="right" valign="top"><a id="a41fdae2964bd741a8719b7851f6cf64b"></a>
 virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentSource</b> (<a class="el" href="../../d1/dc1/a00092.html">ParamTable</a> *param, double timestep)=0</td></tr>
 <tr class="separator:a41fdae2964bd741a8719b7851f6cf64b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f89cf91eb2e9219d3c9ea1f06f700f4"><td class="memItemLeft" align="right" valign="top"><a id="a5f89cf91eb2e9219d3c9ea1f06f700f4"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrent</b> (<a class="el" href="../../d1/dc1/a00092.html">ParamTable</a> *param, double time, double timestep) override</td></tr>
-<tr class="separator:a5f89cf91eb2e9219d3c9ea1f06f700f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63b97184aca7748157685f3bd703db2a"><td class="memItemLeft" align="right" valign="top"><a id="a63b97184aca7748157685f3bd703db2a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrent</b> (<a class="el" href="../../d1/dc1/a00092.html">ParamTable</a> *param, double time, double timestep, bool useNeg=false) const override</td></tr>
+<tr class="separator:a63b97184aca7748157685f3bd703db2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41284914b3854fd43f1b15e99acf45c6"><td class="memItemLeft" align="right" valign="top"><a id="a41284914b3854fd43f1b15e99acf45c6"></a>
 virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>getConductance</b> (<a class="el" href="../../d1/dc1/a00092.html">ParamTable</a> *param, double timestep) const</td></tr>
 <tr class="separator:a41284914b3854fd43f1b15e99acf45c6"><td class="memSeparator" colspan="2">&#160;</td></tr>

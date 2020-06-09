@@ -1,21 +1,18 @@
 var indexSectionsWithContent =
 {
-  0: "4cdfilmnprstv",
-  1: "cdfilmnprstv",
-  2: "4"
+  0: "cdfilmnprstv",
+  1: "cdfilmnprstv"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "classes",
-  2: "pages"
+  1: "classes"
 };
 
 var indexSectionLabels =
 {
   0: "All",
-  1: "Data Structures",
-  2: "Pages"
+  1: "Data Structures"
 };
 

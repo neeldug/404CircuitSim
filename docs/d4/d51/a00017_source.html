@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -128,7 +128,7 @@ $(function() {
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        Eigen::VectorXd voltage(NUM_NODES);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        Eigen::VectorXd current(NUM_NODES);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        Eigen::SparseLU&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        Eigen::SparseQR&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        Eigen::SparseMatrix&lt;double&gt; sparse;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; vDiff.size(); i++)</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        {</div>
@@ -157,7 +157,7 @@ $(function() {
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        Eigen::VectorXd voltage(NUM_NODES);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        Eigen::VectorXd current(NUM_NODES);</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        Eigen::SparseLU&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        Eigen::SparseQR&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        Eigen::SparseMatrix&lt;double&gt; sparse;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; vDiff.size(); i++)</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        {</div>
@@ -184,7 +184,7 @@ $(function() {
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    {</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        Eigen::VectorXd current(NUM_NODES);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        Eigen::SparseLU&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        Eigen::SparseQR&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        Eigen::SparseMatrix&lt;double&gt; sparse;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; vDiff.size(); i++)</div>
@@ -334,7 +334,7 @@ $(function() {
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        Eigen::VectorXd vGuess(NUM_V_GUESS);</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        Eigen::VectorXd current(NUM_NODES);</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        Eigen::SparseLU&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        Eigen::SparseQR&lt;Eigen::SparseMatrix&lt;double&gt;, Eigen::COLAMDOrdering&lt;int&gt;&gt; solver;</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        Eigen::SparseMatrix&lt;double&gt; sparse;</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <span class="keywordflow">if</span> (format == SPACE)</div>
@@ -363,169 +363,174 @@ $(function() {
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            {</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                Circuit::Math::getConductanceOP(schem, conductance, param);</div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                std::cerr &lt;&lt; conductance &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                Circuit::Math::getCurrentOP(schem, current, conductance, param);</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160; </div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                std::cerr &lt;&lt; conductance &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                std::cerr &lt;&lt; current &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                sparse = conductance.sparseView();</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                sparse.makeCompressed();</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                solver.analyzePattern(sparse);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                solver.factorize(sparse);</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                voltage = solver.solve(current);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                dst &lt;&lt; <span class="stringliteral">&quot;\t-----Operating Point-----\t\n&quot;</span>;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                <span class="keywordflow">if</span> (param-&gt;lookup.size() &gt; 0)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                {</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                    dst &lt;&lt; <span class="stringliteral">&quot;Step Information: &quot;</span>;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                    <span class="keywordflow">for</span> (std::pair&lt;std::string, double&gt; var : param-&gt;lookup)</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                    {</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                        dst &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; var.first &lt;&lt; <span class="stringliteral">&quot;=&quot;</span> &lt;&lt; var.second;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                    }</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                    dst&lt;&lt; <span class="stringliteral">&quot; Run: &quot;</span> &lt;&lt; i + 1 &lt;&lt; <span class="stringliteral">&quot;/&quot;</span> &lt;&lt; schem-&gt;tables.size() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                dst &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                    if (node_pair.second-&gt;getId() != -1)</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                    {</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                        node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                        dst &lt;&lt; <span class="stringliteral">&quot;V(&quot;</span> &lt;&lt; node_pair.first &lt;&lt; <span class="stringliteral">&quot;)\t\t&quot;</span> &lt;&lt; node_pair.second-&gt;voltage &lt;&lt; <span class="stringliteral">&quot;\t\tnode_voltage\n&quot;</span>;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                    }</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                });</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                for_each(schem-&gt;comps.begin(), schem-&gt;comps.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> comp_pair) {</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                    dst &lt;&lt; <span class="stringliteral">&quot;I(&quot;</span> &lt;&lt; comp_pair.first &lt;&lt; <span class="stringliteral">&quot;)\t\t&quot;</span> &lt;&lt; comp_pair.second-&gt;getCurrent(param, 0, -1) &lt;&lt; <span class="stringliteral">&quot;\t\tdevice_current\n&quot;</span>;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                });</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            }</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRAN)</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                <span class="keywordflow">if</span> (!schem-&gt;nonLinear)</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                {</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                    Eigen::SparseMatrix&lt;double&gt; sparse;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">double</span> t = 0; t &lt;= tranStopTime; t += tranStepTime)</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                    {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                        Math::progressBar(t / tranStopTime, i, schem-&gt;tables.size());</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                        Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                        Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                        sparse = conductance.sparseView();</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                        sparse.makeCompressed();</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                        solver.analyzePattern(sparse);</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                        solver.factorize(sparse);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                        <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                        {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                            voltage = solver.solve(current);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                        }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;e)</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                        {</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                            std::cerr &lt;&lt; <span class="stringliteral">&quot;error solving skipping timestep&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                            <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        }</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                        for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                            if (node_pair.second-&gt;getId() != -1)</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                            {</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                                node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                            }</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                        });</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                        <span class="keywordflow">if</span> (format == SPACE)</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                        {</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                            spicePrint(param, t, tranStepTime);</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                        }</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV)</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                        {</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                            csvPrint(param, t, tranStepTime);</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                        }</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                    }</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                }</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                {</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">double</span> t = 0; t &lt;= tranStopTime; t += tranStepTime)</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                    {</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                        Math::progressBar(t / tranStopTime, i, schem-&gt;tables.size());</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                        Math::init_vector(vGuess);</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                        <a class="code" href="../../d6/d2c/a00072.html">ConductanceFunc</a> functor(schem, param, t, tranStepTime, NUM_NODES);</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                        Eigen::NumericalDiff&lt;ConductanceFunc&gt; numDiff(functor);</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160; </div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                        <span class="keywordflow">if</span> (schem-&gt;itType == Schematic::IterationType::Levenberg)</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                        {</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                            Eigen::LevenbergMarquardt&lt;Eigen::NumericalDiff&lt;ConductanceFunc&gt;, <span class="keywordtype">double</span>&gt; lm(numDiff);</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                            lm.parameters.maxfev = 1000;</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                            lm.parameters.xtol = 1.0e-10;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                            <span class="keywordtype">int</span> ret = lm.minimize(vGuess);</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                        }</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (schem-&gt;itType == Schematic::IterationType::Newton)</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                        {</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; 1000; i++)</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                            {</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                                Eigen::MatrixXd jaq(NUM_V_GUESS, NUM_V_GUESS);</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                                numDiff.df(vGuess, jaq);</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                                Eigen::VectorXd vErrVec(NUM_V_GUESS);</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                                functor(vGuess, vErrVec);</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                                Eigen::MatrixXd inverseJaq = jaq.transpose().inverse();</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                                <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> x = 0; x &lt; NUM_V_GUESS; x++)</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                                {</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                                    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> y = 0; y &lt; NUM_V_GUESS; y++)</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                                    {</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                                        <span class="keywordflow">if</span> (std::isnan(inverseJaq(x, y)))</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                                        {</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                                            inverseJaq(x, y) = 1e-200;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                                        }</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                                        <span class="keywordflow">if</span> (!std::isfinite(inverseJaq(x, y)))</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                                        {</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                                            inverseJaq(x, y) = 1e200;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                                        }</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                                    }</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                                }</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                                vGuess = vGuess - 0.005 * (inverseJaq * vErrVec);</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                            }</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                        }</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                        {</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                            std::cerr &lt;&lt; <span class="stringliteral">&quot;unknown iteration type&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                            std::terminate();</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                <span class="comment">// std::cerr &lt;&lt; conductance &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                Circuit::Math::getCurrentOP(schem, current, conductance, param);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160; </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                <span class="comment">// std::cerr &lt;&lt; conductance &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                <span class="comment">// std::cerr &lt;&lt; current &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                sparse = conductance.sparseView();</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                sparse.makeCompressed();</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                solver.analyzePattern(sparse);</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                solver.factorize(sparse);</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                voltage = solver.solve(current);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                dst &lt;&lt; <span class="stringliteral">&quot;\t-----Operating Point-----\t\n&quot;</span>;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                <span class="keywordflow">if</span> (param-&gt;lookup.size() &gt; 0)</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                {</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                    dst &lt;&lt; <span class="stringliteral">&quot;Step Information: &quot;</span>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                    <span class="keywordflow">for</span> (std::pair&lt;std::string, double&gt; var : param-&gt;lookup)</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                    {</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                        dst &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; var.first &lt;&lt; <span class="stringliteral">&quot;=&quot;</span> &lt;&lt; var.second;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                    }</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                    dst &lt;&lt; <span class="stringliteral">&quot; Run: &quot;</span> &lt;&lt; i + 1 &lt;&lt; <span class="stringliteral">&quot;/&quot;</span> &lt;&lt; schem-&gt;tables.size() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                }</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                dst &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                    if (node_pair.second-&gt;getId() != -1)</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                    {</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                        node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                        dst &lt;&lt; <span class="stringliteral">&quot;V(&quot;</span> &lt;&lt; node_pair.first &lt;&lt; <span class="stringliteral">&quot;)\t\t&quot;</span> &lt;&lt; node_pair.second-&gt;voltage &lt;&lt; <span class="stringliteral">&quot;\t\tnode_voltage\n&quot;</span>;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                    }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                });</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                for_each(schem-&gt;comps.begin(), schem-&gt;comps.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> comp_pair) {</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                    dst &lt;&lt; <span class="stringliteral">&quot;I(&quot;</span> &lt;&lt; comp_pair.first &lt;&lt; <span class="stringliteral">&quot;)\t\t&quot;</span> &lt;&lt; comp_pair.second-&gt;getCurrent(param, 0, -1) &lt;&lt; <span class="stringliteral">&quot;\t\tdevice_current\n&quot;</span>;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                });</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            }</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (type == TRAN)</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                <span class="keywordflow">if</span> (!schem-&gt;nonLinear)</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                {</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                    Eigen::SparseMatrix&lt;double&gt; sparse;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">double</span> t = 0; t &lt;= tranStopTime; t += tranStepTime)</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                    {</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                        Math::progressBar(t / tranStopTime, i, schem-&gt;tables.size());</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                        Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                        Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                        sparse = conductance.sparseView();</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                        sparse.makeCompressed();</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                        solver.analyzePattern(sparse);</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                        solver.factorize(sparse);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                        <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                        {</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                            voltage = solver.solve(current);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                        }</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                        <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;e)</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                        {</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                            std::cerr &lt;&lt; <span class="stringliteral">&quot;error solving skipping timestep&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                        }</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; &quot;conductance&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; conductance &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; &quot;current&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; current &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; &quot;voltage&quot; &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                        <span class="comment">// std::cerr &lt;&lt; voltage &lt;&lt; std::endl;</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                        for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                            if (node_pair.second-&gt;getId() != -1)</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                            {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                                node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                            }</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                        });</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                        <span class="keywordflow">if</span> (format == SPACE)</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                        {</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                            spicePrint(param, t, tranStepTime);</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                        }</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV)</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                        {</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                            csvPrint(param, t, tranStepTime);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                        }</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                    }</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">double</span> t = 0; t &lt;= tranStopTime; t += tranStepTime)</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                    {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                        Math::progressBar(t / tranStopTime, i, schem-&gt;tables.size());</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                        Math::init_vector(vGuess);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                        <a class="code" href="../../d6/d2c/a00072.html">ConductanceFunc</a> functor(schem, param, t, tranStepTime, NUM_NODES);</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                        Eigen::NumericalDiff&lt;ConductanceFunc&gt; numDiff(functor);</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160; </div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                        <span class="keywordflow">if</span> (schem-&gt;itType == Schematic::IterationType::Levenberg)</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                        {</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                            Eigen::LevenbergMarquardt&lt;Eigen::NumericalDiff&lt;ConductanceFunc&gt;, <span class="keywordtype">double</span>&gt; lm(numDiff);</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                            lm.parameters.maxfev = 1000;</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                            lm.parameters.xtol = 1.0e-10;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                            <span class="keywordtype">int</span> ret = lm.minimize(vGuess);</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                        }</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (schem-&gt;itType == Schematic::IterationType::Newton)</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                        {</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; 1000; i++)</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                            {</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                                Eigen::MatrixXd jaq(NUM_V_GUESS, NUM_V_GUESS);</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                                numDiff.df(vGuess, jaq);</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                                Eigen::VectorXd vErrVec(NUM_V_GUESS);</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                                functor(vGuess, vErrVec);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                                Eigen::MatrixXd inverseJaq = jaq.transpose().inverse();</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                                <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> x = 0; x &lt; NUM_V_GUESS; x++)</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                                {</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                                    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> y = 0; y &lt; NUM_V_GUESS; y++)</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                                    {</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                                        <span class="keywordflow">if</span> (std::isnan(inverseJaq(x, y)))</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                                        {</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                                            inverseJaq(x, y) = 1e-200;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                                        }</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                                        <span class="keywordflow">if</span> (!std::isfinite(inverseJaq(x, y)))</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                                        {</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                                            inverseJaq(x, y) = 1e200;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                                        }</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                                    }</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                                }</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                                vGuess = vGuess - 0.005 * (inverseJaq * vErrVec);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                            }</div>
 <div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                        }</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                        Eigen::VectorXd vErrVec(NUM_V_GUESS);</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                        functor.getVoltageVector(vGuess, voltage);</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                        for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                            if (node_pair.second-&gt;getId() != -1)</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                            {</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                                node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                            }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                        });</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                        <span class="keywordflow">if</span> (format == SPACE)</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                        {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                            spicePrint(param, t, tranStepTime);</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                        }</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV)</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                        {</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                            csvPrint(param, t, tranStepTime);</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                        }</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                    }</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                }</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                std::cerr &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            }</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;            <span class="keywordflow">if</span> (format == SPACE &amp;&amp; type != OP)</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            {</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                dst &lt;&lt; spiceStream.str();</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                spiceStream.str(<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                        {</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                            std::cerr &lt;&lt; <span class="stringliteral">&quot;unknown iteration type&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                            std::terminate();</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                        }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                        Eigen::VectorXd vErrVec(NUM_V_GUESS);</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                        functor.getVoltageVector(vGuess, voltage);</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                        for_each(schem-&gt;nodes.begin(), schem-&gt;nodes.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> node_pair) {</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                            if (node_pair.second-&gt;getId() != -1)</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                            {</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                                node_pair.second-&gt;voltage = voltage[node_pair.second-&gt;getId()];</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                            }</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                        });</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                        <span class="keywordflow">if</span> (format == SPACE)</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                        {</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                            spicePrint(param, t, tranStepTime);</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                        }</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV)</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                        {</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                            csvPrint(param, t, tranStepTime);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                        }</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                    }</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                }</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                std::cerr &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            }</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV &amp;&amp; type != OP)</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">if</span> (format == SPACE &amp;&amp; type != OP)</div>
 <div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            {</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                dst &lt;&lt; csvStream.str();</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                csvStream.str(<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                dst &lt;&lt; spiceStream.str();</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                spiceStream.str(<span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;            }</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;        }</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    }</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;};</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == CSV &amp;&amp; type != OP)</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;            {</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                dst &lt;&lt; csvStream.str();</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                csvStream.str(<span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;            }</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        }</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    }</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;};</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aa00072_html"><div class="ttname"><a href="../../d6/d2c/a00072.html">ConductanceFunc</a></div><div class="ttdef"><b>Definition:</b> circuit_simulator.hpp:37</div></div>
 <div class="ttc" id="aa00096_html"><div class="ttname"><a href="../../d9/df8/a00096.html">Circuit::Schematic</a></div><div class="ttdef"><b>Definition:</b> circuit_structure.hpp:40</div></div>

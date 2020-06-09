@@ -4,6 +4,9 @@
 class Circuit::Math
 {
 private:
+    static Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+    static Eigen::SparseMatrix<double> sparse;
+
     static void init_matrix(Eigen::MatrixXd &mat, double val = 0.0)
     {
         for (size_t i = 0; i < mat.rows(); i++)
@@ -84,6 +87,7 @@ public:
     static void getCurrentTRAN(Circuit::Schematic *schem, Eigen::VectorXd &current, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t, double step);
     static void getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd &conductance, Circuit::ParamTable *param);
     static void getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixXd &conductance, Circuit::ParamTable *param, double t, double step);
+    static void solveMatrix(const Eigen::MatrixXd &conductance, Eigen::VectorXd &voltage, const Eigen::VectorXd &current);
     static void init_vector(Eigen::VectorXd &vec, double val = 0.0)
     {
         for (size_t i = 0; i < vec.rows(); i++)
@@ -93,10 +97,10 @@ public:
     }
     static void progressBar(double progress, int i, int n)
     {
-        int barwidth = 60;
-        int pos = barwidth * progress;
+        size_t barwidth = 40;
+        size_t pos = barwidth * progress;
         std::cerr << "\rProgress: [";
-        for (int i = 0; i < barwidth; i++)
+        for (size_t i = 0; i < barwidth; i++)
         {
             if (i < pos)
                 std::cerr << "=";
@@ -195,6 +199,18 @@ void Circuit::Math::getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixX
             handleConductanceMatrixTwoNodes(conductance, comp_pair.second->nodes[0]->getId(), comp_pair.second->nodes[1]->getId(), value);
         }
     });
+}
+
+Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> Circuit::Math::solver;
+Eigen::SparseMatrix<double> Circuit::Math::sparse;
+
+void Circuit::Math::solveMatrix(const Eigen::MatrixXd &conductance, Eigen::VectorXd &voltage, const Eigen::VectorXd &current)
+{
+    sparse = conductance.sparseView();
+    sparse.makeCompressed();
+    solver.analyzePattern(sparse);
+    solver.factorize(sparse);
+    voltage = solver.solve(current);
 }
 
 #endif

@@ -55,20 +55,14 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+		Circuit::Math::solveMatrix(conductance, voltage, current);
 
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		voltage = solver.solve(current);
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId() != -1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
@@ -84,20 +78,15 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
+
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+		Circuit::Math::solveMatrix(conductance, voltage, current);
 
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		voltage = solver.solve(current);
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId() != -1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
@@ -111,8 +100,6 @@ struct ConductanceFunc : Functor<double>
 	{
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
 
 		for (int i = 0; i < vDiff.size(); i++)
 		{
@@ -121,12 +108,7 @@ struct ConductanceFunc : Functor<double>
 
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
-
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		fvec = solver.solve(current);
+		Circuit::Math::solveMatrix(conductance, fvec, current);
 	}
 };
 
@@ -261,8 +243,6 @@ public:
 		Eigen::VectorXd vGuess(NUM_V_GUESS);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
 
 		if (format == SPACE)
 		{
@@ -289,19 +269,8 @@ public:
 			if (type == OP)
 			{
 				Circuit::Math::getConductanceOP(schem, conductance, param);
-
-				// std::cerr << conductance << std::endl;
-
 				Circuit::Math::getCurrentOP(schem, current, conductance, param);
-
-				// std::cerr << conductance << std::endl;
-				// std::cerr << current << std::endl;
-
-				sparse = conductance.sparseView();
-				sparse.makeCompressed();
-				solver.analyzePattern(sparse);
-				solver.factorize(sparse);
-				voltage = solver.solve(current);
+				Circuit::Math::solveMatrix(conductance, voltage, current);
 
 				dst << "\t-----Operating Point-----\t\n";
 				if (param->lookup.size() > 0)
@@ -338,25 +307,15 @@ public:
 						Math::getConductanceTRAN(schem, conductance, param, t, tranStepTime);
 						Math::getCurrentTRAN(schem, current, conductance, param, t, tranStepTime);
 
-						sparse = conductance.sparseView();
-						sparse.makeCompressed();
-						solver.analyzePattern(sparse);
-						solver.factorize(sparse);
 						try
 						{
-							voltage = solver.solve(current);
+							Circuit::Math::solveMatrix(conductance, voltage, current);
 						}
 						catch (const std::exception &e)
 						{
 							std::cerr << "error solving skipping timestep" << std::endl;
 							continue;
 						}
-						// std::cerr << "conductance" << std::endl;
-						// std::cerr << conductance << std::endl;
-						// std::cerr << "current" << std::endl;
-						// std::cerr << current << std::endl;
-						// std::cerr << "voltage" << std::endl;
-						// std::cerr << voltage << std::endl;
 
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)

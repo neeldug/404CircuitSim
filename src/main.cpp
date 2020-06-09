@@ -2,15 +2,25 @@
 #include <fstream>
 #include <circuit.hpp>
 #include <filesystem>
-#include <unistd.h>
 #include <getopt.h>
 
-std::string getParentPath()
+std::string showHelp()
 {
-    char result[PATH_MAX];
-    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
-    std::string filePath = std::string(result);
-    return std::filesystem::path(filePath).parent_path().parent_path();
+    std::string helpMessage =
+        "-i\t\t<file>\t\tpath to input netlist\n"
+        "-o\t\t<dir>\t\tpath to output directory\n"
+        "-f\t\t<format>\tspecify output format, either csv or space\n"
+        "-p\t\t<list>\t\tplots output, space separated list specifies columns to plot\n"
+        "-c\t\t\t\tshows names of columns in output file, blocks -p i.e. doesn't plot result\n"
+        "-h\t\t\t\tshows this help information\n\n"
+        "Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]\n\n"
+        "Examples\n\n"
+        "Plot Specific Columns:\n"
+        "\tsimulator -i test.net -p 'V(N001) V(N002)'\n\n"
+        "Plot All Columns:\n"
+        "simulator -i test.net -p ''\n";
+
+    return helpMessage;
 }
 
 int main(int argc, char *argv[])
@@ -18,7 +28,7 @@ int main(int argc, char *argv[])
     int c;
     std::map<std::string, std::string> stringFlags;
     std::map<std::string, bool> boolFlags;
-    while ((c = getopt(argc, argv, "cf:i:o:p:")) != -1)
+    while ((c = getopt(argc, argv, "cf:hi:o:p:")) != -1)
     {
         switch (c)
         {
@@ -28,6 +38,9 @@ int main(int argc, char *argv[])
         case 'f':
             stringFlags["outputFormat"] = optarg;
             break;
+        case 'h':
+            std::cout << showHelp();
+            exit(0);
         case 'i':
             stringFlags["inputFilePath"] = optarg;
             break;
@@ -57,7 +70,7 @@ int main(int argc, char *argv[])
 
     if (inputFile.fail())
     {
-        std::cerr << "File: " << stringFlags["inputFileName"] << " was not found!\n";
+        std::cerr << "File: " << stringFlags["inputFilePath"] << " was not found!\n";
         exit(1);
     }
 
@@ -72,7 +85,6 @@ int main(int argc, char *argv[])
     std::filesystem::create_directory(stringFlags["outputFolderPath"]);
     std::ofstream out;
     std::string outputPath;
-    std::string parentPath = getParentPath();
     Circuit::Simulator::OutputFormat outputFormat;
 
     if (stringFlags["outputFormat"].empty() || tolower(stringFlags["outputFormat"][0]) == 'c')
@@ -99,7 +111,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::string systemCall = parentPath + "/env/bin/python3 " + parentPath + "/bin/plot.py" + " '" + outputPath + "' ";
+        std::string systemCall = "plot.py '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
@@ -115,7 +127,7 @@ int main(int argc, char *argv[])
         }
         if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            system(systemCall.c_str());
+            int ret = system(systemCall.c_str());
         }
     }
     return 0;
