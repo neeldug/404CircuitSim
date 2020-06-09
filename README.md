@@ -31,7 +31,7 @@ Initially we were aiming simply to fulfil the brief of creating a circuit simula
 
 ### CMake
 
-CMake is used for building and managing dependencies. To install CMake, [click here](). To confirm if CMake is installed correctly on your machine, run:
+CMake is used for building and managing dependencies. To install CMake, [click here](https://cmake.org/install/). To confirm if CMake is installed correctly on your machine, run:
 ```bash
 cmake --version
 ```
