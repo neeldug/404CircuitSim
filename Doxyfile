@@ -217,7 +217,6 @@ WARN_LOGFILE           =
 INPUT                  = "include"
 
 INPUT                  += "README.md"
-                       += "graphs.md"
 
 INPUT_ENCODING         = UTF-8
 
@@ -321,7 +320,7 @@ HTML_STYLESHEET        =
 
 HTML_EXTRA_STYLESHEET  =
 
-HTML_EXTRA_FILES       = 
+HTML_EXTRA_FILES       = test/graphs/out.html
 
 HTML_COLORSTYLE_HUE    = 220
 

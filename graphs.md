@@ -1,3 +1,3 @@
 # Graphs
 
-* [graph_title](test/graphs/out.html)
+[graph_title](test/graphs/out.html)
