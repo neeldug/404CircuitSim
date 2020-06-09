@@ -61,7 +61,7 @@ And follow the on screen instructions.
 -i      <file>      path to input netlist
 -o      <dir>       path to output directory
 -f      <format>    specify output format, either csv or space
--p      <list>      plots output, space separated list specifies columns to plot, empty string indicates plot all
+-p      <list>      plots output, space separated list specifies columns to plot
 -c                  shows names of columns in output file, blocks -p and doesn't plot result
 
 Usage: simulator -i filename -p list [-c] [ -o outputdir ] [ -f csv ]
