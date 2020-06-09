@@ -21,5 +21,3 @@ set(CPACK_SOURCE_IGNORE_FILES
     ./.*build.*
     ./\\\\.DS_Store
 )
-
-include(CPack)

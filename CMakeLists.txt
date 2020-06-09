@@ -22,6 +22,7 @@ include_directories(include)
 # Main Executable - Simulator
 add_executable(simulator src/main.cpp)
 target_link_libraries(simulator eigen)
+install_targets(bin simulator)
 
 # Test Executables
 add_subdirectory(test)
