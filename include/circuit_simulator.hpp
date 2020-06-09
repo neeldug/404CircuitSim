@@ -55,7 +55,7 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 		for (int i = 0; i < vDiff.size(); i++)
 		{
@@ -84,7 +84,7 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 		for (int i = 0; i < vDiff.size(); i++)
 		{
@@ -111,7 +111,7 @@ struct ConductanceFunc : Functor<double>
 	{
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 
 		for (int i = 0; i < vDiff.size(); i++)
@@ -261,7 +261,7 @@ public:
 		Eigen::VectorXd vGuess(NUM_V_GUESS);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
+		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
 		Eigen::SparseMatrix<double> sparse;
 
 		if (format == SPACE)

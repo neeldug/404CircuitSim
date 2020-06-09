@@ -80,6 +80,7 @@ Table of Contents</h2>
 </ol>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Introduction</h2>
+<p>Initially we were aiming simply to fulfil the brief of creating a circuit simulator that emulates the behaviour of LT Spice, but instead having a completely command line interface. Our motivations to build this project, were to produce a cross platform compatible simulator while keeping the compute power to a minimum, to essentially remove all of the bloat in LT Spice.</p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Getting Started</h2>
 <h3><a class="anchor" id="autotoc_md3"></a>
@@ -118,8 +119,9 @@ Usage</h2>
 <div class="line">-f      &lt;format&gt;    specify output format, either csv or space</div>
 <div class="line">-p      &lt;list&gt;      plots output, space separated list specifies columns to plot</div>
 <div class="line">-c                  shows names of columns in output file, blocks -p and doesn&#39;t plot result</div>
+<div class="line">-h                  shows this help information</div>
 <div class="line"> </div>
-<div class="line">Usage: simulator -i filename -p list [-c] [ -o outputdir ] [ -f csv ]</div>
+<div class="line">Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]</div>
 <div class="line"> </div>
 <div class="line">Examples:</div>
 <div class="line"> </div>
