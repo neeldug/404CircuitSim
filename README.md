@@ -12,7 +12,6 @@
 
 ## Introduction
 
-<!-- TODO - Add Project Introduction Aim and Motivation (Probably at the end) -->
 Initially we were aiming simply to fulfil the brief of creating a circuit simulator that emulates the behaviour of LT Spice, but instead having a completely command line interface. Our motivations to build this project, were to produce a cross platform compatible simulator while keeping the compute power to a minimum, to essentially remove all of the bloat in LT Spice.
 
 ## Getting Started
