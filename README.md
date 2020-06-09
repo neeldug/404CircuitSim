@@ -53,8 +53,9 @@ To install the necessary packages required for the graphing tool to work.
 
 ### Installing
 
-To install the simulator, navigate to the build directory and run:
+To install the simulator, navigate to the build directory and run the installation script:
 ```bash
+cd build
 ./install.sh
 ```
 And follow the on screen instructions.
