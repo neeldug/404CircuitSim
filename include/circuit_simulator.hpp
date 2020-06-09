@@ -290,7 +290,6 @@ public:
 			{
 				Circuit::Math::getConductanceOP(schem, conductance, param);
 
-
 				// std::cerr << conductance << std::endl;
 
 				Circuit::Math::getCurrentOP(schem, current, conductance, param);
@@ -312,7 +311,7 @@ public:
 					{
 						dst << " " << var.first << "=" << var.second;
 					}
-					dst<< " Run: " << i + 1 << "/" << schem->tables.size() << std::endl;
+					dst << " Run: " << i + 1 << "/" << schem->tables.size() << std::endl;
 				}
 				dst << std::endl;
 				for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
@@ -352,6 +351,12 @@ public:
 							std::cerr << "error solving skipping timestep" << std::endl;
 							continue;
 						}
+						// std::cerr << "conductance" << std::endl;
+						// std::cerr << conductance << std::endl;
+						// std::cerr << "current" << std::endl;
+						// std::cerr << current << std::endl;
+						// std::cerr << "voltage" << std::endl;
+						// std::cerr << voltage << std::endl;
 
 						for_each(schem->nodes.begin(), schem->nodes.end(), [&](const auto node_pair) {
 							if (node_pair.second->getId() != -1)

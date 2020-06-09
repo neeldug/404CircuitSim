@@ -13,7 +13,7 @@ protected:
 public:
     virtual double getCurrentSource(ParamTable *param, double timestep) = 0;
 
-    double getCurrent(ParamTable *param, double time, double timestep) override
+    double getCurrent(ParamTable *param, double time, double timestep) const override
     {
         return (getVoltage()) * getConductance(param, timestep) - i_prev;
     }
@@ -51,7 +51,7 @@ public:
 
         if (timestep <= 0)
         {
-            return min_conductance;
+            return max_conductance;
         }
         return value / timestep;
     }
@@ -99,7 +99,7 @@ public:
 
         if (timestep <= 0)
         {
-            return max_conductance;
+            return min_conductance;
         }
         return timestep / value;
     }
