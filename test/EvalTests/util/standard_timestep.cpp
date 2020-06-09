@@ -45,10 +45,16 @@ void standardStep( std::filesystem::path filename, double timestep ){
 	std::stringstream output;
 	output<<header<<std::endl;
 	for(auto x : new_steps){
+		bool start = false;
 		for(auto y : x ){
-			output<<std::to_string(y)<<",";
+			if(start){
+				output<<",";
+			}
+			output<<std::to_string(y);
+			start = true;
 		}
 		output<<"\n";
+
 	}
 	std::ofstream out((std::string)filename.parent_path()+"/new"+(std::string)filename.filename());
 	out<<output.str();
@@ -71,7 +77,7 @@ int main(int argc, char* argv[])
 		if(((std::string)x.path().filename()).find("new") != std::string::npos){
 			continue;
 		}
-		standardStep(x.path(),1e-04);
+		standardStep(x.path(),1e-05);
 	}
 
 
