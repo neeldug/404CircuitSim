@@ -22,7 +22,10 @@ include_directories(include)
 # Main Executable - Simulator
 add_executable(simulator src/main.cpp)
 target_link_libraries(simulator eigen)
-install_targets(bin simulator)
+
+# Installations
+install(TARGETS simulator RUNTIME DESTINATION bin)
+install(FILES ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin)
 
 # Test Executables
 add_subdirectory(test)

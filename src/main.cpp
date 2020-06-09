@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::string systemCall = parentPath + "/env/bin/python3 " + parentPath + "/bin/plot.py" + " '" + outputPath + "' ";
+        std::string systemCall = "python3 " + parentPath + "/bin/plot.py" + " '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
