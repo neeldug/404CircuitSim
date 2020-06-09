@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_library(eigen INTERFACE)
 target_include_directories(eigen INTERFACE lib/Eigen)
 
-# Add hayai benchmarking library
+# Add hayai benchmarking 
 add_library(hayai INTERFACE)
 target_include_directories(hayai INTERFACE lib/hayai)
 
@@ -25,3 +25,7 @@ target_link_libraries(simulator eigen)
 
 # Test Executables
 add_subdirectory(test)
+
+# Cpack
+include(CPack)
+
