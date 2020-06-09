@@ -13,6 +13,7 @@ parser.add_argument("file_name", metavar="FILE", type=str, nargs=1,
                     help="Path of file to plot")
 parser.add_argument("-c", "--column-names",
                     action='store_true', help="show column names")
+parser.add_argument("-s", "--save", type=str, nargs=1, help="save plotly html output")
 parser.add_argument("-m", "--mode", type=str, nargs=1,
                     help="Either space or csv formatted documents can be plotted, default is csv")
 parser.add_argument("include", metavar="COLUMN_NAME", type=str, nargs='*',
@@ -92,4 +93,8 @@ if __name__ == '__main__':
     fig.update_xaxes(title_text="<b>Time/s</b>")
     fig.update_yaxes(title_text="<b>Voltage/V</b>", secondary_y=False)
     fig.update_yaxes(title_text="<b>Current/A</b>", secondary_y=True)
+
+    if args.save:
+        fig.write_html(args.save[0])
+
     fig.show()
