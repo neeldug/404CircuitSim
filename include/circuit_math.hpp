@@ -201,6 +201,9 @@ void Circuit::Math::getConductanceTRAN(Circuit::Schematic *schem, Eigen::MatrixX
     });
 }
 
+Eigen::SparseLU<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> Circuit::Math::solver;
+Eigen::SparseMatrix<double> Circuit::Math::sparse;
+
 void Circuit::Math::solveMatrix(const Eigen::MatrixXd &conductance, Eigen::VectorXd &voltage, const Eigen::VectorXd &current)
 {
     sparse = conductance.sparseView();

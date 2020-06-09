@@ -55,20 +55,14 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+		Circuit::Math::solveMatrix(conductance, voltage, current);
 
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		voltage = solver.solve(current);
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId() != -1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
@@ -84,20 +78,15 @@ struct ConductanceFunc : Functor<double>
 		Eigen::VectorXd voltage(NUM_NODES);
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
+
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			schem->nonLinearComps[i]->setConductance(param, timestep, vDiff(i));
 		}
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
+		Circuit::Math::solveMatrix(conductance, voltage, current);
 
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		voltage = solver.solve(current);
 		for (int i = 0; i < vDiff.size(); i++)
 		{
 			double vPos = (schem->nonLinearComps[i]->getPosNode()->getId() != -1) ? voltage(schem->nonLinearComps[i]->getPosNode()->getId()) : 0;
@@ -111,8 +100,6 @@ struct ConductanceFunc : Functor<double>
 	{
 		Eigen::VectorXd current(NUM_NODES);
 		Eigen::MatrixXd conductance(NUM_NODES, NUM_NODES);
-		Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> solver;
-		Eigen::SparseMatrix<double> sparse;
 
 		for (int i = 0; i < vDiff.size(); i++)
 		{
@@ -121,12 +108,7 @@ struct ConductanceFunc : Functor<double>
 
 		Circuit::Math::getConductanceTRAN(schem, conductance, param, time, timestep);
 		Circuit::Math::getCurrentTRAN(schem, current, conductance, param, time, timestep);
-
-		sparse = conductance.sparseView();
-		sparse.makeCompressed();
-		solver.analyzePattern(sparse);
-		solver.factorize(sparse);
-		fvec = solver.solve(current);
+		Circuit::Math::solveMatrix(conductance, fvec, current);
 	}
 };
 
