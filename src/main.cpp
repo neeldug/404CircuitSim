@@ -2,12 +2,15 @@
 #include <fstream>
 #include <circuit.hpp>
 #include <filesystem>
+#include <unistd.h>
 #include <getopt.h>
 
 std::string getParentPath()
 {
-    std::cerr << std::filesystem::current_path() << '\n';
-    return std::filesystem::current_path().parent_path().parent_path();
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    std::string filePath = std::string(result);
+    return std::filesystem::path(filePath).parent_path().parent_path();
 }
 
 int main(int argc, char *argv[])
@@ -70,7 +73,6 @@ int main(int argc, char *argv[])
     std::ofstream out;
     std::string outputPath;
     std::string parentPath = getParentPath();
-    std::cerr << "Parent Path:" << parentPath << '\n';
     Circuit::Simulator::OutputFormat outputFormat;
 
     if (stringFlags["outputFormat"].empty() || tolower(stringFlags["outputFormat"][0]) == 'c')
