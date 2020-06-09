@@ -1,3 +1,5 @@
+include(InstallRequiredSystemLibraries)
+
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "Error 404")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A blazing fast circuit simulator")
@@ -11,6 +13,7 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"/build)
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
 set(CPACK_SOURCE_IGNORE_FILES
     ./.git
+    ./test/*
     ./dist
     ./bin/*
     ./env/*
