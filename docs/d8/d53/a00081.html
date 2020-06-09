@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>404 Circuit Simulator: ConductanceFunc Struct Reference</title>
+<title>404 Circuit Simulator: Circuit::Current Class Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -24,7 +24,7 @@
    <div id="projectname">404 Circuit Simulator
    &#160;<span id="projectnumber">1.0.0</span>
    </div>
-   <div id="projectbrief">A CLI clone of SPICE circuit solver</div>
+   <div id="projectbrief">A blazingly fast CLI Circuit Simulator</div>
   </td>
  </tr>
  </tbody>
@@ -61,101 +61,132 @@ $(function() {
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>Circuit</b></li><li class="navelem"><a class="el" href="../../d8/d53/a00081.html">Current</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Data Fields</a>  </div>
+<a href="#pub-attribs">Data Fields</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#friends">Friends</a>  </div>
   <div class="headertitle">
-<div class="title">ConductanceFunc Struct Reference</div>  </div>
+<div class="title">Circuit::Current Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for ConductanceFunc:</div>
+Inheritance diagram for Circuit::Current:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../da/dec/a00080.png" border="0" usemap="#ConductanceFunc_inherit__map" alt="Inheritance graph"/></div>
-<map name="ConductanceFunc_inherit__map" id="ConductanceFunc_inherit__map">
-<area shape="rect" title=" " alt="" coords="9,80,145,107"/>
-<area shape="rect" href="../../d1/d09/a00077.html" title=" " alt="" coords="5,5,149,32"/>
+<div class="center"><img src="../../da/dec/a00080.png" border="0" usemap="#Circuit_1_1Current_inherit__map" alt="Inheritance graph"/></div>
+<map name="Circuit_1_1Current_inherit__map" id="Circuit_1_1Current_inherit__map">
+<area shape="rect" title=" " alt="" coords="19,155,139,181"/>
+<area shape="rect" href="../../d1/d09/a00077.html" title=" " alt="" coords="21,80,137,107"/>
+<area shape="rect" href="../../d4/d3a/a00101.html" title=" " alt="" coords="5,5,152,32"/>
 </map>
 <center><span class="legend">[<a href="../../graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
-Collaboration diagram for ConductanceFunc:</div>
+Collaboration diagram for Circuit::Current:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d1/d51/a00079.png" border="0" usemap="#ConductanceFunc_coll__map" alt="Collaboration graph"/></div>
-<map name="ConductanceFunc_coll__map" id="ConductanceFunc_coll__map">
-<area shape="rect" title=" " alt="" coords="179,95,315,121"/>
-<area shape="rect" href="../../d1/d09/a00077.html" title=" " alt="" coords="5,5,149,32"/>
-<area shape="rect" href="../../d4/d3a/a00101.html" title=" " alt="" coords="173,5,320,32"/>
-<area shape="rect" href="../../d3/d32/a00105.html" title=" " alt="" coords="345,5,485,32"/>
+<div class="center"><img src="../../d1/d51/a00079.png" border="0" usemap="#Circuit_1_1Current_coll__map" alt="Collaboration graph"/></div>
+<map name="Circuit_1_1Current_coll__map" id="Circuit_1_1Current_coll__map">
+<area shape="rect" title=" " alt="" coords="19,247,139,273"/>
+<area shape="rect" href="../../d1/d09/a00077.html" title=" " alt="" coords="21,171,137,197"/>
+<area shape="rect" href="../../d4/d3a/a00101.html" title=" " alt="" coords="5,95,152,121"/>
+<area shape="rect" href="../../d4/d7d/a00093.html" title=" " alt="" coords="9,5,149,32"/>
 </map>
 <center><span class="legend">[<a href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:a105dea24d7d611c7b81482f7bde78263"><td class="memItemLeft" align="right" valign="top"><a id="a105dea24d7d611c7b81482f7bde78263"></a>enum &#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a105dea24d7d611c7b81482f7bde78263"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9690bcfe4a9698846510bcc449194c6a"><td class="memItemLeft" align="right" valign="top"><a id="a9690bcfe4a9698846510bcc449194c6a"></a>
-typedef double&#160;</td><td class="memItemRight" valign="bottom"><b>Scalar</b></td></tr>
-<tr class="separator:a9690bcfe4a9698846510bcc449194c6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ca96c10c4cc9e5675bacdece3a2fc2f"><td class="memItemLeft" align="right" valign="top"><a id="a2ca96c10c4cc9e5675bacdece3a2fc2f"></a>
-typedef Eigen::Matrix&lt; Scalar, InputsAtCompileTime, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>InputType</b></td></tr>
-<tr class="separator:a2ca96c10c4cc9e5675bacdece3a2fc2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af12649ca2bf886db4b17fce52dce039d"><td class="memItemLeft" align="right" valign="top"><a id="af12649ca2bf886db4b17fce52dce039d"></a>
-typedef Eigen::Matrix&lt; Scalar, ValuesAtCompileTime, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ValueType</b></td></tr>
-<tr class="separator:af12649ca2bf886db4b17fce52dce039d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af10cf1e76d256879b187978e2b3eea73"><td class="memItemLeft" align="right" valign="top"><a id="af10cf1e76d256879b187978e2b3eea73"></a>
-typedef Eigen::Matrix&lt; Scalar, ValuesAtCompileTime, InputsAtCompileTime &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>JacobianType</b></td></tr>
-<tr class="separator:af10cf1e76d256879b187978e2b3eea73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a454e6ed1cc13ef9fb0665b2d7153c603"><td class="memItemLeft" align="right" valign="top"><a id="a454e6ed1cc13ef9fb0665b2d7153c603"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ConductanceFunc</b> (<a class="el" href="../../d3/d32/a00105.html">Circuit::Schematic</a> *schem, <a class="el" href="../../d4/d3a/a00101.html">Circuit::ParamTable</a> *param, double time, double timestep, int NUM_NODES)</td></tr>
-<tr class="separator:a454e6ed1cc13ef9fb0665b2d7153c603"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab70732ab618fe36b1a1a1b20a6560231"><td class="memItemLeft" align="right" valign="top"><a id="ab70732ab618fe36b1a1a1b20a6560231"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const Eigen::VectorXd &amp;vDiff, Eigen::VectorXd &amp;fvec) const</td></tr>
-<tr class="separator:ab70732ab618fe36b1a1a1b20a6560231"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fd3c59fec65e01f2d4fea40c16d9a31"><td class="memItemLeft" align="right" valign="top"><a id="a2fd3c59fec65e01f2d4fea40c16d9a31"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getVdif</b> (const Eigen::VectorXd &amp;vDiff, Eigen::VectorXd &amp;fvec) const</td></tr>
-<tr class="separator:a2fd3c59fec65e01f2d4fea40c16d9a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36a7d6d811211a5bdd20513535d76c9b"><td class="memItemLeft" align="right" valign="top"><a id="a36a7d6d811211a5bdd20513535d76c9b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>getVoltageVector</b> (const Eigen::VectorXd &amp;vDiff, Eigen::VectorXd &amp;fvec)</td></tr>
-<tr class="separator:a36a7d6d811211a5bdd20513535d76c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98d1cf500f408428413a688f072b93ed"><td class="memItemLeft" align="right" valign="top"><a id="a98d1cf500f408428413a688f072b93ed"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>inputs</b> () const</td></tr>
-<tr class="separator:a98d1cf500f408428413a688f072b93ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af869ac9e668e12e78a7e82a219263e31"><td class="memItemLeft" align="right" valign="top"><a id="af869ac9e668e12e78a7e82a219263e31"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>values</b> () const</td></tr>
-<tr class="separator:af869ac9e668e12e78a7e82a219263e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f5d257b217ee62d89ff33d5dc84d370"><td class="memItemLeft" align="right" valign="top"><a id="a8f5d257b217ee62d89ff33d5dc84d370"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Current</b> (const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, <a class="el" href="../../d4/d7d/a00093.html">Schematic</a> *schem)</td></tr>
+<tr class="separator:a8f5d257b217ee62d89ff33d5dc84d370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bac1a9632aab0763c709509bd5ccba6"><td class="memItemLeft" align="right" valign="top"><a id="a6bac1a9632aab0763c709509bd5ccba6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Current</b> (const std::string &amp;name, double DC, const std::string &amp;nodePos, const std::string &amp;nodeNeg, <a class="el" href="../../d4/d7d/a00093.html">Schematic</a> *schem)</td></tr>
+<tr class="separator:a6bac1a9632aab0763c709509bd5ccba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33aa99aff49b8f70a97a2e7dbf6ac86c"><td class="memItemLeft" align="right" valign="top"><a id="a33aa99aff49b8f70a97a2e7dbf6ac86c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isCurrent</b> () const override</td></tr>
+<tr class="separator:a33aa99aff49b8f70a97a2e7dbf6ac86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf7dd0efa2a3bb19d76daa75279f5387"><td class="memItemLeft" align="right" valign="top"><a id="aaf7dd0efa2a3bb19d76daa75279f5387"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrent</b> (<a class="el" href="../../db/dab/a00089.html">ParamTable</a> *param, double t, double timestep=0, bool useNeg=false) const override</td></tr>
+<tr class="separator:aaf7dd0efa2a3bb19d76daa75279f5387"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4a7275d30c5c64b3070fd17949d73af"><td class="memItemLeft" align="right" valign="top"><a id="ad4a7275d30c5c64b3070fd17949d73af"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>getSourceOutput</b> (<a class="el" href="../../db/dab/a00089.html">ParamTable</a> *param, double t) const</td></tr>
+<tr class="separator:ad4a7275d30c5c64b3070fd17949d73af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a900654e021bda70bd63c8392482d9dd5"><td class="memItemLeft" align="right" valign="top"><a id="a900654e021bda70bd63c8392482d9dd5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isSource</b> () const override</td></tr>
+<tr class="separator:a900654e021bda70bd63c8392482d9dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41284914b3854fd43f1b15e99acf45c6"><td class="memItemLeft" align="right" valign="top"><a id="a41284914b3854fd43f1b15e99acf45c6"></a>
+virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>getConductance</b> (<a class="el" href="../../db/dab/a00089.html">ParamTable</a> *param, double timestep) const</td></tr>
+<tr class="separator:a41284914b3854fd43f1b15e99acf45c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d0b6ad581cc8f66aa307f6fec664d9a"><td class="memItemLeft" align="right" valign="top"><a id="a8d0b6ad581cc8f66aa307f6fec664d9a"></a>
+<a class="el" href="../../d1/d84/a00097.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getPosNode</b> () const</td></tr>
+<tr class="separator:a8d0b6ad581cc8f66aa307f6fec664d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43865f7c41acb1889e75e38e1bb8d729"><td class="memItemLeft" align="right" valign="top"><a id="a43865f7c41acb1889e75e38e1bb8d729"></a>
+<a class="el" href="../../d1/d84/a00097.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getNegNode</b> () const</td></tr>
+<tr class="separator:a43865f7c41acb1889e75e38e1bb8d729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e534c433adafc46488578535014d58a"><td class="memItemLeft" align="right" valign="top"><a id="a2e534c433adafc46488578535014d58a"></a>
+virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>getVoltage</b> () const</td></tr>
+<tr class="separator:a2e534c433adafc46488578535014d58a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafd7ef7fa834ff890112ab6fc0c11217"><td class="memItemLeft" align="right" valign="top"><a id="aafd7ef7fa834ff890112ab6fc0c11217"></a>
+virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>getValue</b> (<a class="el" href="../../db/dab/a00089.html">ParamTable</a> *param) const</td></tr>
+<tr class="separator:aafd7ef7fa834ff890112ab6fc0c11217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5525a6692da8ba8e646c1c152493fd94"><td class="memItemLeft" align="right" valign="top"><a id="a5525a6692da8ba8e646c1c152493fd94"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>setValue</b> (<a class="el" href="../../db/dab/a00089.html">ParamTable</a> *param, double value)</td></tr>
+<tr class="separator:a5525a6692da8ba8e646c1c152493fd94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a51d266b39cceaf11a09f7dc7b12c9bf8"><td class="memItemLeft" align="right" valign="top"><a id="a51d266b39cceaf11a09f7dc7b12c9bf8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>time</b> = 0</td></tr>
-<tr class="separator:a51d266b39cceaf11a09f7dc7b12c9bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3a406477777a82f822264db381166d5"><td class="memItemLeft" align="right" valign="top"><a id="ad3a406477777a82f822264db381166d5"></a>
-<a class="el" href="../../d3/d32/a00105.html">Circuit::Schematic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>schem</b></td></tr>
-<tr class="separator:ad3a406477777a82f822264db381166d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8e803c5cf872cc7b354ce7c0156d16c"><td class="memItemLeft" align="right" valign="top"><a id="aa8e803c5cf872cc7b354ce7c0156d16c"></a>
-<a class="el" href="../../d4/d3a/a00101.html">Circuit::ParamTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>param</b></td></tr>
-<tr class="separator:aa8e803c5cf872cc7b354ce7c0156d16c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a645e38883f1a7a237778355b453a515b"><td class="memItemLeft" align="right" valign="top"><a id="a645e38883f1a7a237778355b453a515b"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>timestep</b></td></tr>
-<tr class="separator:a645e38883f1a7a237778355b453a515b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10ddc27daf1253386208a96d936d02c7"><td class="memItemLeft" align="right" valign="top"><a id="a10ddc27daf1253386208a96d936d02c7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>NUM_NODES</b> = 0</td></tr>
-<tr class="separator:a10ddc27daf1253386208a96d936d02c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86b97d099c68afa31fb6bce8e1c73392"><td class="memItemLeft" align="right" valign="top"><a id="a86b97d099c68afa31fb6bce8e1c73392"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>m_inputs</b></td></tr>
-<tr class="separator:a86b97d099c68afa31fb6bce8e1c73392"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43ff0ecbd037627beca75d0994159e7e"><td class="memItemLeft" align="right" valign="top"><a id="a43ff0ecbd037627beca75d0994159e7e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>m_values</b></td></tr>
-<tr class="separator:a43ff0ecbd037627beca75d0994159e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48d1f5ff3fbd776cc95360af892fe21e"><td class="memItemLeft" align="right" valign="top"><a id="a48d1f5ff3fbd776cc95360af892fe21e"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
+<tr class="separator:a48d1f5ff3fbd776cc95360af892fe21e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa073d8c2ce8edbefc141538256511c17"><td class="memItemLeft" align="right" valign="top"><a id="aa073d8c2ce8edbefc141538256511c17"></a>
+std::vector&lt; <a class="el" href="../../d1/d84/a00097.html">Node</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>nodes</b></td></tr>
+<tr class="separator:aa073d8c2ce8edbefc141538256511c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:aa3f547b26b7d754e152fcfd02e58464e"><td class="memItemLeft" align="right" valign="top"><a id="aa3f547b26b7d754e152fcfd02e58464e"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>DC</b> = 0</td></tr>
+<tr class="separator:aa3f547b26b7d754e152fcfd02e58464e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5f34a45924bb811deeb18adf5afb7c3"><td class="memItemLeft" align="right" valign="top"><a id="ac5f34a45924bb811deeb18adf5afb7c3"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>smallSignalAmp</b> = 0</td></tr>
+<tr class="separator:ac5f34a45924bb811deeb18adf5afb7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0320e6929b02099a5d198a1f3783a2bd"><td class="memItemLeft" align="right" valign="top"><a id="a0320e6929b02099a5d198a1f3783a2bd"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>SINE_DC_offset</b> = 0</td></tr>
+<tr class="separator:a0320e6929b02099a5d198a1f3783a2bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1370f5f9b7da4ca8249e58873b9ef5a1"><td class="memItemLeft" align="right" valign="top"><a id="a1370f5f9b7da4ca8249e58873b9ef5a1"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>SINE_amplitude</b> = 0</td></tr>
+<tr class="separator:a1370f5f9b7da4ca8249e58873b9ef5a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44a791b6266126ec376a966910a45da5"><td class="memItemLeft" align="right" valign="top"><a id="a44a791b6266126ec376a966910a45da5"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>SINE_frequency</b> = 0</td></tr>
+<tr class="separator:a44a791b6266126ec376a966910a45da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad53e31bcadb1b719d9650cc98c6687da"><td class="memItemLeft" align="right" valign="top"><a id="ad53e31bcadb1b719d9650cc98c6687da"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>i_prev</b> = 0.0</td></tr>
+<tr class="separator:ad53e31bcadb1b719d9650cc98c6687da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a384f325a658fdb1bd8955b9e964d83ff"><td class="memItemLeft" align="right" valign="top"><a id="a384f325a658fdb1bd8955b9e964d83ff"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>value</b></td></tr>
+<tr class="separator:a384f325a658fdb1bd8955b9e964d83ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b09a53ab30e745a6f4d4112093fbde7"><td class="memItemLeft" align="right" valign="top"><a id="a3b09a53ab30e745a6f4d4112093fbde7"></a>
+<a class="el" href="../../d4/d7d/a00093.html">Schematic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>schem</b></td></tr>
+<tr class="separator:a3b09a53ab30e745a6f4d4112093fbde7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47979455563ad42161c039e545d57e50"><td class="memItemLeft" align="right" valign="top"><a id="a47979455563ad42161c039e545d57e50"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>variableDefined</b> = false</td></tr>
+<tr class="separator:a47979455563ad42161c039e545d57e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb289ed1658a5dc51a12b3da77c7b276"><td class="memItemLeft" align="right" valign="top"><a id="aeb289ed1658a5dc51a12b3da77c7b276"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>variableName</b></td></tr>
+<tr class="separator:aeb289ed1658a5dc51a12b3da77c7b276"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:aeb6461ca18414f5c4aaa57746cafe74e"><td class="memItemLeft" align="right" valign="top"><a id="aeb6461ca18414f5c4aaa57746cafe74e"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>Capacitor</b></td></tr>
+<tr class="separator:aeb6461ca18414f5c4aaa57746cafe74e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="../../db/db2/a00020_source.html">circuit_simulator.hpp</a></li>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="../../db/db2/a00020_source.html">circuit_source.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,4 +1,5 @@
-<map id="ConductanceFunc" name="ConductanceFunc">
-<area shape="rect" id="node1" title=" " alt="" coords="9,80,145,107"/>
-<area shape="rect" id="node2" href="$d1/d09/a00077.html" title=" " alt="" coords="5,5,149,32"/>
+<map id="Circuit::Current" name="Circuit::Current">
+<area shape="rect" id="node1" title=" " alt="" coords="19,155,139,181"/>
+<area shape="rect" id="node2" href="$d1/d09/a00077.html" title=" " alt="" coords="21,80,137,107"/>
+<area shape="rect" id="node3" href="$d4/d3a/a00101.html" title=" " alt="" coords="5,5,152,32"/>
 </map>

@@ -220,11 +220,9 @@ INPUT                  += "README.md"
 
 INPUT_ENCODING         = UTF-8
 
-
 FILE_PATTERNS          = circuit*.hpp
 
 RECURSIVE              = NO
-
 
 EXCLUDE                =
 
@@ -243,10 +241,6 @@ EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = NO
 
 IMAGE_PATH             =
-
-
-
-
 
 INPUT_FILTER           =
 
