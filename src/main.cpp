@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     if (inputFile.fail())
     {
-        std::cerr << "File: " << stringFlags["inputFileName"] << " was not found!\n";
+        std::cerr << "File: " << stringFlags["inputFilePath"] << " was not found!\n";
         exit(1);
     }
 
