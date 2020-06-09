@@ -25,11 +25,7 @@ target_link_libraries(simulator eigen)
 
 # Installations
 install(TARGETS simulator RUNTIME DESTINATION bin)
-install(FILES ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin PERMISSIONS OWNER_EXECUTE)
 
 # Test Executables
 add_subdirectory(test)
-
-# Cpack
-include(CPack)
-
