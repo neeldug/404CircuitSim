@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_library(eigen INTERFACE)
 target_include_directories(eigen INTERFACE lib/Eigen)
 
-# Add hayai benchmarking 
+# Add hayai benchmarking
 add_library(hayai INTERFACE)
 target_include_directories(hayai INTERFACE lib/hayai)
 
@@ -28,4 +28,4 @@ install(TARGETS simulator RUNTIME DESTINATION bin)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin PERMISSIONS OWNER_READ OWNER_EXECUTE)
 
 # Test Executables
-add_subdirectory(test)  
+add_subdirectory(test)
