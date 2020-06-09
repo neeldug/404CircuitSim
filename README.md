@@ -66,8 +66,9 @@ And follow the on screen instructions.
 -f      <format>    specify output format, either csv or space
 -p      <list>      plots output, space separated list specifies columns to plot
 -c                  shows names of columns in output file, blocks -p and doesn't plot result
+-h                  shows this help information
 
-Usage: simulator -i filename -p list [-c] [ -o outputdir ] [ -f csv ]
+Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]
 
 Examples:
 

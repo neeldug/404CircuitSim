@@ -13,7 +13,7 @@ std::string showHelp()
         "-p\t\t<list>\t\tplots output, space separated list specifies columns to plot\n"
         "-c\t\t\t\tshows names of columns in output file, blocks -p i.e. doesn't plot result\n"
         "-h\t\t\t\tshows this help information\n\n"
-        "Usage: simulator -i filename -p list [-c] [ -o outputdir ] [ -f csv ]\n\n"
+        "Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]\n\n"
         "Examples\n\n"
         "Plot Specific Columns:\n"
         "\tsimulator -i test.net -p 'V(N001) V(N002)'\n\n"
