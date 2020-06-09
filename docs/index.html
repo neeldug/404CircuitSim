@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>404 Circuit Simulator: 404 Circuit Simulator</title>
+<title>404 Circuit Simulator: Main Page</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,53 +64,55 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">404 Circuit Simulator </div>  </div>
+<div class="title">404 Circuit Simulator Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> </p>
-<h1><a class="anchor" id="autotoc_md1"></a>
-Table of Contents</h1>
+<div class="textblock"><p><a class="anchor" id="md_README"></a></p><div class="fragment"><div class="line">┏━╸┏━┓┏━┓┏━┓┏━┓   ╻ ╻┏━┓╻ ╻   ┏━┓╻┏┳┓╻ ╻╻  ┏━┓╺┳╸┏━┓┏━┓</div>
+<div class="line">┣╸ ┣┳┛┣┳┛┃ ┃┣┳┛   ┗━┫┃┃┃┗━┫   ┗━┓┃┃┃┃┃ ┃┃  ┣━┫ ┃ ┃ ┃┣┳┛</div>
+<div class="line">┗━╸╹┗╸╹┗╸┗━┛╹┗╸     ╹┗━┛  ╹   ┗━┛╹╹ ╹┗━┛┗━╸╹ ╹ ╹ ┗━┛╹┗╸</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md0"></a>
+Table of Contents</h2>
 <ol type="1">
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#authors">Authors</a></li>
 </ol>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Introduction</h1>
-<h1><a class="anchor" id="autotoc_md3"></a>
-Getting Started</h1>
-<h2><a class="anchor" id="autotoc_md4"></a>
-System Requirements</h2>
-<h3><a class="anchor" id="autotoc_md5"></a>
-Operating System</h3>
+<h2><a class="anchor" id="autotoc_md1"></a>
+Introduction</h2>
+<h2><a class="anchor" id="autotoc_md2"></a>
+Getting Started</h2>
+<h3><a class="anchor" id="autotoc_md3"></a>
+System Requirements</h3>
+<h4><a class="anchor" id="autotoc_md4"></a>
+Operating System</h4>
 <ul>
 <li>Linux: Ubuntu 18.04 or higher</li>
 <li>MacOS: Catalina 10.15 or higher</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md6"></a>
-Terminal Shell</h3>
+<h4><a class="anchor" id="autotoc_md5"></a>
+Terminal Shell</h4>
 <ul>
 <li>bash (recommended)</li>
 <li>sh</li>
 <li>zsh</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md7"></a>
-CMake</h2>
+<h3><a class="anchor" id="autotoc_md6"></a>
+CMake</h3>
 <p>CMake is used for building and managing dependencies. To install CMake, [click here](). To confirm if CMake is installed correctly on your machine, run: </p><div class="fragment"><div class="line">cmake --version</div>
 </div><!-- fragment --><p>The version of CMake installed should come up. CMake 3.16.X is required!</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
-Python (Only for the graphing tool)</h2>
+<h3><a class="anchor" id="autotoc_md7"></a>
+Python (Only for the graphing tool)</h3>
 <p>To use the in built graphing tool, Python 3 is required. To install python, <a href="https://docs.python-guide.org/starting/installation/">click here</a>. To confirm if Python 3 is installed correctly on your machine, run: </p><div class="fragment"><div class="line">python3</div>
 </div><!-- fragment --><p>An interactive shell should come up showing the python version. Python 3.X is required!</p>
 <p>Once Python 3 has been correctly installed, navigate to the root directory and run: </p><div class="fragment"><div class="line">python3 -m pip install -r requirements.txt</div>
 </div><!-- fragment --><p>To install the necessary packages required for the graphing tool to work.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
-Installing</h2>
+<h3><a class="anchor" id="autotoc_md8"></a>
+Installing</h3>
 <p>To install the simulator, navigate to the build directory and run: </p><div class="fragment"><div class="line">./install.sh</div>
 </div><!-- fragment --><p>And follow the on screen instructions.</p>
-<h1><a class="anchor" id="autotoc_md10"></a>
-Usage</h1>
+<h2><a class="anchor" id="autotoc_md9"></a>
+Usage</h2>
 <div class="fragment"><div class="line">-i      &lt;file&gt;      path to input netlist</div>
 <div class="line">-o      &lt;dir&gt;       path to output directory</div>
 <div class="line">-f      &lt;format&gt;    specify output format, either csv or space</div>
@@ -126,8 +128,8 @@ Usage</h1>
 <div class="line"> </div>
 <div class="line">Plot All Columns:</div>
 <div class="line">    simulator -i test.net -p &#39;&#39;</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md11"></a>
-Authors</h1>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
+Authors</h2>
 <ul>
 <li><a href="https://github.com/jjlehner">Jonah Lehner</a></li>
 <li><a href="https://github.com/SamtheSaint">Samuel Adekunle</a></li>
