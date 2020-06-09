@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import plotly.io as pio
 import plotly.express as px
 import pandas as pd

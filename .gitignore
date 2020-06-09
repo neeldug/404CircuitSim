@@ -5,6 +5,7 @@ build/*
 out/*
 env/*
 !build.sh
+!install.sh
 .vscode
 test/CMakeLists.txt
 *.raw

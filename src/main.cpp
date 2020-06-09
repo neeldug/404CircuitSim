@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::string systemCall = "python3 " + parentPath + "/bin/plot.py" + " '" + outputPath + "' ";
+        std::string systemCall = "plot.py '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         }
         if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            system(systemCall.c_str());
+            int ret = system(systemCall.c_str());
         }
     }
     return 0;
