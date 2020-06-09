@@ -141,7 +141,6 @@ private:
 				assert( params.size() >= 4 && "Resistor - too few params" );
 				std::string nodeA = params[1];
 				std::string nodeB = params[2];
-
 				if(params[3][0] == '{'){
 					//Variable defined
 					std::string variableName = params[3];

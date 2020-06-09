@@ -12,11 +12,12 @@ namespace fs = std::filesystem;
 
 void writeFile( const std::string& folder, const std::stringstream &save, const std::vector<std::string> &variables )
 {
-	std::cout<<folder<<std::endl;
 	std::string fileName = folder;
 	for(auto x: variables){
 		fileName += x + ",";
 	}
+	std::cout<<fileName<<std::endl;
+
 	fileName+=".csv";
 	std::ofstream outFile;
 	outFile.open(fileName);
@@ -64,7 +65,6 @@ void separate(const std::string &folder, const std::string &fileName){
 		}
 		else{
 			while(replace(line,"\t",","));
-			std::cout<<line<<std::endl;
 			currentSave<<line<<"\n";
 			firstLoop = false;
 		}
