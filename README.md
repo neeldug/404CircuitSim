@@ -3,252 +3,76 @@
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Folder Structure](#folder-structure)
-3. [Getting Started](#getting-started)
-4. [Technical Documentation](#technical-documentation)
-5. [Authors](#authors)
+2. [Getting Started](#getting-started)
+2. [Usage](#usage)
+3. [Authors](#authors)
 
 ## Introduction
 
-TODO - Add Project Introduction Aim and Motivation (Probably at the end)
-
-## Folder Structure
-
-``` 
-├── bin
-├── build
-│   └── build.sh
-├── CMakeLists.txt
-├── include
-│   ├── circuit_diode.hpp
-│   ├── circuit.hpp
-│   ├── circuit_linear.hpp
-│   ├── circuit_math.hpp
-│   ├── circuit_mosfet.hpp
-│   ├── circuit_parser.hpp
-│   ├── circuit_source.hpp
-│   ├── circuit_structure.hpp
-│   ├── circuit_transistor.hpp
-│   └── symbolic.hpp
-├── lib
-│   └── symbolic
-├── src
-│   ├── main.cpp
-│   ├── math
-│   │   └── math.cpp
-│   └── parser
-│       └── parser.cpp
-├── test
-│   ├── parser_test.cpp
-│   ├── SpiceNetlists
-│   │   └── test.cir
-│   └── test_math.cpp
-```
+<!-- TODO - Add Project Introduction Aim and Motivation (Probably at the end) -->
 
 ## Getting Started
 
-TODO - Add Getting Started Steps (Probably Last Thing) also add command line option etc
+### System Requirements
 
-## Technical Documentation
+#### Operating System
 
-### Project Specification
+ - Linux: Ubuntu 18.04 or higher
+ - MacOS: Catalina 10.15 or higher
 
- - Input Format: The circuit simulator should read an input file that defines the circuit and the simulation. The format of the input file is compatible with SPICE, but you only need to support a subset of the features of SPICE, which are described in [this document](spec.pdf).
+#### Terminal Shell
 
- - Output Format: The output format will be a ?? (TODO)
+ - bash (recommended)
+ - sh
+ - zsh
 
-### API Documentation
+### CMake
 
-The API of the Circuit Simulator is a header only library, where each header file defines one or more classes that are used in the cpp files. All classes are namespaced under circuit to avoid conflicts.
-
-#### Classes
-
-``` 
- - Circuit::Schematic       # circuit abstraction
- - Circuit::Node            # circuit node abstraction
- - Circuit::Parser          # controls input
- - Circuit::Simulator       # controls output
- - Circuit::Math            # provides math functions
-
- - Circuit::Component       # component abstraction
- - Circuit::Resistor        # resistor abstraction
- - Circuit::Capacitor       # capacitor abstraction
- - Circuit::Inductor        # inductor abstraction
- - Circuit::Diode           # diode abstraction
- - Circuit::Transistor      # transistor abstraction
- - Circuit::Mosfet          # mosfet abstraction
-
- - Circuit::Source          # power source abstraction
- - Circuit::Voltage         # voltage source abstraction
- - Circuit::Current         # current source abstraction
- ```
-
-#### Circuit::Schematic
-
-```c++
-
-    Schematic();
-    std::function<int()> id;
-    std::string title;
-    std::map<std::string, Node *> nodes;
-    std::map<std::string, Component *> comps;
-    std::vector<Simulation *> sims;
-    void out() const;
-    void setupConnections2Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB );
-    void setupConnections3Node( Circuit::Component *linear, const std::string& nodeA, const std::string& nodeB, const std::string& nodeC );
-
-``` 
-
-#### Circuit::Node
-
-```c++
-
-	Node(const std::string &name, Circuit::Schematic * schem);
-    double voltage;
-    std::vector<Component *> comps;
-    void print() const;
-    std::string getName() const;
-    int getId() const;
-
+CMake is used for building and managing dependencies. To install CMake, [click here](). To confirm if CMake is installed correctly on your machine, run:
+```bash
+cmake --version
 ```
+The version of CMake installed should come up. CMake 3.16.X is required!
 
-#### Circuit::Parser
+### Python (Only for the graphing tool)
 
-```c++
-
-	static Circuit::Schematic* parse( std::istream& inputStream );
-
-``` 
-
-#### Circuit::Simulator
-
-```c++
-
-    static enum SimulationType;
-    Simulator( Circuit::Schematic *schem, SimulationType type );
-    const SimulationType type;
-    void run();
-
+To use the in built graphing tool, Python 3 is required. To install python, [click here](https://docs.python-guide.org/starting/installation/). To confirm if Python 3 is installed correctly on your machine, run:
+```bash
+python3
 ```
+An interactive shell should come up showing the python version. Python 3.X is required!
 
-#### Circuit::Math
-
-```c++
-
-TODO - Add Math definitions
-
-``` 
-
-#### Circuit::Component
-
-```c++
-
-    std::string name;
-    std::vector<Node *> nodes;
-    virtual double conductance(ParamTable *param) const
-    Node* getPosNode() const
-    Node* getNegNode() const
-    double current() const
-    void print() const
-    virtual double getValue(ParamTable *param) const
-    virtual bool isSource() const
-
+Once Python 3 has been correctly installed, navigate to the root directory and run:
+```bash
+python3 -m pip install -r requirements.txt
 ```
+To install the necessary packages required for the graphing tool to work.
 
-#### Circuit::Resistor
+### Installing
 
-```c++
-
-    Resistor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
-    double conductance() const override
-
-``` 
-
-#### Circuit::Capacitor
-
-```c++
-
-    double DC_init;
-    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
-    Capacitor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem, double DC_init)
-    double conductance() const override
-
+To install the simulator, navigate to the build directory and run:
+```bash
+./install.sh
 ```
+And follow the on screen instructions.
 
-#### Circuit::Inductor
-
-```c++
-
-    double I_init;
-    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic* schem)
-    Inductor(const std::string &name, double value, const std::string &nodeA, const std::string &nodeB, Schematic *schem, double I_init)
-    double conductance() const override
-
-``` 
-
-#### Circuit::Diode
-
-```c++
-
-	double IS=0.1;
-	double RS=16;
-	double CJO=2e-12;
-	double TT=12e-9;
-	double BV=100;
-	double IBV=0.1e-12;
-	Diode( const std::string &name, const std::string &nodeA, const std::string &nodeB, const std::string &model, Schematic* schem)
-	void assignModel( std::vector<std::string> params )
-	double conductance() const override
-	std::string getModelName()
-	virtual double getValue() override
-
+## Usage
 ```
+-i      <file>      path to input netlist
+-o      <dir>       path to output directory
+-f      <format>    specify output format, either csv or space
+-p      <list>      plots output, space separated list specifies columns to plot, empty string indicates plot all
+-c                  shows names of columns in output file, blocks -p and doesn't plot result
 
-#### Circuit::Transistor
+Usage: simulator -i filename -p list [-c] [ -o outputdir ] [ -f csv ]
 
-```c++
+Examples:
 
-	double BF=100;
-	double IS=1e-16;
-	double VAF=std::numeric_limits<double>::max();
-	bool model_CE_resistance = false;
-	TType transistorType;
-	Transistor( const std::string &name, const std::string &nodeCollector, const std::string &nodeBase, const std::string &nodeEmitter, const std::string &model, Schematic* schem)
-	void assignModel( std::vector<std::string> params )
-	double conductance() const override
-	std::string getModelName()
-	virtual double getValue() override
+Plot Specific Columns:
+    simulator -i test.net -p 'V(N001) V(N002)'
 
-``` 
-
-#### Circuit::Source
-
-```c++
-
-	double getSourceOutput( ParamTable* param, double t )
-	virtual bool isSource() const override
-	virtual bool isCurrent() const = 0;
-
-```
-
-#### Circuit::Voltage
-
-```c++
-
-	Voltage( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset ,double SINE_amplitude, double SINE_frequency, Schematic* schem )
-	Voltage( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem )
-	bool isCurrent() const override
-
-``` 
-
-#### Circuit::Current
-
-```c++
-
-	Current( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, double smallSignalAmp, double SINE_DC_offset, double SINE_amplitude, double SINE_frequency, Schematic* schem )
-	Current( const std::string &name, double DC, const std::string &nodePos, const std::string &nodeNeg, Schematic *schem )
-	bool isCurrent() const override
-
+Plot All Columns:
+    simulator -i test.net -p ''
 ```
 
 ## Authors

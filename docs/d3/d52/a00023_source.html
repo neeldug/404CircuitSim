@@ -217,8 +217,8 @@ $(function() {
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">return</span> getPosNode()-&gt;voltage - getNegNode()-&gt;voltage;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    }</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">double</span> getCurrent(<a class="code" href="../../d1/dc1/a00092.html">ParamTable</a> *param, <span class="keywordtype">double</span> time = 0, <span class="keywordtype">double</span> timestep = 0)</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    {</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">double</span> getCurrent(<a class="code" href="../../d1/dc1/a00092.html">ParamTable</a> *param, <span class="keywordtype">double</span> time = 0, <span class="keywordtype">double</span> timestep = 0, <span class="keywordtype">bool</span> useNeg = <span class="keyword">false</span>)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">return</span> getVoltage() * getConductance(param, time);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
