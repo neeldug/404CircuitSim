@@ -1,12 +1,8 @@
-* D:\home\jjl119\Imperial\SummerProject\404CircuitSim\test\SpiceNetlists\Draft4.asc
-D1 0 N001 D
-D2 0 N003 D
-D4 N003 N002 D
-R1 N002 0 {R}
-V2 N001 N003 SINE(0 5 1000)
-D3 N001 N002 D
-.model D D
-.step dec param R 10 10000 1
+* D:\home\jjl119\Imperial\Draft4.asc
+V1 N002 0 5
+R2 N001 0 {R}
+C1 N001 N002 10µ
+.STEP PARAM R 100 1000 100
 .tran 0 10m 0 0.01m
 .backanno
 .end

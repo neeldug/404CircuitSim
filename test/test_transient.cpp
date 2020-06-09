@@ -1,13 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <circuit.hpp>
-
 #include <filesystem>
+
 namespace fs = std::filesystem;
 int main()
 {
 	std::ifstream netlist;
-	netlist.open("test/SpiceNetlists/multipleVoltageSources.cir");
+	netlist.open("test/SpiceNetlists/transientExample.cir");
 	if (netlist.fail())
 	{
 		std::cerr << "File Not Found! " << fs::current_path() << " out" << std::endl;
