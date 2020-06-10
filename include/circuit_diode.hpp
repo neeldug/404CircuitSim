@@ -36,7 +36,6 @@ public:
 			{
 				value = 0;
 			}
-			std::cerr<<value<<std::endl;
 
 		}
 		void setNodes(Node *pos, Node *neg)
@@ -80,7 +79,6 @@ public:
 		{
 			capacitorCurrent = 0;
 		}
-		std::cerr<<capacitorCurrent<<std::endl;
 		double current = capacitorCurrent;
 		return capacitorCurrent;
 	}
