@@ -1,8 +1,9 @@
 * C:\Program Files\LTC\LTspiceXVII\Draft1.asc
 D1 N001 N002 D
+D2 N002 N001 D
 R1 N002 0 1000
-V1 N001 0 SINE(0 5 1)
+V1 N001 0 SINE(0 5 1k)
 .model D D
-.tran 0 3 0 0.01
+.tran 0 3m 0 0.01m
 .backanno
 .end
