@@ -48,7 +48,7 @@ public:
 	};
 
 private:
-	IterationType itType = Newton;
+	IterationType itType = Levenberg;
 	bool nonLinear = false;
 	std::function<int()> createIDGenerator(int &start) const
 	{

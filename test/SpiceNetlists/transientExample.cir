@@ -1,9 +1,9 @@
 * C:\Program Files\LTC\LTspiceXVII\Draft1.asc
-D1 N001 N002 D
-D2 N002 N001 D
-R1 N002 0 1000
-V1 N001 0 SINE(0 5 1k)
+V1 N001 0 SINE(0 0.2 1000)
+D1 N002 0 D
+R1 N002 N001 1000
 .model D D
-.tran 0 3m 0 0.01m
+.lib C:\users\jjl119\My Documents\LTspiceXVII\lib\cmp\standard.dio
+.tran 0 5m 0 0.001m
 .backanno
 .end

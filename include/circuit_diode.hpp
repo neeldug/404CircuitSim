@@ -14,7 +14,7 @@ private:
 	double BV = 100;
 	double IBV = 0.1e-10;
 	double VJ = 1;
-	const double GMIN = 1e-5;
+	const double GMIN = 0;
 	const double V_T = 25e-3;
 
 public:
@@ -36,6 +36,8 @@ public:
 			{
 				value = 0;
 			}
+			std::cerr<<value<<std::endl;
+
 		}
 		void setNodes(Node *pos, Node *neg)
 		{
@@ -78,13 +80,14 @@ public:
 		{
 			capacitorCurrent = 0;
 		}
+		std::cerr<<capacitorCurrent<<std::endl;
 		double current = capacitorCurrent;
 		return capacitorCurrent;
 	}
 
 	double getCurrent(ParamTable *param, double time, double timestep, bool useNeg = false) const override
 	{
-		return getVoltage() * parralelAdd(1.0 / 100.0, (GMIN + inst_conductance))+ getVoltage() * para_cap->getConductance(param, timestep);
+		return getVoltage() * parallelAdd(1.0 / 100.0, (GMIN + inst_conductance))+ para_cap->getCurrent(param, time, timestep, useNeg);
 	}
 	std::string getModelName()
 	{
@@ -94,7 +97,7 @@ public:
 	{
 		delete para_cap;
 	}
-	double parralelAdd(const double &a, const double &b) const
+	double parallelAdd(const double &a, const double &b) const
 	{
 		double result = 1.0 / a + 1.0 / b;
 		result = 1 / result;
@@ -116,7 +119,7 @@ public:
 		double vPrev = getVoltage();
 		para_cap->setCap(vPrev, this->CJ0, this->VJ);
 		double capConductance = para_cap->getConductance(param, timestep);
-		return parralelAdd(1.0 / 100.0, (GMIN + inst_conductance)) + capConductance;
+		return parallelAdd(1.0 / 100.0, (GMIN + inst_conductance)) + capConductance;
 	}
 	void setConductance(ParamTable *param, double timestep, double vGuess)
 	{
