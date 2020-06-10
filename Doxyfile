@@ -316,6 +316,8 @@ HTML_EXTRA_STYLESHEET  =
 
 HTML_EXTRA_FILES       = test/graphs/out.html
 
+HTML_EXTRA_FILES       += test/EvalTests/SingleDiode_test/diode.html
+
 HTML_COLORSTYLE_HUE    = 220
 
 HTML_COLORSTYLE_SAT    = 100
