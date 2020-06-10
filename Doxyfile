@@ -272,9 +272,6 @@ REFERENCES_LINK_SOURCE = YES
 
 SOURCE_TOOLTIPS        = YES
 
-
-
-
 USE_HTAGS              = NO
 
 VERBATIM_HEADERS       = YES
@@ -304,7 +301,6 @@ GENERATE_HTML          = YES
 HTML_OUTPUT            = docs
 
 HTML_FILE_EXTENSION    = .html
-
 
 HTML_HEADER            =
 
