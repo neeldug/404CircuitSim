@@ -80,7 +80,7 @@ Table of Contents</h2>
 </ol>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Introduction</h2>
-<p>Initially we were aiming simply to fulfil the brief of creating a circuit simulator that emulates the behaviour of LT Spice, but instead having a completely command line interface. Our motivations to build this project, were to produce a cross platform compatible simulator while keeping the compute power to a minimum, to essentially remove all of the bloat in LT Spice. Our goals were to produce an LT Spice clone that would be faster, provide stronger support for standard output formats, and lastly implement our knowledge of C++ and Linear Algebra in this project.</p>
+<p>The aim of this project was to fully implement the functionality of LT Spice from a command line interface (CLI). The motivations to build this project originated in irritation of LT Spice's poor cross platform compatibility and interest in developing a deeper understanding in the internal workings of a circuit simulator. This project also seeks to provide stronger support for standard output formats compared to LT Spice and make it simpler and easier to use the output of a simulation in another program. Our in-built plotter also aims to be more customisable and clearer, than the default graph-plotter packaged with LT Spice. Finally the team thought that, of all the tasks offered to us, development of a circuit simulator covered the greatest number of topics taught this year, making it an excellent opportunity to cement our knowledge. Topics required for the task:C++ programming, linear algebra, analysis of circuits and design of circuits.</p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Getting Started</h2>
 <h3><a class="anchor" id="autotoc_md3"></a>
@@ -105,7 +105,7 @@ CMake</h3>
 <h3><a class="anchor" id="autotoc_md7"></a>
 Python (Only for the graphing tool)</h3>
 <p>To use the in built graphing tool, Python 3 is required. To install python, <a href="https://docs.python-guide.org/starting/installation/">click here</a>. To confirm if Python 3 is installed correctly on your machine, run: </p><div class="fragment"><div class="line">python3</div>
-</div><!-- fragment --><p>An interactive shell should come up showing the python version. Python 3.X is required!</p>
+</div><!-- fragment --><p>An interactive shell should come up showing the python version. Python 3.7.X is required!</p>
 <p>Once Python 3 has been correctly installed, navigate to the root directory and run: </p><div class="fragment"><div class="line">python3 -m pip install -r requirements.txt</div>
 </div><!-- fragment --><p>To install the necessary packages required for the graphing tool to work.</p>
 <h3><a class="anchor" id="autotoc_md8"></a>
@@ -115,22 +115,26 @@ Installing</h3>
 </div><!-- fragment --><p>And follow the on screen instructions.</p>
 <h2><a class="anchor" id="autotoc_md9"></a>
 Usage</h2>
-<div class="fragment"><div class="line">-i      &lt;file&gt;      path to input netlist</div>
-<div class="line">-o      &lt;dir&gt;       path to output directory</div>
-<div class="line">-f      &lt;format&gt;    specify output format, either csv or space</div>
-<div class="line">-p      &lt;list&gt;      plots output, space separated list specifies columns to plot</div>
-<div class="line">-c                  shows names of columns in output file, blocks -p and doesn&#39;t plot result</div>
-<div class="line">-h                  shows this help information</div>
+<div class="fragment"><div class="line">-i              &lt;file&gt;          path to input netlist</div>
+<div class="line">-o              &lt;dir&gt;           path to output directory</div>
+<div class="line">-f              &lt;format&gt;        specify output format, either csv or space</div>
+<div class="line">-p              &lt;list&gt;          plots output, space separated list specifies columns to plot</div>
+<div class="line">-s              &lt;path&gt;          saves graph output as html at specified location, requires -p</div>
+<div class="line">-c                              shows names of columns in output file, blocks -p and -s i.e. doesn&#39;t plot/save result</div>
+<div class="line">-h                              shows this help information</div>
 <div class="line"> </div>
-<div class="line">Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]</div>
+<div class="line">Usage: simulator -i file [ -ch ] [ -o dir ] [-p list] [ -s path ] [ -f format ]</div>
 <div class="line"> </div>
 <div class="line">Examples:</div>
 <div class="line"> </div>
 <div class="line">Plot Specific Columns:</div>
 <div class="line">    simulator -i test.net -p &#39;V(N001) V(N002)&#39;</div>
 <div class="line"> </div>
-<div class="line">Plot All Columns:</div>
-<div class="line">    simulator -i test.net -p &#39;&#39;</div>
+<div class="line">Plot All Columns and save result as interactive HTML:</div>
+<div class="line">    simulator -i test.net -p &#39;&#39; -s result.html</div>
+<div class="line"> </div>
+<div class="line">Generate result and check names of columns in netlist:</div>
+<div class="line">    simulator -i test.net -c</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 Authors</h2>
 <ul>

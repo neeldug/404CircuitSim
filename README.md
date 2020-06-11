@@ -43,7 +43,7 @@ To use the in built graphing tool, Python 3 is required. To install python, [cli
 ```bash
 python3
 ```
-An interactive shell should come up showing the python version. Python 3.X is required!
+An interactive shell should come up showing the python version. Python 3.7.X is required!
 
 Once Python 3 has been correctly installed, navigate to the root directory and run:
 ```bash
@@ -62,22 +62,26 @@ And follow the on screen instructions.
 
 ## Usage
 ```
--i      <file>      path to input netlist
--o      <dir>       path to output directory
--f      <format>    specify output format, either csv or space
--p      <list>      plots output, space separated list specifies columns to plot
--c                  shows names of columns in output file, blocks -p and doesn't plot result
--h                  shows this help information
+-i              <file>          path to input netlist
+-o              <dir>           path to output directory
+-f              <format>        specify output format, either csv or space
+-p              <list>          plots output, space separated list specifies columns to plot
+-s              <path>          saves graph output as html at specified location, requires -p
+-c                              shows names of columns in output file, blocks -p and -s i.e. doesn't plot/save result
+-h                              shows this help information
 
-Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]
+Usage: simulator -i file [ -ch ] [ -o dir ] [-p list] [ -s path ] [ -f format ]
 
 Examples:
 
 Plot Specific Columns:
     simulator -i test.net -p 'V(N001) V(N002)'
 
-Plot All Columns:
-    simulator -i test.net -p ''
+Plot All Columns and save result as interactive HTML:
+    simulator -i test.net -p '' -s result.html
+
+Generate result and check names of columns in netlist:
+    simulator -i test.net -c
 ```
 
 ## Authors

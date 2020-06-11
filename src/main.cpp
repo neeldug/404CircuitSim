@@ -11,14 +11,18 @@ std::string showHelp()
         "-o\t\t<dir>\t\tpath to output directory\n"
         "-f\t\t<format>\tspecify output format, either csv or space\n"
         "-p\t\t<list>\t\tplots output, space separated list specifies columns to plot\n"
-        "-c\t\t\t\tshows names of columns in output file, blocks -p i.e. doesn't plot result\n"
+        "-s\t\t<path>\t\tsaves graph output as html at specified location, requires -p"
+        "-c\t\t\t\tshows names of columns in output file, blocks -p and -s i.e. doesn't plot/save result\n"
         "-h\t\t\t\tshows this help information\n\n"
-        "Usage: simulator -i file -p list [ -ch ] [ -o dir ] [ -f format ]\n\n"
-        "Examples\n\n"
+        "Usage: simulator -i file [ -ch ] [ -o dir ] [-p list] [ -s path ] [ -f format ]\n\n"
+        "Examples:\n\n"
         "Plot Specific Columns:\n"
         "\tsimulator -i test.net -p 'V(N001) V(N002)'\n\n"
-        "Plot All Columns:\n"
-        "simulator -i test.net -p ''\n";
+        "Plot All Columns and save result as interactive HTML:\n"
+        "\tsimulator -i test.net -p '' -s result.html\n\n"
+        "Generate result and check names of columns in netlist:\n"
+        "\tsimulator -i test.net -c\n";
+
 
     return helpMessage;
 }
@@ -28,7 +32,7 @@ int main(int argc, char *argv[])
     int c;
     std::map<std::string, std::string> stringFlags;
     std::map<std::string, bool> boolFlags;
-    while ((c = getopt(argc, argv, "cf:hi:o:p:")) != -1)
+    while ((c = getopt(argc, argv, "cf:hi:o:p:s:")) != -1)
     {
         switch (c)
         {
@@ -50,6 +54,9 @@ int main(int argc, char *argv[])
         case 'p':
             boolFlags["plotOutput"] = true;
             stringFlags["plotOutput"] = optarg;
+            break;
+        case 's':
+            stringFlags["saveHtmlOutput"] = optarg;
             break;
         default:
             std::cerr << "Unknown Flag: '" << c << "'\n";
@@ -120,6 +127,10 @@ int main(int argc, char *argv[])
         if (boolFlags["showColumns"])
         {
             systemCall += "-c ";
+        }
+        if(!stringFlags["saveHtmlOutput"].empty())
+        {
+            systemCall += "-s " + stringFlags["saveHtmlOutput"] + " ";
         }
         if (!stringFlags["plotOutput"].empty())
         {
