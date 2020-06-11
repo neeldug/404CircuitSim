@@ -13,7 +13,7 @@ public:
     }
     virtual void SetUp()
     {
-        netlist.open("test/SpiceNetlists/resistorNetwork.cir");
+        netlist.open("test/SpiceNetlists/transientExample.cir");
         this->schem = Circuit::Parser::parse(netlist);
     }
 
@@ -26,7 +26,7 @@ public:
     std::ifstream netlist;
     Circuit::Schematic *schem;
     static const size_t iterations = 1;
-    static const size_t runs = 1000;
+    static const size_t runs = 100;
 };
 
 BENCHMARK_F(SimulatorFixture, run, runs, iterations)

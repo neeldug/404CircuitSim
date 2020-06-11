@@ -68,16 +68,16 @@ int main(int argc, char* argv[])
 	if(argc>1){
 		folder = cmdlineStringArgs[1];
 	}else{
-		folder = "../RC_test";
+		folder = "./FullWaveRectification_test";
 	}
-	
+	std::cout<<fs::current_path()<<std::endl;
 	folder+="/LT.csvs";
 	for(auto x : fs::directory_iterator(folder))
 	{
 		if(((std::string)x.path().filename()).find("new") != std::string::npos){
 			continue;
 		}
-		standardStep(x.path(),1e-05);
+		standardStep(x.path(),5e-6);
 	}
 
 
