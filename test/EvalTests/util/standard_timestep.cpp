@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 	if(argc>1){
 		folder = cmdlineStringArgs[1];
 	}else{
-		folder = "./FullWaveRectification_test";
+		folder = "./DoubleDiode_test";
 	}
 	std::cout<<fs::current_path()<<std::endl;
 	folder+="/LT.csvs";
