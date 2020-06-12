@@ -28,4 +28,6 @@ install(TARGETS simulator RUNTIME DESTINATION bin)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin PERMISSIONS WORLD_READ WORLD_EXECUTE)
 
 # Test Executables
-add_subdirectory(test)
+if(CMAKE_BUILD_TYPE EQUAL Debug)
+    add_subdirectory(test)
+endif()

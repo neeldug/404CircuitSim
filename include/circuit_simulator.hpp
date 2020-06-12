@@ -323,14 +323,16 @@ public:
 								node_pair.second->voltage = voltage[node_pair.second->getId()];
 							}
 						});
-
-						if (format == SPACE)
+						if (t >= tranSaveStart)
 						{
-							spicePrint(param, t, tranStepTime);
-						}
-						else if (format == CSV)
-						{
-							csvPrint(param, t, tranStepTime);
+							if (format == SPACE)
+							{
+								spicePrint(param, t, tranStepTime);
+							}
+							else if (format == CSV)
+							{
+								csvPrint(param, t, tranStepTime);
+							}
 						}
 					}
 				}
@@ -391,13 +393,16 @@ public:
 								node_pair.second->voltage = voltage[node_pair.second->getId()];
 							}
 						});
-						if (format == SPACE)
+						if (t >= tranSaveStart)
 						{
-							spicePrint(param, t, tranStepTime);
-						}
-						else if (format == CSV)
-						{
-							csvPrint(param, t, tranStepTime);
+							if (format == SPACE)
+							{
+								spicePrint(param, t, tranStepTime);
+							}
+							else if (format == CSV)
+							{
+								csvPrint(param, t, tranStepTime);
+							}
 						}
 					}
 				}
