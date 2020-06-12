@@ -222,7 +222,7 @@ public:
 		enumPair(SMALL_SIGNAL, "SMALL_SIGNAL"),
 	};
 
-	Simulator(Schematic *schem, SimulationType type) : type(type), schem(schem) {}
+	Simulator(Schematic *schem, SimulationType type) : schem(schem), type(type) {}
 	Simulator(Schematic *schem, SimulationType type, double tranStopTime, double tranSaveStart = 0, double tranStepTime = 0) : Simulator(schem, type)
 	{
 		if (tranStepTime == 0)
@@ -350,7 +350,7 @@ public:
 							Eigen::LevenbergMarquardt<Eigen::NumericalDiff<ConductanceFunc>, double> lm(numDiff);
 							lm.parameters.maxfev = 1000;
 							lm.parameters.xtol = 1.0e-10;
-							int ret = lm.minimize(vGuess);
+							lm.minimize(vGuess);
 						}
 						else if (schem->itType == Schematic::IterationType::Newton)
 						{

@@ -118,8 +118,8 @@ protected:
 	double value;
 	Schematic *schem;
 	Component() = default;
-	Component(const std::string &name, std::string variableName, Schematic *schem) : name(name), variableName(variableName), schem(schem), variableDefined(true) {}
-	Component(const std::string &name, double value, Schematic *schem) : name(name), value(value), schem(schem) {}
+	Component(const std::string &name, std::string variableName, Schematic *schem) : schem(schem), variableDefined(true), variableName(variableName), name(name) {}
+	Component(const std::string &name, double value, Schematic *schem) : value(value), schem(schem), name(name) {}
 	bool variableDefined = false;
 	std::string variableName;
 

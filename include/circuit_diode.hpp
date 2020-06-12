@@ -79,7 +79,6 @@ public:
 		{
 			capacitorCurrent = 0;
 		}
-		double current = capacitorCurrent;
 		return capacitorCurrent;
 	}
 

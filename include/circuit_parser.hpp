@@ -146,11 +146,11 @@ private:
 					std::string variableName = params[3];
 					variableName.pop_back();
 					variableName = variableName.substr(1,variableName.size()-1);
-					Circuit::Resistor *r = new Circuit::Resistor( name, variableName, nodeA, nodeB, schem );
+					new Circuit::Resistor( name, variableName, nodeA, nodeB, schem );
 				}
 				else{
 					double value = parseVal( params[3] );
-					Circuit::Resistor *r = new Circuit::Resistor( name, value, nodeA, nodeB, schem );
+					new Circuit::Resistor( name, value, nodeA, nodeB, schem );
 				}
 
 				break;
@@ -169,11 +169,11 @@ private:
 					std::string variableName = params[3];
 					variableName.pop_back();
 					variableName = variableName.substr(1,variableName.size()-1);
-					Circuit::Capacitor *c = new Circuit::Capacitor( name, variableName, nodeA, nodeB, schem, V_init );
+					new Circuit::Capacitor( name, variableName, nodeA, nodeB, schem, V_init );
 				}
 				else{
 					double value = parseVal( params[3] );
-					Circuit::Capacitor *c = new Circuit::Capacitor( name, value, nodeA, nodeB, schem, V_init );
+					new Circuit::Capacitor( name, value, nodeA, nodeB, schem, V_init );
 				}
 
 				break;
@@ -193,26 +193,25 @@ private:
 					std::string variableName = params[3];
 					variableName.pop_back();
 					variableName = variableName.substr(1,variableName.size()-1);
-					Circuit::Inductor *l = new Circuit::Inductor( name, variableName, nodeA, nodeB, schem, I_init );
+					new Circuit::Inductor( name, variableName, nodeA, nodeB, schem, I_init );
 
 				}
 				else{
-					double value = parseVal( params[3] );
-					Circuit::Inductor *l = new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
+					new Circuit::Inductor( name, value, nodeA, nodeB, schem, I_init );
 				}
 
 				break;
 			}
 			case (int) 'v' : {
 				assert( params.size() >= 4 && "Voltage - too few params" );
-				Circuit::Voltage* volt = sourceFactory<Circuit::Voltage>( comp, schem );
+				sourceFactory<Circuit::Voltage>( comp, schem );
 
 
 				break;
 			}
 			case (int) 'i' : {
 				assert( params.size() >= 4 && "Voltage - too few params" );
-				Circuit::Current* curr = sourceFactory<Circuit::Current>( comp, schem );
+				sourceFactory<Circuit::Current>( comp, schem );
 
 				break;
 			}
@@ -222,7 +221,7 @@ private:
 				std::string nodeB = params[2];
 				std::string modName = params[3];
 
-				Circuit::Diode* diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
+				Circuit::Diode *diode = new Circuit::Diode( name, nodeA, nodeB, modName, schem );
 				schem->containsNonLinearComponents();
 				schem->nonLinearComps.push_back(diode);
 				break;
@@ -236,7 +235,7 @@ private:
 				std::string nodeEmitter = params[3];
 				std::string modelName = params[4];
 
-				Circuit::Transistor* tran = new Circuit::Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
+				new Circuit::Transistor( name, nodeCollector, nodeBase, nodeEmitter, modelName, schem );
 				schem->containsNonLinearComponents();
 				break;
 			}
@@ -364,8 +363,6 @@ private:
 	static std::vector<ParamTable *> paramGenerator(std::map<std::string, std::vector<double>> values){
 		TableIt varOne = values.begin();
 		const TableIt varEnd = values.end();
-		std::vector<double>::const_iterator begin = varOne->second.begin();
-		std::vector<double>::const_iterator end = varOne->second.end();
 		std::vector<ParamTable *> tables;
 
 		std::vector<ParamTable *> recursiveAdd = buildParam(varOne, varEnd);

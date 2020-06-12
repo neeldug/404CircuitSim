@@ -46,12 +46,9 @@ public:
     }
     virtual double getConductance(ParamTable *param, double timestep) const override
     {
-        double min_conductance = 1e-13;
-        double max_conductance = 1e13;
-
         if (timestep <= 0)
         {
-            return max_conductance;
+            return 1e13; //Max conductance
         }
         return value / timestep;
     }
@@ -94,12 +91,9 @@ public:
     }
     double getConductance(ParamTable *param, double timestep) const override
     {
-        double min_conductance = 1e-13;
-        double max_conductance = 1e13;
-
         if (timestep <= 0)
         {
-            return min_conductance;
+            return 1e-13; //Min Conductance
         }
         return timestep / value;
     }
