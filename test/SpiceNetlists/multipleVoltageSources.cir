@@ -5,6 +5,5 @@ R1 N002 N001 1k
 R2 N005 N004 100
 C1 N002 N005 10u
 V4 N005 0 1
-.op
 .backanno
 .end
