@@ -1,7 +1,9 @@
-* D:\home\jjl119\Imperial\SummerProject\404CircuitSim\test\SpiceNetlists\Draft4.asc
-R1 N001 0 {R}
-V1 N001 0 SINE(0 1 1000)
-.step param R 1 10 1
-.tran 0 2m 0 0.01m
+* C:\users\jjl119\My Documents\LTspiceXVII\Draft2.asc
+R1 N001 N003 1000
+R2 N001 N002 2000
+C1 N003 0 10n
+L1 N002 0 1
+I1 0 N001 SINE(0 0.1m 1000)
+.tran 0 5m 2m 0.0001m
 .backanno
 .end
