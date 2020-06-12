@@ -255,7 +255,7 @@ public:
 			csvPrintTitle();
 		}
 		ParamTable *param;
-		for (int i = 0; i < schem->tables.size(); i++)
+		for (size_t i = 0; i < schem->tables.size(); i++)
 		{
 			param = schem->tables[i];
 			printStep(i);

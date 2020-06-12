@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
         }
         if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            system(systemCall.c_str());
+            int ret = system(systemCall.c_str()); //???
         }
     }
     delete schem;

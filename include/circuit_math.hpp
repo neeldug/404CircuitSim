@@ -174,7 +174,7 @@ void Circuit::Math::getConductanceOP(Circuit::Schematic *schem, Eigen::MatrixXd 
         if (!comp_pair.second->isSource())
         {
 
-            if (Circuit::LC *lc = dynamic_cast<Circuit::LC *>(comp_pair.second))
+            if (dynamic_cast<Circuit::LC *>(comp_pair.second))
             {
                 return;
             }
