@@ -25,7 +25,7 @@ target_link_libraries(simulator eigen)
 
 # Installations
 install(TARGETS simulator RUNTIME DESTINATION bin)
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/plot.py DESTINATION bin PERMISSIONS WORLD_READ WORLD_EXECUTE)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/simulatorplot DESTINATION bin PERMISSIONS WORLD_READ WORLD_EXECUTE)
 
 # Test Executables
 if(CMAKE_BUILD_TYPE EQUAL Debug)

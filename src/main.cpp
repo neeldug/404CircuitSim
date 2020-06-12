@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::string systemCall = "plot.py '" + outputPath + "' ";
+        std::string systemCall = "simulatorplot '" + outputPath + "' ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
