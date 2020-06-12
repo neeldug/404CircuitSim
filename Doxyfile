@@ -316,13 +316,13 @@ HTML_EXTRA_FILES       += test/EvalTests/SingleDiode_test/diode.html
 
 HTML_EXTRA_FILES       += test/EvalTests/Parasitic_test/parasitic.html
 
-HTML_EXTRA_FILES       += test/EvalTests/Parasitic_test/double_diode.html
+HTML_EXTRA_FILES       += test/EvalTests/DoubleDiode_test/double_diode.html
 
-HTML_EXTRA_FILES       += test/EvalTests/Parasitic_test/FWRec.html
+HTML_EXTRA_FILES       += test/EvalTests/FullWaveRectification_test/FWRec.html
 
 HTML_EXTRA_FILES       += test/EvalTests/RC_test/rc.html
 
-HTML_EXTRA_FILES       += test/EvalTests/RC_test/phase.html
+HTML_EXTRA_FILES       += test/EvalTests/MultiPhase_test/phase.html
 
 HTML_COLORSTYLE_HUE    = 220
 
