@@ -338,7 +338,7 @@ public:
 				{
 					for (double t = 0; t <= tranStopTime; t += tranStepTime)
 					{
-						Math::progressBar(t / tranStopTime, i, schem->tables.size());
+						//Math::progressBar(t / tranStopTime, i, schem->tables.size());
 						Math::init_vector(vGuess);
 						ConductanceFunc functor(schem, param, t, tranStepTime, NUM_NODES);
 						Eigen::NumericalDiff<ConductanceFunc> numDiff(functor);
@@ -373,6 +373,7 @@ public:
 										}
 									}
 								}
+								std::cerr<<t<<","<<i<<","<<vGuess[0]<<","<<vGuess[1]<<","<<vErrVec.norm()<<std::endl;
 								vGuess = vGuess - 0.005 * (inverseJaq * vErrVec);
 							}
 						}

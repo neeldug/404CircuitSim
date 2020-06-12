@@ -14,7 +14,7 @@ private:
 	double BV = 100;
 	double IBV = 0.1e-10;
 	double VJ = 1;
-	const double GMIN = 0;
+	const double GMIN = 1e-5;
 	const double V_T = 25e-3;
 
 public:
