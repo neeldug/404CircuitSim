@@ -11,7 +11,7 @@ std::string showHelp()
         "-o\t\t<dir>\t\tpath to output directory\n"
         "-f\t\t<format>\tspecify output format, either csv or space\n"
         "-p\t\t<list>\t\tplots output, space separated list specifies columns to plot\n"
-        "-s\t\t<path>\t\tsaves graph output as html at specified location, requires -p"
+        "-s\t\t<path>\t\tsaves graph output as html at specified location, requires -p\n"
         "-c\t\t\t\tshows names of columns in output file, blocks -p and -s i.e. doesn't plot/save result\n"
         "-h\t\t\t\tshows this help information\n\n"
         "Usage: simulator -i file [ -ch ] [ -o dir ] [-p list] [ -s path ] [ -f format ]\n\n"

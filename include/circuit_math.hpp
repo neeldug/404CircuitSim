@@ -9,9 +9,9 @@ private:
 
     static void init_matrix(Eigen::MatrixXd &mat, double val = 0.0)
     {
-        for (size_t i = 0; i < mat.rows(); i++)
+        for (int i = 0; i < mat.rows(); i++)
         {
-            for (size_t j = 0; j < mat.cols(); j++)
+            for (int j = 0; j < mat.cols(); j++)
             {
                 mat(i, j) = val;
             }
@@ -90,7 +90,7 @@ public:
     static void solveMatrix(const Eigen::MatrixXd &conductance, Eigen::VectorXd &voltage, const Eigen::VectorXd &current);
     static void init_vector(Eigen::VectorXd &vec, double val = 0.0)
     {
-        for (size_t i = 0; i < vec.rows(); i++)
+        for (int i = 0; i < vec.rows(); i++)
         {
             vec[i] = val;
         }
