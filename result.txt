@@ -1,0 +1,3 @@
+50
+[==========] Running 1 benchmark..
+[ RUN      ] SimulatorFixture.run (100 runs, 1 iteration per run)

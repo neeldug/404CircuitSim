@@ -29,7 +29,7 @@ public:
     std::stringstream ss;
     Circuit::Schematic *schem;
     static const size_t iterations = 1;
-    static const size_t runs = 100;
+    static const size_t runs = 50;
 };
 
 BENCHMARK_F(SimulatorFixture, run, runs, iterations)
