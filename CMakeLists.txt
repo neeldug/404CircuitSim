@@ -29,6 +29,6 @@ install(TARGETS simulator RUNTIME DESTINATION bin)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/simulatorplot DESTINATION bin PERMISSIONS WORLD_READ WORLD_EXECUTE)
 
 # Test Executables
-if(CMAKE_BUILD_TYPE EQUAL Debug)
+# if(CMAKE_BUILD_TYPE EQUAL "DEBUG")
     add_subdirectory(test)
-endif()
+# endif()

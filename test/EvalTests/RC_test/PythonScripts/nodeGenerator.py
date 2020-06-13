@@ -1,15 +1,16 @@
 # Node generating script
 import sys
-if (len(sys.argv) == 2):
-    num_nodes = int(sys.argv[1])
-else:
-    num_nodes = 100
-print("*Node speed test")
-print("V1 1 0 SINE(0 100 1)")
-for i in range(1,num_nodes):
-    resistorSmall = "R" + str(i) + " " + str(i) + " " + str(i + 1) + " 1"
-    resistorLarge = "R" + str(i+100) + " " + str(i) + " " + str(0) + " 1000"
-    print(resistorSmall)
-    print(resistorLarge)
-print(".tran 0 3 0 0.001")
-print(".end")
+for num_nodes in range(50,1000, 50):
+    f = open("netlist" + str(num_nodes) + ".cir", "a")
+    f.write("*" + str(num_nodes))
+    f.write("V1 1 0 SINE(0 100 1)")
+    for i in range(1,num_nodes):
+        resistorSmall = "R" + str(i) + " " + str(i) + " " + str(i + 1) + " 1"
+        resistorLarge = "R" + str(i+num_nodes) + " " + str(i) + " " + str(0) + " 1000"
+        f.write(resistorSmall)
+        f.write(resistorLarge)
+    f.write(".tran 0 3 0 0.001")
+    f.write(".end")
+    f.close()
+
+    
