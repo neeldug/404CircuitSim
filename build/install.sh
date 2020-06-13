@@ -9,4 +9,8 @@ base64 -d <<< "4pSP4pSB4pW44pSP4pSB4pST4pSP4pSB4pST4pSP4pSB4pST4pSP4pSB4pSTICAg4
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
  
 sudo make install
-sudo chmod 550 /usr/local/bin/simulatorplot
+
+## custom permissions handling for MacOS
+if [[ $(uname) == "Darwin" ]]; then
+    sudo chmod 550 /usr/local/bin/simulatorplot
+fi
