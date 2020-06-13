@@ -3,6 +3,8 @@
 #include <vector>
 #include <fstream>
 
+size_t i;
+
 class SimulatorFixture
     : public ::hayai::Fixture
 {
@@ -13,9 +15,9 @@ public:
     }
     virtual void SetUp()
     {
-        netlist.open("test/SpiceNetlists/transientExample.cir");
+        netlist.open("benchmarking/netlist" + std::to_string(i) + ".cir");
         this->schem = Circuit::Parser::parse(netlist);
-    }
+        }
 
     virtual void TearDown()
     {
@@ -24,6 +26,7 @@ public:
     }
 
     std::ifstream netlist;
+    std::stringstream ss;
     Circuit::Schematic *schem;
     static const size_t iterations = 1;
     static const size_t runs = 100;
@@ -33,16 +36,19 @@ BENCHMARK_F(SimulatorFixture, run, runs, iterations)
 {
     for (Circuit::Simulator *sim : schem->sims)
     {
-        sim->run(std::cerr, Circuit::Simulator::OutputFormat::CSV);
+        sim->run(ss, Circuit::Simulator::OutputFormat::CSV);
     }
 }
 
 int main(int argc, char const *argv[])
 {
-
-    hayai::ConsoleOutputter consoleOutputter;
-
-    hayai::Benchmarker::AddOutputter(consoleOutputter);
-    hayai::Benchmarker::RunAllTests();
+    for (i = 50; i <= 1000; i += 50)
+    {
+        std::cout<<i<<std::endl;
+        std::cerr<<i<<std::endl;
+        hayai::ConsoleOutputter consoleOutputter;
+        hayai::Benchmarker::AddOutputter(consoleOutputter);
+        hayai::Benchmarker::RunAllTests();
+    }
     return 0;
 }
