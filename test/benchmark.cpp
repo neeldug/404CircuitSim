@@ -17,7 +17,7 @@ public:
     {
         netlist.open("benchmarking/netlist" + std::to_string(i) + ".cir");
         this->schem = Circuit::Parser::parse(netlist);
-        }
+    }
 
     virtual void TearDown()
     {
@@ -42,12 +42,12 @@ BENCHMARK_F(SimulatorFixture, run, runs, iterations)
 
 int main(int argc, char const *argv[])
 {
+    hayai::ConsoleOutputter consoleOutputter;
+    hayai::Benchmarker::AddOutputter(consoleOutputter);
     for (i = 50; i <= 1000; i += 50)
     {
-        std::cout<<i<<std::endl;
-        std::cerr<<i<<std::endl;
-        hayai::ConsoleOutputter consoleOutputter;
-        hayai::Benchmarker::AddOutputter(consoleOutputter);
+        std::cout << i << std::endl;
+        std::cerr << i << std::endl;
         hayai::Benchmarker::RunAllTests();
     }
     return 0;
