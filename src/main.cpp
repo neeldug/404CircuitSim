@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
         sim->run(out, outputFormat);
         out.close();
 
-        std::string systemCall = "simulatorplot '" + outputPath + "' ";
+        std::string systemCall = "simulatorplot ";
 
         if (outputFormat == Circuit::Simulator::OutputFormat::SPACE)
         {
@@ -130,15 +130,16 @@ int main(int argc, char *argv[])
         }
         if(!stringFlags["saveHtmlOutput"].empty())
         {
-            systemCall += "-s " + stringFlags["saveHtmlOutput"] + " ";
+            systemCall += "-s '" + stringFlags["saveHtmlOutput"] + "' ";
         }
+        systemCall += "'" + outputPath + "'";
         if (!stringFlags["plotOutput"].empty())
         {
-            systemCall += "'" + stringFlags["plotOutput"] + "'";
+            systemCall += " '" + stringFlags["plotOutput"] + "'";
         }
         if ((boolFlags["plotOutput"] || boolFlags["showColumns"]) && sim->type != Circuit::Simulator::SimulationType::OP)
         {
-            int ret = system(systemCall.c_str()); //???
+            int ret = system(systemCall.c_str());
         }
     }
     delete schem;
